@@ -13,11 +13,15 @@
 * 打开`CSDTK/cooltools/coolwatcher.exe`
 
 * 左边`profiles`选项选择`8955`，右边需要设置`lastcomport`为连接模块下载调试串口(`HST`)的端口号
+
 ![coolwatcher启动选项](./assets/coolwatcher_open.png)
+
 点击Ok
 
 * 等待连接成功，出现以下界面
+
 ![coolwatcher主界面及下载按钮](./assets/coolwatcher_download.png)
+
 > 如果出现连接失败的情况，请参考 [coolwatcher 无法连接原因](#coolwatcher无法连接)部分
 
 * 点击下图中的<kbd>lod</kbd>图标，选择需要下载的固件
@@ -26,12 +30,16 @@
 只需要设置一次，后面都会记住的
 
 * 点击 <kbd>download</kbd>图标，进行下载，正常效果如下图，右下角Command栏会有进度标志
+
 ![coolwatcher下载中](./assets/coolwatcher_downloading.png)
+
 > 如果下载失败，请参考 [coolwatcher 下载失败原因](#coolwatcher无法下载)部分
 
 
 ## coolwatcher无法连接
+
 ![无法连接模块](./assets/coolwatcher_connect_fail.png)
+
 解决方法：
 
 * 保证串口和模块已经连接（注意开发板上的USB口不是串口，下载串口是通过USB转串口模块连接`HST_RX` 和 `HST_TX`引脚）
@@ -39,10 +47,13 @@
 * 保证串口没有被其它软件占用
 
 * 检查串口号是否选择错误，重新启动的时候设置串口号，或者不重启 点击右下角<kbd>CoolHost</kbd>图标来设置
+
 ![CoolHost settings](./assets/coolwatcher_connect_settings.png)
+
 然后点击<kbd>connect</kbd>重新连接串口
 
 ## coolwatcher无法下载
+
 ![无法下载](./assets/coolwatcher_download_fail.png)
 
 * 有可能程序进入了休眠模式，按模块复位键复位后再下载
@@ -129,8 +140,11 @@ void AppMainTask(VOID *pData)
 
 
 * 查看debug信息：打开`Plugins`->`Active Tracer`，界面及功能如下图
+
 ![tracer](./assets/coolwatcher_trace.png)
+
 使用前需要设置Tracer，设置如下如1~6步：
+
 ![Tracer设置](./assets/coolwatcher_trace_settings.png)
 
 * 程序中需要输出调试信息可以调用`api_debug.h`中的`Trace(uint16_t nIndex,PCSTR fmt, ...)`函数，其中 `nIndex`就是对应tracer设置中的`MMI 01` ~ `MMI 16`
@@ -144,9 +158,13 @@ void AppMainTask(VOID *pData)
 
 这里模拟了一个异常，空指针赋值的异常，一般出现这种问题都是指针乱飞的问题！
 打开GBD，并设置选择elf文件
+
 ![指针异常](./assets/coolwatcher_gdb_launch.png)
+
 ![选择elf文件](./assets/coolwatcher_gdb_settings.png)
+
 打开GBD终端，输入`bt` 或者`bt f`查看信息
+
 ![异常信息](./assets/coolwatcher_gdb_error_info.png)
 
 需要注意的是，这个GDB并不是在并不支持手动打断点功能，打断点需要在代码中写入断点语句才行，所以只用它来查看死机信息就行了，当死机后再用它！！
