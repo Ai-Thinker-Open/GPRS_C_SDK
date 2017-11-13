@@ -12,16 +12,12 @@
 * 将`coolwatcher更新到最新版本`
 * 打开`CSDTK/cooltools/coolwatcher.exe`
 
-* 左边`profiles`选项选择`8955`，右边需要设置`lastcomport`为连接模块下载调试串口(`HST`)的端口号
-
-![coolwatcher启动选项](./assets/coolwatcher_open.png)
-
+* 左边`profiles`选项选择`8955`，右边需要设置`lastcomport`为连接模块下载调试串口(`HST`)的端口</br>
+![coolwatcher启动选项](./assets/coolwatcher_open.png)</br>
 点击Ok
 
-* 等待连接成功，出现以下界面
-
-![coolwatcher主界面及下载按钮](./assets/coolwatcher_download.png)
-
+* 等待连接成功，出现以下界面</br>
+![coolwatcher主界面及下载按钮](./assets/coolwatcher_download.png)</br>
 > 如果出现连接失败的情况，请参考 [coolwatcher 无法连接原因](#coolwatcher无法连接)部分
 
 * 点击下图中的<kbd>lod</kbd>图标，选择需要下载的固件
@@ -29,10 +25,8 @@
 * 如果第一次使用，需要点击<kbd>DRY</kbd>图标，选择名字包含` 8955 ramrun spi32m .lod`的文件（在工程`platform/ramrun`下或者coolwatcher `cooltools\chipgen\Modem2G\toolpool\plugins\fastpf\flash_programmers`目录下）。
 只需要设置一次，后面都会记住的
 
-* 点击 <kbd>download</kbd>图标，进行下载，正常效果如下图，右下角Command栏会有进度标志
-
-![coolwatcher下载中](./assets/coolwatcher_downloading.png)
-
+* 点击 <kbd>download</kbd>图标，进行下载，正常效果如下图，右下角Command栏会有进度标志</br>
+![coolwatcher下载中](./assets/coolwatcher_downloading.png)</br>
 > 如果下载失败，请参考 [coolwatcher 下载失败原因](#coolwatcher无法下载)部分
 
 
@@ -46,8 +40,7 @@
 
 * 保证串口没有被其它软件占用
 
-* 检查串口号是否选择错误，重新启动的时候设置串口号，或者不重启 点击右下角<kbd>CoolHost</kbd>图标来设置
-
+* 检查串口号是否选择错误，重新启动的时候设置串口号，或者不重启 点击右下角<kbd>CoolHost</kbd>图标来设置</br>
 ![CoolHost settings](./assets/coolwatcher_connect_settings.png)
 
 然后点击<kbd>connect</kbd>重新连接串口
