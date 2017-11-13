@@ -62,7 +62,7 @@ A9/A9G开发板，方便开发和调试
 ![](./doc/assets/USB-UART.png)</br>
 当然，为了下载和调试，需要一个USB转串口模块
 
-* **锂电池**
+* **锂电池**</br>
 用来给模块供电，或者使用5V电源也行，USB转串口模块直接供电也行，要保证有足够的电流供应
 
 
@@ -80,7 +80,7 @@ A9/A9G开发板，方便开发和调试
 
 如何使用下载调试工具：参见[下载、调试文档](./doc/download_debug_tool_zh-cn.md)
 
-**需要下载的文件**：编译后`hex`目录下有`*_B*.lod`以及`*_flash.lod`两个文件，第一次下载需要下载第一个文件（较大的文件），后面只需要下载`*_flash.lod`文件即可
+**需要下载到开发板的文件**：编译后`hex`目录下有`*_B*.lod`以及`*_flash.lod`两个文件，第一次下载需要下载第一个文件（较大的文件），后面只需要下载`*_flash.lod`文件即可
 
 ## (四) SDK
 
@@ -92,7 +92,7 @@ A9/A9G开发板，方便开发和调试
 
 #### 获得SDK
 
-* 方法一：在 [安信可官网Wiki](http://wiki.ai-thinker.com/gprs)下载压缩包
+* 方法一：在 [安信可官网Wiki](http://wiki.ai-thinker.com/gprs)下载发布的压缩包
 
 * 方法二：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
   * 可以在从github[下载压缩包](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/archive/master.zip)
