@@ -12,9 +12,13 @@
 并安装，安装时使用**英文无空格**路径，第一次安装建议使用默认路径，熟悉之后再定制
 安装时按照指示选择选项并点击<kbd>下一步</kbd>,主要**注意**的是:
 在安装cygwin时，选择从本地安装，选择unix风格，安装到`CSDTK/cygwin`目录中，如图：
+
 ![](./assets/cygwin_install.png)
+
 ![](./assets/cygwin_install2.png)
+
 选择包直接点击下一步
+
 ![](./assets/cygwin_install3.png)
 
 ## 3. 更新cooltools
