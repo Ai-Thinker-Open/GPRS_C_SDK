@@ -86,8 +86,8 @@ A9/A9G开发板，方便开发和调试
 
 #### SDK特征
 
-* 提供简单的API，只要有C语言开发基础就可以快速使用
-* 提供大量使用的API，从基本的GPIO、UART、SPI、IIC、OS、FS... ... 到特有的GPRS联网(socket、dns)、短信、电话等一应俱全
+* 提供易用的API，只要有C语言开发基础就可以快速使用
+* 集成大量功能，包括基本的GPIO、UART、SPI、IIC、ADC、OS、FS... ... 以及GPRS联网(socket、dns)、MQTT、短信、电话等
 
 
 #### 获得SDK
@@ -126,16 +126,18 @@ SDK的`demo`目录下有许多例程，有什么需要按照例程写就好了
 [GPRS及SDK从零开始。。](./doc/gprs_start_from_scratch_zh-cn.md)
 
 
-## (六) 提问及反馈
+## (六) 反馈
 
-* 方式一：github[添加issue](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/issues/new)
+* 方式一：github [添加issue](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/issues/new)
 
 * 方式二：[安信可论坛讨论](http://bbs.ai-thinker.com/forum.php?mod=forumdisplay&fid=37)
+
+* 右上角★<kbd>Star</kbd>一个不会迷路哦,下次方便找到哦~
 
 
 
 ## (七) 参与开发
 
-克隆修改后提交PR
+fork -> 修改 -> 提交PR
 
 
