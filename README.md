@@ -92,7 +92,7 @@ A9/A9G开发板，方便开发和调试
 
 #### 获得SDK
 
-* 方法一：在 [安信可官网Wiki]()下载压缩包
+* 方法一：在 [安信可官网Wiki](http://wiki.ai-thinker.com/gprs)下载压缩包
 
 * 方法二：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
   * 可以在从github[下载压缩包](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/archive/master.zip)
