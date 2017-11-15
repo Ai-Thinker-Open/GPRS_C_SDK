@@ -1,0 +1,24 @@
+
+#=====================================
+##  1 ##
+## ASIC type: gallite/8808/8809
+CT_ASIC         ?= 8955
+
+#=====================================
+##  2 ##
+## FLASH type: flsh_spi16m/flsh_spi32m
+FLSH_MODEL      ?= flsh_spi32m
+
+## RAM SIZE
+ifeq "${strip ${FLSH_MODEL}}" "flsh_spi16m"
+    RAM_SIZE_FLAG:= __16Mbit__
+endif
+ifeq "${strip ${FLSH_MODEL}}" "flsh_spi32m"
+    RAM_SIZE_FLAG:= __64Mbit__
+endif
+
+#=====================================
+##  3 ##
+######### sdk directory in the platform #########
+###csdk  test
+AM_MODEL ?= csdk

@@ -1,0 +1,375 @@
+# That file is used to describes the compilation variable
+# dependent on the targeted Chip. Typically, it is used to 
+# define specifi Macros aiming at configuring the code.
+
+# Capitalized chip name.
+CT_ASIC_CAPD := 8955
+
+# Chip die type
+CHIP_EXPORT_FLAG += CHIP_DIE_8955
+override CT_CHIP_DIE := 8955
+
+# The chip ID is required by the Makefiles and by the code.
+CHIP_EXPORT_FLAG += CHIP_ASIC_ID=9
+
+CHIP_HAS_BCPU_ROM := 1
+CHIP_EXPORT_FLAG += CHIP_HAS_BCPU_ROM=${CHIP_HAS_BCPU_ROM}
+
+XCPU_CACHE_MODE_WRITE_BACK := 1
+CHIP_EXPORT_FLAG += XCPU_CACHE_MODE_WRITE_BACK=${XCPU_CACHE_MODE_WRITE_BACK}
+BCPU_CACHE_MODE_WRITE_BACK := 0
+CHIP_EXPORT_FLAG += BCPU_CACHE_MODE_WRITE_BACK=${BCPU_CACHE_MODE_WRITE_BACK}
+CHIP_EXPORT_FLAG += CHIP_HAS_SYS_IFC2
+
+CHIP_EXPORT_FLAG += CHIP_EDGE_SUPPORTED=0
+CHIP_VAMOSI_SUPPORTED := 1
+CHIP_EXPORT_FLAG += CHIP_VAMOSI_SUPPORTED=${CHIP_VAMOSI_SUPPORTED}
+GPRS_MEASURE_MODE_HT100 := 0
+CHIP_EXPORT_FLAG += GPRS_MEASURE_MODE_HT100=${GPRS_MEASURE_MODE_HT100}
+CHIP_EXPORT_FLAG += CHIP_MAX_SPEED=312000000
+CHIP_EXPORT_FLAG += CHIP_HAS_AUTOSIMCLK=1
+CHIP_EXPORT_FLAG += CHIP_SYS_CRITICAL_SECTION_REG=0xA1A01014
+
+# Penultimate patch used for GDB XCPU and last patch Internal RAM area
+# used for GDB BCPU.
+CHIP_EXPORT_FLAG += CHIP_NUMBER_OF_PATCHES=16
+#+\BUG ATMMI-427\zhangwei\2012.10.08\关闭USB功能#
+#+\NEW WM-533\ZhangYang\2013.01.18\USB无线调制解调器功能#
+#+\NEW AMOPENAT-91 \zhangyang\2013.11.19\增加USB HID功能#
+CHIP_HAS_USB := 0
+ifeq ($(strip $(DSS_USB_WIRELESS_MODEM_SUPPORT)), TRUE)
+CHIP_HAS_USB := 1
+else
+ifeq ($(strip $(DSS_USB_CUSTOM_HID_SUPPORT)), TRUE)
+CHIP_HAS_USB := 1
+endif
+endif
+#-\NEW AMOPENAT-91 \zhangyang\2013.11.19\增加USB HID功能#
+#-\NEW WM-533\ZhangYang\2013.01.18\USB无线调制解调器功能#
+#-\BUG ATMMI-427\zhangwei\2012.10.08\关闭USB功能#
+CHIP_EXPORT_FLAG += CHIP_HAS_USB=$(CHIP_HAS_USB)
+CHIP_EXPORT_FLAG += CHIP_HAS_PXTS_LEVELS=1
+CHIP_EXPORT_FLAG += CHIP_HAS_AHB_MONITOR=0
+CHIP_EXPORT_FLAG += CHIP_HAS_SIM_T0T1=0
+CHIP_EXPORT_FLAG += CHIP_HAS_SDIO=1
+
+# The following variables are used to configure the SPAL layer
+CHIP_EXPORT_FLAG += CHIP_CAP_ON_APB=0
+CHIP_EXPORT_FLAG += CHIP_IFC_RF_TX_CHANNEL=1
+CHIP_EXPORT_FLAG += CHIP_ITLV_8PSK_SUPPORTED=0
+CHIP_EXPORT_FLAG += CHIP_VITAC_8PSK_SUPPORTED=0
+CHIP_EXPORT_FLAG += CHIP_XCOR_8PSK_SUPPORTED=0
+CHIP_EXPORT_FLAG += CHIP_XCOR_HAS_SLIDING_WINDOW=1
+CHIP_EXPORT_FLAG += CHIP_XCOR_DELAY8=0
+CHIP_EXPORT_FLAG += CHIP_CIPHER_A53_SUPPORTED=1
+CHIP_EXPORT_FLAG += CHIP_HAS_ANA_RF=0
+CHIP_EXPORT_FLAG += CHIP_HAS_14_BIT_RF_PATH=1
+
+# The following variables are used to configure the SPP layer
+CHIP_EXPORT_FLAG += CHIP_CHEST_LEN=5
+
+# The variable SPC_IF_VER can be overwritten by the CT_TARGET.def file.
+SPC_IF_VER ?= 5
+CHIP_EXPORT_FLAG += SPC_IF_VER=${SPC_IF_VER}
+
+AUDIO_CALIB_VER ?= 0
+CHIP_EXPORT_FLAG += AUDIO_CALIB_VER=${AUDIO_CALIB_VER}
+
+# about HAL SYS
+CHIP_HAS_ASYNC_TCU ?= 1
+CHIP_EXPORT_FLAG += CHIP_HAS_ACCO_PLL=0
+CHIP_EXPORT_FLAG += CHIP_HAS_ASYNC_TCU=${CHIP_HAS_ASYNC_TCU}
+CHIP_EXPORT_FLAG += CHIP_HAS_ASYNC_BCPU=0
+CHIP_EXPORT_FLAG += CHIP_TCU_CLK=13000000
+CHIP_HAS_TMCU := 0
+CHIP_EXPORT_FLAG += CHIP_HAS_TMCU=${CHIP_HAS_TMCU}
+
+# About the host/debug uart
+CHIP_EXPORT_FLAG += CHIP_HAS_DBG_UART_SW_FLOW_CONTROL=1
+
+# The following variables are used to configure the VPP layer
+CHIP_WITH_VOC     = 1
+CHIP_WITH_VOC_ROM = 0
+CHIP_EXPORT_FLAG += CHIP_WITH_VOC=$(CHIP_WITH_VOC)
+CHIP_EXPORT_FLAG += CHIP_WITH_VOC_ROM=$(CHIP_WITH_VOC_ROM)
+
+# About the UART
+CHIP_EXPORT_FLAG += CHIP_STD_UART_QTY=2
+
+# About the SPI
+# Number of CS on SPI
+CHIP_EXPORT_FLAG += CHIP_SPI_CS_QTY=3
+# Number of CS on SPI2
+CHIP_EXPORT_FLAG += CHIP_SPI2_CS_QTY=1
+# Number of CS on SPI3
+CHIP_EXPORT_FLAG += CHIP_ISPI_CS_QTY=3
+# The DOI pin of the SPI modules
+CHIP_EXPORT_FLAG += CHIP_SPI_HAS_DIO=1
+# The pattern mode of the SPI can do the WHILE rejection
+CHIP_EXPORT_FLAG += CHIP_SPI_HAS_PATTERN_WHILE=1
+# The SPI module registers to force its pin values (0, 1, Z)
+CHIP_EXPORT_FLAG += CHIP_SPI_HAS_INTERNAL_FORCE=1
+
+# Needed for SC code
+CHIP_EXPORT_FLAG += __TARGET__ __XCPU__ __JADE__
+
+# SXR: Location for stack and context heaps.
+CHIP_EXPORT_FLAG += SXR_CSP_TK_STCK_HEAP=0
+CHIP_EXPORT_FLAG += SXR_CSP_JB_STCK_HEAP=0
+CHIP_EXPORT_FLAG += SXR_CSP_JB_CTX_HEAP=0
+
+# About the AIF / Audio
+CHIP_EXPORT_FLAG += CHIP_HAS_I2S_DI_1=1
+CHIP_EXPORT_FLAG += CHIP_HAS_STEREO_DAC=1
+
+# Misc
+CHIP_EXPORT_FLAG += CHIP_HAS_GOUDA=1
+CHIP_EXPORT_FLAG += CHIP_HAS_SYS_IFC_SIZE=1
+#+\BUG WM-87\lifei\2012.2.9\精简代码#
+#+\BUG ATMMI-380\lifei\2012.8.8\Makefile中对SD卡是否支持的判断有误#
+ifneq "$(strip ${MCD_IF})" ""
+#-\BUG ATMMI-380\lifei\2012.8.8\Makefile中对SD卡是否支持的判断有误#
+    CHIP_EXPORT_FLAG += CHIP_HAS_SDMMC=1
+else
+    CHIP_EXPORT_FLAG += CHIP_HAS_SDMMC=0
+endif # (${MCD_IF},)
+#-\BUG WM-87\lifei\2012.2.9\精简代码#
+
+# Keypad
+CHIP_EXPORT_FLAG += CHIP_KEY_COL_NB=8
+CHIP_EXPORT_FLAG += CHIP_KEY_ROW_NB=8
+
+# About the proxy memory
+CHIP_EXPORT_FLAG += CHIP_HAS_PROXY_MEMORY=0
+
+# The variable FAST_CLOCK_156M can be overwritten by the CT_ASIC_fpga.def file.
+FAST_CLOCK_156M ?= 156000000
+CHIP_EXPORT_FLAG += FAST_CLOCK_156M=${FAST_CLOCK_156M}
+
+# --- Beginning of software workarounds ---
+
+# Headphone detection
+CHIP_EXPORT_FLAG += VMIC_POWER_ON_WORKAROUND
+
+# Audio mute for BT workaround
+CHIP_EXPORT_FLAG += AUD_MUTE_FOR_BT_WORKAROUND
+
+# RFSPI IFC workaround
+#CHIP_EXPORT_FLAG += RFSPI_IFC_WORKAROUND
+
+#+\BUG WM-340\WZQ\2012.9.14\不锁时隙的宏无法生效
+ifneq ($(strip $(DSS_NOT_LOCK_MCP_ON_RX)), TRUE)
+# Lock MCP to achieve a higher rx performance
+CHIP_EXPORT_FLAG += PAL_WINDOWS_LOCK_MCP_ON_RX
+endif
+#-\BUG WM-340\WZQ\2012.9.14\不锁时隙的宏无法生效
+
+# For Gallite, the window size is a little bit extended and the
+# PLL lock time is changed because of a latency in the AHB bus arbitration:
+# the IFC on the baseband side does not get access to the external
+# memory for a given time, because of many write accesses on the
+# system side.
+# See the GreenstoneImprovements wiki page for more info.
+CHIP_EXPORT_FLAG += PAL_WINDOW_EXTENSION_FOR_AHB_LATENCY
+
+# Always enable UART break interrupt wakeup mode on 8809
+BT_UART_BREAK_INT_WAKEUP := 1
+
+# --- End of software workarounds ---
+
+
+# Boot code in ROM.
+SRC_IN_ROM := \
+    boot_bist.c \
+    boot_dma.c \
+    boot_host.c \
+    boot_ispi.c \
+    boot_march_c_bbcp2.c \
+    boot_monitor.c \
+    boot_nand.c \
+    boot_ram.S \
+    boot_rom.S \
+    boot_romstring.c \
+    boot_rom_version.c \
+    boot_test.S \
+    boot_uart_monitor.c \
+    boot_usb.c \
+    boot_usb_monitor.c \
+    boot_irq_dispatch.c \
+
+# Baseband code in BCPU ROM.
+SRC_IN_BCPU_ROM := \
+    bcpu_ram.S \
+    bcpu_rom.S \
+    spal_cache.c \
+    spal_cap_apb.c \
+    spal_cap_cp2.c \
+    spal_cordic.c \
+    spal_cfg.c \
+    spal_cipher.c \
+    spal_debug.c \
+    spal_gdb.S \
+    spal_gdb_stub.c \
+    spal_ifc.c \
+    spal_irq.c \
+    spal_irq_handler.S \
+    spal_itlv.c \
+    spal_version.c \
+    spal_vitac.c \
+    spal_xcor.c \
+    spal_XcorFchFilterAsm.S \
+    spc_amr_rx.c \
+    spc_amr_tx.c \
+    spc_irq_handler.c \
+    spc_mailbox.c \
+    spc_rx.c \
+    spc_rx_ext_8809.c \
+    spc_scheduler.c \
+    spc_tables.c \
+    spc_tx.c \
+    spc_version.c \
+    spp_cfg.c \
+    spp_cipher.c \
+    spp_DummyPCH_DisAsm.S \
+    spp_fcch_detect_asm.S \
+    spp_fcch_detect_filter_asm.S \
+    spp_fcch_detect_asm_v1.S \
+    spp_fcch_detect_v1.c \
+    spp_gsm_amr_rx.c \
+    spp_gsm_decoder.c \
+    spp_gsm_equalizer.c \
+    spp_gsm_rx.c \
+    spp_gsm_tables.c \
+    spp_gsm_tx.c \
+    spp_math.c \
+    spp_misc.c \
+    spp_pch_detect.c \
+    spp_version.c \
+
+# Standard library in ROM.
+C_LIB_SRC_IN_ROM := \
+    atoi.c \
+    bsearch.c \
+    ctype.c \
+    memchr.c \
+    memcmp.c \
+    memcpy.c \
+    memmove.c \
+    memscan.c \
+    memset.c \
+    qsort.c \
+    strcat.c \
+    strchr.c \
+    strcmp.c \
+    strcpy.c \
+    strcspn.c \
+    strlen.c \
+    strncmp.c \
+    strncpy.c \
+    strnicmp.c \
+    strsep.c \
+    strspn.c \
+    strstr.c \
+    strtok.c \
+    strtol.c \
+    strtoul.c \
+    vsprintf.c \
+# The strncat function in ROM is wrong. This function was fixed in r13863
+# by kongdq on 2012-03-02, whereas at that time the 8809 ROM had been
+# built (on 2012-01-20). We have to strip the function from this ROM.
+#    strncat.c
+
+# These objects are not wanted in ROM, as they
+# are for example using static variables with initial value,
+# or not safe.
+#    vsscanf.c \ # Not enough room 
+#    rand.c \       # Use a static variable.
+
+# Standard library in BCPU ROM.
+C_LIB_SRC_IN_BCPU_ROM := \
+    atoi.c \
+    ctype.c \
+    memchr.c \
+    memcmp.c \
+    memcpy.c \
+    memmove.c \
+    memscan.c \
+    memset.c \
+    strcat.c \
+    strchr.c \
+    strcmp.c \
+    strcpy.c \
+    strlen.c \
+    strncmp.c \
+    strncpy.c \
+    strnicmp.c \
+    strsep.c \
+    strstr.c \
+
+SRC_IN_ROM += ${C_LIB_SRC_IN_ROM}
+SRC_IN_BCPU_ROM += ${C_LIB_SRC_IN_BCPU_ROM}
+
+BCPU_MODULE_DEPENDS := \
+    platform/base/std \
+    platform/chip/bcpu \
+    platform/chip/patch
+
+# Chip memory map dependent.
+ifeq "${UPDATE_PROGRAM}" "1"
+FLASH_BASE                  := 0xFFFFFFFF88010000
+else
+FLASH_BASE                  := 0xFFFFFFFF88000000
+endif
+EXT_RAM_BASE                := 0xFFFFFFFF82000000
+BB_DUALPORT_SRAM_BASE       := 0xFFFFFFFF81B00000
+SYS_SRAM_BASE               := 0xFFFFFFFF81C00000
+BB_SRAM_BASE                := 0xFFFFFFFF81980000
+INT_ROM_BASE                := 0xFFFFFFFF81E00000
+BCPU_ROM_BASE               := 0xFFFFFFFF81E80000
+
+BB_DUALPORT_SRAM_SIZE       := 0x800
+SYS_SRAM_SIZE               := 0x10000
+#BB_SRAM_SIZE                := 0x6000
+BB_SRAM_SIZE                := 0x8000
+INT_ROM_END                 := 0xFFFFFFFF81E05FFC
+BCPU_ROM_END                := 0xFFFFFFFF81E97FFC
+
+# ROM memory map dependent.
+### TODO actualize with what is already reserved by the ROM
+ROM_MISC_BASE               := 0xFFFFFFFF81C000A0
+ROM_MISC_UBASE              := 0xFFFFFFFFA1C000A0
+ROM_MISC_SIZE               := 0x180
+# The memory between ROM_MISC_END and SYS_SRAM_AVAILABLE_BASE is used to save
+# some fix pointers and some boot sector structures.
+SYS_SRAM_AVAILABLE_BASE     := 0xFFFFFFFF81C00280
+BCPU_SYS_SRAM_BASE          := 0xFFFFFFFF81C00680
+SYS_SRAM_END                := SYS_SRAM_BASE+SYS_SRAM_SIZE-4
+
+RESERVED_MBX_SIZE           := 0x280
+
+# Newly compiled ROM should use the size 0x1C0
+BB_SRAM_GLOBALS_SIZE        := 0x1C0
+#BB_SRAM_GLOBALS_SIZE        := 0x1B0
+#RESERVED_PATCH_SIZE         := 0xC00
+RESERVED_PATCH_SIZE         := 0x1800
+# *************************************************************
+### TODO this should be in target or in the linker as it is not chip dependent. Those are software dependent.
+SYS_SRAM_IRQ_STACKWATCH_SIZE := 0x80
+XCPU_IRQ_STACK_SIZE          := 0xE00
+#       /* DEBUG: stack for page spy all writes watching
+#        * The Room is taken from the irq stackwatch*/
+ifneq "${PAGE_SPY_LOG}" "1"
+    PS_STACK_SIZE               := 0x0
+else
+    PS_STACK_SIZE               := 0x40
+endif
+# *************************************************************
+
+# List of symbols to exclude from the BCPU elf and BCPU ROM elf,
+# as XCPU elf has its own version of these symbols.
+#STRIP_ROM_OBJ2STRIP_FILE ?= platform/chip/defs/${CT_ASIC}/xcpu_symbols_to_strip
+STRIP_BCPU_OBJ2STRIP_FILE ?= platform/chip/defs/${CT_ASIC}/bcpu_symbols_to_strip
+
+LINKER_MASTER ?= modem2G_master.ld
+BCPU_LINKER_MASTER ?= modem2G_bcpu_master.ld
+
