@@ -5,6 +5,7 @@
 #include <api_gps.h>
 #include <api_event.h>
 #include <api_hal_uart.h>
+#include <api_debug.h>
 
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)

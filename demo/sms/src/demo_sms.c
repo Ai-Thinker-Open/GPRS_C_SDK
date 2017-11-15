@@ -2,6 +2,7 @@
 #include <api_os.h>
 #include <api_sms.h>
 #include <api_event.h>
+#include <api_debug.h>
 
 
 #define TEST_PHONE_NUMBER "150....0062"

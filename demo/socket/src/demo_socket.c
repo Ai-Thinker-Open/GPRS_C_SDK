@@ -6,6 +6,7 @@
 #include <api_event.h>
 #include <api_socket.h>
 #include <api_network.h>
+#include <api_debug.h>
 
 
 /*******************************************************************/
@@ -13,7 +14,7 @@
 // edit ip address and port
 // (you can get ip and port from online tcp debug tool: http://tt.ai-thinker.com:8000/ttcloud)
 #define SERVER_IP   "122.114.122.174"
-#define SERVER_PORT 39125
+#define SERVER_PORT 34404
 
 #define DNS_DOMAIN  "www.neucrack.com"
 #define RECEIVE_BUFFER_MAX_LENGTH 200
@@ -29,7 +30,7 @@ static HANDLE socketTaskHandle = NULL;
 int socketFd = -1;
 int socketFd2 = -1;
 uint8_t buffer[RECEIVE_BUFFER_MAX_LENGTH];
-
+int receivedDataCount = -1;
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -98,11 +99,10 @@ void EventDispatch(API_Event_t* pEvent)
             Trace(2,"socket %d received %d bytes data:%s",fd,length,buffer);
             Socket_TcpipWrite(fd,buffer,length);
             Trace(2,"send received data to server");
-
-            static receivedCount = 0;
-            if(++receivedCount > 20)
+            
+            if(++receivedDataCount > 20)
             {
-                Trace(2,"socket received %d times, now try to close socket",receivedCount);
+                Trace(2,"socket received %d times, now try to close socket",receivedDataCount);
                 Socket_TcpipClose(socketFd);
                 Socket_TcpipClose(socketFd2);
             }
@@ -134,11 +134,18 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 
+void Init()
+{
+    receivedDataCount = 0;
+}
+
 void socket_MainTask(void *pData)
 {
     API_Event_t* event=NULL;
 
     // Network_SetStatusChangedCallback(OnNetworkStatusChanged);
+
+    Init();
 
     while(1)
     {

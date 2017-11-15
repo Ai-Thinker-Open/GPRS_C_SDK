@@ -1,16 +1,23 @@
 
-#include <api_os.h>
-#include <api_fs.h>
-#include <api_event.h>
+#include "stdbool.h"
+#include "stdint.h"
+#include "stdio.h"
+#include "string.h"
+
+#include "api_os.h"
+#include "api_debug.h"
+#include "api_event.h"
+#include "api_fs.h"
 
 #define CONFIG_FILE_NAME "/test.txt"
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
 #define MAIN_TASK_NAME          "Fs Test Task"
+#define FS_TASK_NAME            "Fs  Task"
 
+static HANDLE mainTaskHandle = NULL;
 static HANDLE fsTaskHandle = NULL;
-
 
 typedef struct{
     int a;
@@ -72,6 +79,8 @@ bool ReadData(Data_t* data)
 void FsTestCase()
 {
     Data_t data;
+
+    Trace(1,"Start Fs test");
     //read
     if(!ReadData(&data))
     {
@@ -128,13 +137,20 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 
-void fs_MainTask(void *pData)
+void Init()
+{
+
+}
+
+void FsTest(void *pData)
 {
     API_Event_t* event=NULL;
 
+    Init();
+
     while(1)
     {
-        if(OS_WaitEvent(fsTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(mainTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
@@ -145,8 +161,9 @@ void fs_MainTask(void *pData)
 
 void fs_Main()
 {
-    fsTaskHandle = OS_CreateTask(fs_MainTask,
+    mainTaskHandle = OS_CreateTask(FsTest,
         NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
-    OS_SetUserMainHandle(&fsTaskHandle);
+    OS_SetUserMainHandle(&mainTaskHandle);
 }
+
 

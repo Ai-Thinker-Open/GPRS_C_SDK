@@ -103,9 +103,9 @@ typedef struct T_INTERFACE_VTBL_TAG
     INT32               (*API_FS_Mkdir)(PCSTR fileName,UINT32 mode);
     INT32               (*API_FS_Rmdir)(PCSTR fileName);
     UINT32              (*Ascii2Unicode)(const UINT8 *in, UINT32 in_len, UINT8 **out, UINT32 *out_len, UINT8 nCharset[12]);
-    UINT8               (*UnicodeToUCS2Encoding)(UINT16 unicode,UINT8 *charLength,UINT8 *arrOut);
-    UINT16              (*AnsiiToUnicodeString)(INT8 *pOutBuffer, INT8 *pInBuffer );
 
+    /*info*/
+    bool                (*INFO_GetIMEI)(uint8_t* pImei);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;

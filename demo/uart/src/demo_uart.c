@@ -1,6 +1,7 @@
 
 #include <api_os.h>
 #include <api_hal_uart.h>
+#include <api_debug.h>
 // #include <string.h>
 // #include <stdio.h>
 

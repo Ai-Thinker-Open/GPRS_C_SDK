@@ -454,7 +454,5 @@ UINT16 AnsiiToUnicodeString(INT8 *pOutBuffer, INT8 *pInBuffer );
 #define API_FS_Mkdir                                        CSDK_FUNC(API_FS_Mkdir)
 #define API_FS_Rmdir                                        CSDK_FUNC(API_FS_Rmdir)
 #define Ascii2Unicode                                       CSDK_FUNC(Ascii2Unicode)
-#define UnicodeToUCS2Encoding                               CSDK_FUNC(UnicodeToUCS2Encoding)
-#define AnsiiToUnicodeString                                CSDK_FUNC(AnsiiToUnicodeString)
 
 #endif

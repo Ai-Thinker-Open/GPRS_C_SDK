@@ -1,6 +1,7 @@
 
 #include <time.h>
 #include <api_os.h>
+#include <api_debug.h>
 
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
