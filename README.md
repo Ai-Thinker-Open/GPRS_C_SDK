@@ -96,7 +96,7 @@ A9/A9G开发板，方便开发和调试
 
 * 方法二（建议）：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
   * 可以从github[下载压缩包](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/archive/master.zip)
-  * 或者使用如下命令克隆工程到本地（需先安装`git`）
+  * 或者使用如下命令克隆工程到本地（需先安装`git`）
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
 ```
