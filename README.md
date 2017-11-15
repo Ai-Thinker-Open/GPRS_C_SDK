@@ -94,9 +94,9 @@ A9/A9G开发板，方便开发和调试
 
 * 方法一：在 [安信可官网Wiki](http://wiki.ai-thinker.com/gprs)下载发布的压缩包
 
-* 方法二：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
-  * 可以在从github[下载压缩包](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/archive/master.zip)
-  * 或者克隆工程到本地
+* 方法二（建议）：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
+  * 可以从github[下载压缩包](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/archive/master.zip)
+  * 或者使用如下命令克隆工程到本地（需先安装`git`）
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
 ```
@@ -116,7 +116,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
 
 
 
-## (五) 开发应用
+#### 使用SDK开发应用
 
 当做好基本准备后，如果是大佬，拿上SDK直接上吧！
 
@@ -126,7 +126,7 @@ SDK的`demo`目录下有许多例程，有什么需要按照例程写就好了
 [GPRS及SDK从零开始。。](./doc/gprs_start_from_scratch_zh-cn.md)
 
 
-## (六) 反馈
+## (五) 反馈
 
 * 方式一：github [添加issue](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/issues/new)
 
@@ -136,7 +136,7 @@ SDK的`demo`目录下有许多例程，有什么需要按照例程写就好了
 
 
 
-## (七) 参与开发
+## (六) 参与开发
 
 fork -> 修改 -> 提交PR
 
