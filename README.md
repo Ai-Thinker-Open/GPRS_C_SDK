@@ -39,7 +39,7 @@ Ai-Thinker GPRS development SDK written by C
   * A9所有特征
   * 集成GPS+BDS(和串口2连接)
 
-* **A9/A9G GPRS(+GPS+BD) 开发板**</br>
+* **A9/A9G GPRS(+GPS+BDS) 开发板**</br>
 ![](./doc/assets/A9G_dev.png)</br>
 A9/A9G开发板，方便开发和调试
 特征：
