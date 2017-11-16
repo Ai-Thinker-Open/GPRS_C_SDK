@@ -108,7 +108,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
 |app     |  程序主目录，应用代码放在这里|
 |build   |  编译生成的目录、中间文件    |
 |demo    |  一些例程                   |
-|doc     | 一些SDK相关的文档，`Markdown`格式，可在[github在线阅读](https://github.com/Ai-Thinker-Open/GPRS_C_SDK)|
+|doc     | 一些SDK相关的文档，`Markdown`格式，可在[github在线阅读](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/blob/master/README.md)|
 |hex     |  最后产生的可烧录文件        |
 |include |  SDK文件目录                |
 |init    |  系统初始化的目录，可以不用理会，不建议改动 |
