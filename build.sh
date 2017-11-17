@@ -2,14 +2,15 @@
 
 start_time=`date +%s`
 #where the cygwin install in unix path,example if windows path is G:\CSDTK\cygwin,cygwin path may be /cygdrive/g/CSDTK/cygwin
-CYGWIN_HOME=/d/Program/CSDTK/CSDTK/cygwin
-if [[ ! -d $CYGWIN_HOME ]]; then
-    echo  PATH $CYGWIN_HOME is not exist
-    exit
-fi
+# CYGWIN_HOME= 
+# if [[ ! -d $CYGWIN_HOME ]]; then
+#     echo  PATH $CYGWIN_HOME is not exist
+#     exit
+# fi
 
 #set the path
-export PATH=$CYGWIN_HOME/bin:$CYGWIN_HOME/crosscompiler/bin:$CYGWIN_HOME/cooltools:/bin:/usr/bin;
+# export PATH=$CYGWIN_HOME/bin:$CYGWIN_HOME/crosscompiler/bin:$CYGWIN_HOME/cooltools:/bin:/usr/bin;
+export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin;
 # echo path:$PATH
 
 export SOFT_WORKDIR=`pwd`
