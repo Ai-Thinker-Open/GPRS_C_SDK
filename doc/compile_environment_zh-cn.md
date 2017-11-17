@@ -27,8 +27,6 @@
 
 ## 4. 设置变量
 
-* 编辑工程下./build.sh里面的`CYGWIN_HOME=/cygdrive/d/CSDTK/cygwin`，修改为CSDTK目录下的cygwin路径（类似`/cygdrive/d/CSDTK/cygwin`也可能是`/d/CSDTK/cygwin`，视cygwin版本而定）
-
 * 编辑`CSDTK/cygwin/.bashrc`文件
   * 修改`export PROJ_ROOT=`cygpath "C:\projects"``，这里`C:\projects`改成放工程的目录，比如这里`C:\projects`下有`GPRS-C-SDK`项目目录和`GPRS-C-SDK2`项目目录
   * 改`export PATH`中的cooltools目录(比如`/cygdrive/C/CSDTK/cooltools`)
