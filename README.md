@@ -96,7 +96,7 @@ A9/A9G开发板，方便开发和调试
 * 方法一：在 <a target="_blank" href="http://wiki.ai-thinker.com/gprs">安信可官网Wiki</a>下载发布的压缩包
 
 * 方法二（建议）：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
-  * 可以从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)
+  * 可以从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，不建议使用
   * 或者使用如下命令克隆工程到本地（需先安装`git`）
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
