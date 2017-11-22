@@ -1,11 +1,13 @@
 [GPRS C SDK 开发环境搭建](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/blob/master/doc/compile_environment_zh-cn.md)
 ====
 
-## 1. 下载工具链以及下载调试工具
+## 1. 下载工具链以及下载调试工具及SDK
 
 * [下载CSDTK3.8](http://otge8q9ud.bkt.clouddn.com/CSDTK3.8_Cygwin1.5.25_Svn_1.5.4_Full_Setup.exe)
 
 * [下载cooltools](http://otge8q9ud.bkt.clouddn.com/cooltools-win32_custom-2017-11-01-16-20-d9846481.7z)
+
+* [下载SDK](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases), 然后解压为`GPRS_C_SDK`文件夹放到某个目录下，比如这里将`GPRS_C_SDK`文件夹放到了`C:\projects`下
 
 ## 2. 安装CSDTK（编译链接库）
 
@@ -28,11 +30,22 @@
 ## 4. 设置变量
 
 * 编辑`CSDTK/cygwin/.bashrc`文件
-  * 修改`export PROJ_ROOT=`cygpath "C:\projects"``，这里`C:\projects`改成放工程的目录，比如这里`C:\projects`下有`GPRS-C-SDK`项目目录和`GPRS-C-SDK2`项目目录
+  * 修改`export PROJ_ROOT=`cygpath "C:\projects"``，这里`C:\projects`是放工程的目录，修改成自己的放工程文件夹的目录
+  ```
+  C:__
+      |___ projects
+                   |__ GPRS_C_SDK
+                                |__ app
+                                |__ demo
+                                |__ doc
+                                |__ include
+                                |__ init
+                                |__ platform
+  ```
   * 改`export PATH`中的cooltools目录(比如`/cygdrive/C/CSDTK/cooltools`)
   * 保存关闭，重新打开cygwin即生效
 
-> 如果遇到权限问题，用管理员权限运行脚本`CSDTK/cygwin/Cygwin.bat`，用类似如下的命令改变csdk项目目录的权限, `chmod 777 -R /cygdrive/d/csdk/`
+> 如果遇到权限问题，用管理员权限运行脚本`CSDTK/cygwin/Cygwin.bat`，用类似如下的命令改变csdk项目目录的权限, `chmod 777 -R /cygdrive/c/projects/gprs_c_sdk`
 
 
 ## 5. 编译
@@ -40,7 +53,7 @@
 * **编译**
 环境搭建完成后，尝试打开cygwin，输入
 ```
-work gprs-c-sdk
+work gprs_c_sdk
 ./build.sh demo gpip
 ```
 进行编译，编译会生成一个`build`目录，编译完成会在`hex`目录下生成两个格式为`lod`的文件，这就是我们用来下载到开发板的目标文件
