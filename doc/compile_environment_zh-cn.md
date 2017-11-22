@@ -3,34 +3,20 @@
 
 ## 1. 下载工具链以及下载调试工具及SDK
 
-* [下载CSDTK3.8](http://otge8q9ud.bkt.clouddn.com/CSDTK3.8_Cygwin1.5.25_Svn_1.5.4_Full_Setup.exe)
+* [下载CSDTK3.8](http://otge8q9ud.bkt.clouddn.com/CSDTK.7z)
 
-* [下载cooltools](http://otge8q9ud.bkt.clouddn.com/cooltools-win32_custom-2017-11-01-16-20-d9846481.7z)
+* [下载SDK](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases), 然后解压为`GPRS_C_SDK`文件夹放到某个目录下
 
-* [下载SDK](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases), 然后解压为`GPRS_C_SDK`文件夹放到某个目录下，比如这里将`GPRS_C_SDK`文件夹放到了`C:\projects`下
+**这里录制了一个视频，可以照着视频做:[点击查看视频](https://www.bilibili.com/video/av16579395/)**
 
-## 2. 安装CSDTK（编译链接库）
+## 2. 解压CSDTK文件（编译链接下载调试工具）
 
-并安装，安装时使用**英文无空格**路径，第一次安装建议使用默认路径，熟悉之后再定制
-安装时按照指示选择选项并点击<kbd>下一步</kbd>,主要**注意**的是:
-在安装cygwin时，选择从本地安装，选择unix风格，安装到`CSDTK/cygwin`目录中，如图：
-
-![](./assets/cygwin_install.png)
-
-![](./assets/cygwin_install2.png)
-
-选择包直接点击下一步
-
-![](./assets/cygwin_install3.png)
-
-## 3. 更新cooltools
-
-删除CSDTK\cooltools目录下的文件，解压`cooltools*.7z`替换到CSDTK\cooltools.
+解压到某个文件夹,比如`C:\CSDTK`
 
 ## 4. 设置变量
 
 * 编辑`CSDTK/cygwin/.bashrc`文件
-  * 修改`export PROJ_ROOT=`cygpath "C:\projects"``，这里`C:\projects`是放工程的目录，修改成自己的放工程文件夹的目录
+  * 修改`PROJECT_PATH="C:\projects"`，这里`C:\projects`是放工程的目录，修改成自己的放工程文件夹的目录
   ```
   C:__
       |___ projects
@@ -42,10 +28,18 @@
                                 |__ init
                                 |__ platform
   ```
-  * 改`export PATH`中的cooltools目录(比如`/cygdrive/C/CSDTK/cooltools`)
+  * 改`COOLTOOLS_PATH`中的cooltools目录(比如`/cygdrive/C/CSDTK/cooltools`,注意这里需要使用斜杠`/`而且以`/cygdrive`开头，因为cygwin默认把windows的盘挂载在`/cygdrive`目录下)
   * 保存关闭，重新打开cygwin即生效
+* 编辑`Cygwin.bat`文件，修改
+```
+@echo off
+D:
+set CYGWIN_PATH=C:\CSDTK\cygwin
+```
+为你的`CSDTK`下的`cygwin`目录
 
-> 如果遇到权限问题，用管理员权限运行脚本`CSDTK/cygwin/Cygwin.bat`，用类似如下的命令改变csdk项目目录的权限, `chmod 777 -R /cygdrive/c/projects/gprs_c_sdk`
+* 修改文件权限（修改一次就可以了）：
+用管理员身份打开`CSDTK/cygwin/Cygwin.bat`，运行 `chmod 777 -R /cygdrive/c/projects/GPRS_C_SDK`，这里目录替换成你的工程目录。
 
 
 ## 5. 编译
