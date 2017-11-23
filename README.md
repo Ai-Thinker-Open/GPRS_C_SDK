@@ -119,11 +119,11 @@ git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
 
 #### 使用SDK开发应用
 
-当做好基本准备后，如果是大佬，拿上SDK直接上吧！
+当做好基本准备后，就可以开始码代码了
 
-SDK的`demo`目录下有许多例程，有什么需要按照例程写就好了
+SDK的`demo`目录下有许多例程，有什么需要参照例程写就好了
 
-如果是没有接触过GPRS的小白或者求稳！建议看一下这个文档！
+如果没有接触过GPRS，或者发现看不懂代码，或者对代码有疑问，请务必先仔细通看这个文档
 [GPRS及SDK从零开始。。](./doc/gprs_start_from_scratch_zh-cn.md)
 
 

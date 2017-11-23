@@ -68,7 +68,7 @@ void gpio_Main(void)
 * **入口函数**：入口函数为`gpio_Main`，
   * 其中`gpio_Main`是入口函数，名字必须是`demo文件夹名_Main()`
   在`gpio_Main()`中必须创建一个主要任务，没有用过多线程和操作系统的也没关系，这里只用了最简单的函数，`OS_CreateTask`创建了一个任务，第一个参数是任务的函数名，`GPIO_Main_TASK_STACK_SIZE`和`GPIO_Main_TASK_PRIORITY`分别是任务堆栈大小以及任务优先级（数值越小优先级越高）
-  * 然后是`OS_SetUserMainHandle`，这个函数主要是告诉SDK应用程序的主任务是哪一个，这是必须的
+  * 然后是`OS_SetUserMainHandle`，这个函数必须要调用一次，很重要。它主要是告诉SDK 应用程序的主任务是哪一个，这样SDK底层才知道给谁发送事件（比如SDK发现没有插卡，需要发送`API_EVENT_ID_NO_SIMCARD`事件给主任务
 
 * **GPIO使用**：创建好了主任务，就可以在主任务中操作GPIO了，这里创建的任务函数为：`Gpio_MainTask()`
   * 定义一个结构体`GPIO_config_t gpioLedBlue`，设置引脚和模式 
