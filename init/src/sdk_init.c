@@ -19,10 +19,11 @@ g_s_UserVtbl   =
     user_Init,
     // user_main,
 };//
-volatile T_VTBL_TAG* temp;
+volatile UINT32* temp;
+extern void PRONAME_MAIN();
 void user_Main(void)
 {
-    temp = &g_s_UserVtbl.magic;
+    temp = (UINT32*)&g_s_UserVtbl.magic;
     PRONAME_MAIN();
 }
 void user_Init(T_INTERFACE_VTBL_TAG *pVtable)
