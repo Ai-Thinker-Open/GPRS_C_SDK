@@ -71,6 +71,9 @@ A9/A9G开发板，方便开发和调试
 ## (二) 开发环境搭建
 
 参见[开发环境搭建文档](./doc/compile_environment_zh-cn.md)
+
+也可以参考视频教程:[点击查看视频](https://www.bilibili.com/video/av16579395/)
+
 如果已经搭建好了，使用`build.sh`脚本来编译工程，打开cygwin进入到工程目录，有以下参数：
 * 使用 `./build.sh $PROJ`来编译你的应用模块，如 `./build.sh app` 则是编译app目录下的源码
 * 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
