@@ -49,6 +49,8 @@
 
 ![无法下载](./assets/coolwatcher_download_fail.png)
 
+* [ramrun文件错误](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues/1)，分别尝试使用工程目录`platform/ramrun`下 和 coolwatcher `CSDTK\cooltools\chipgen\Modem2G\toolpool\plugins\fastpf\flash_programmers`目录下的`*_8955_*_spi32m_ramrun.lod`
+
 * 有可能程序进入了休眠模式，按模块复位键复位后再下载
 
 * 串口有可能掉了，任务栏右下角双击<kbd>CoolHost</kbd>图标重新连接串口，再下载
