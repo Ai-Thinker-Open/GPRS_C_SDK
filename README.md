@@ -80,11 +80,15 @@ A9/A9G开发板，方便开发和调试
 * 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
 * 使用 `./build.sh clean all` 清除所有中间文件
 
+如果遇到问题，请仔细对比文档或者视频，看操作是否有错，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
+
 ## (三) 下载、调试
 
 如何使用下载调试工具：参见[下载、调试文档](./doc/download_debug_tool_zh-cn.md)
 
 **需要下载到开发板的文件**：编译后`hex`目录下有`*_B*.lod`以及`*_flash.lod`两个文件，第一次下载需要下载第一个文件（较大的文件），后面只需要下载`*_flash.lod`文件即可
+
+如果遇到问题，参见文档中的常见问题，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
 
 ## (四) SDK
 
