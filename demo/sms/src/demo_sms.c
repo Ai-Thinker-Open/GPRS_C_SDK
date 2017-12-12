@@ -6,6 +6,7 @@
 
 
 #define TEST_PHONE_NUMBER "150....0062"
+const char smsContent[] = "hello,sms test!";
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
@@ -33,7 +34,7 @@ void SendSMS()
         Trace(1,"sms set parameter error");
         return;
     }
-    if(!SMS_SendMessage(TEST_PHONE_NUMBER,"hello,sms test!",0,SIM0))
+    if(!SMS_SendMessage(TEST_PHONE_NUMBER,smsContent,0,SIM0))
     {
         Trace(1,"sms send message fail");
     }
