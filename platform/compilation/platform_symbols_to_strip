@@ -231,4 +231,11 @@ select
 setsockopt
 close
 gethostbyname
-FS_Open
+__fixunsdfsi
+__adddf3
+__fixdfsi
+__fpcmp_parts_d
+__gedf2
+__subdf3
+__floatsidf
+__divdf3

@@ -610,7 +610,7 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 	@${ECHO} "LODTOBIN  $(LOD_FILE)"
 	$(LOD_TO_BIN) ${LOD_FILE} -0
 	${ECHO}  "LODTOBIN          Sucessful"
-	@${ECHO} "LODCOMBINE        Combine user code with Platform lod"
+	@${ECHO} "LODCOMBINE        Combine user lod with Platform lod"
 	if [ -f $(LOD_FILE) ]; then                                                                 \
 		if [ -f $(AM_PLT_LOD_FILE) ]; then                                                       \
 			$(LODCOMBINE_TOOL) openat -l $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE); \
