@@ -7,6 +7,7 @@
 #include <api_hal_uart.h>
 #include <api_debug.h>
 #include "buffer.h"
+#include "gps_parse.h"
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
@@ -32,7 +33,7 @@ void Write(uint8_t* data,uint32_t len)
         else
             sendLen = len;
         UART_Write(UART1,pdata,sendLen);
-        OS_Sleep(10);
+        OS_Sleep(5);
         pdata+=sendLen;
         len -= sendLen;
         
@@ -40,17 +41,17 @@ void Write(uint8_t* data,uint32_t len)
 }
 
 
+
 void GpsUpdate()
 {
     int32_t index = Buffer_Query(&gpsNmeaBuffer,"$GNVTG",strlen("$GNVTG"),Buffer_StartPostion(&gpsNmeaBuffer));
-    Trace(1,"index:%d",index);
     if(index >= 0)
     {
-        Trace(1,"find $GNVTG");
+        // Trace(1,"find $GNVTG");
         index = Buffer_Query(&gpsNmeaBuffer,"\r\n",strlen("\r\n"),index);
         if(index >= 0)
         {
-            Trace(1,"find complete $GNVTG frame");
+            Trace(1,"find complete GPS frame");
             
             memset(tmp,0,sizeof(tmp));
             uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index)+1;
@@ -60,6 +61,7 @@ void GpsUpdate()
                 Trace(1,"get data from buffer fail");
                 return;
             }
+            GPS_Parse(tmp);
         }
     }
 }
@@ -73,7 +75,7 @@ void EventDispatch(API_Event_t* pEvent)
     switch(pEvent->id)
     {
         case API_EVENT_ID_GPS_UART_RECEIVED:
-            Trace(1,"aaaa received GPS data,length:%d, data:%s,flag:%d",pEvent->param1,pEvent->pParam1,flag);
+            // Trace(1,"received GPS data,length:%d, data:%s,flag:%d",pEvent->param1,pEvent->pParam1,flag);
             if(flag)
             {
                 Buffer_Puts(&gpsNmeaBuffer,pEvent->pParam1,pEvent->param1);
@@ -91,11 +93,26 @@ void EventDispatch(API_Event_t* pEvent)
             break;
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
-            Trace(1,"aaaa register success");
+            Trace(1,"register success");
             flag = 1;
             break;
         default:
             break;
+    }
+}
+
+void gps_testTask(void *pData)
+{
+    GPS_Information_t* gpsInfo = Gps_GetInfo();
+    uint8_t strTmp[100];
+
+    while(1)
+    {
+        Write(tmp,strlen(tmp));
+
+        memset(strTmp,0,sizeof(strTmp));
+        Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->Latitude, gpsInfo->Longitude);
+        OS_Sleep(5000);
     }
 }
 
@@ -116,9 +133,11 @@ void gps_MainTask(void *pData)
     UART_Init(UART1,config);
     Buffer_Init(&gpsNmeaBuffer,gpsDataBuffer,GPS_DATA_BUFFER_MAX_LENGTH);
 
+    OS_CreateTask(gps_testTask,
+            NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
     while(1)
     {
-        if(OS_WaitEvent(gpsTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(gpsTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
@@ -128,21 +147,8 @@ void gps_MainTask(void *pData)
 }
 
 
-
-void gps_testTask(void *pData)
-{
-
-    while(1)
-    {
-        Write(tmp,strlen(tmp));
-        OS_Sleep(5000);
-    }
-}
-
 void gps_Main(void)
 {
-    OS_CreateTask(gps_testTask,
-        NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
     gpsTaskHandle = OS_CreateTask(gps_MainTask,
         NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
     OS_SetUserMainHandle(&gpsTaskHandle);

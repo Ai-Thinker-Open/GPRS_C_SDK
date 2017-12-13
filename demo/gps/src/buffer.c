@@ -65,9 +65,7 @@ int32_t Buffer_Query(Buffer_t* buffer, uint8_t* data, uint16_t length, uint16_t 
 	uint32_t size = (buffer->rear - startPosition + 1 + buffer->maxSize) % buffer->maxSize;
 	uint32_t index = startPosition;
 	uint16_t indexData = 0;
-	uint16_t findLength = 0;
 	int32_t indexReturn = -1;
-	bool isFind = false;
 
 	while (size)
 	{
