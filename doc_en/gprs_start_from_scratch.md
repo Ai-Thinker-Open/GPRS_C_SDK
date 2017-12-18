@@ -9,14 +9,14 @@ And [GPRS ​​download debug instructions] (./ download_debug_tool_zh-cn.md)
 ## (A) SDK directory structure
 
 | Contents | Description |
-| --- | --- |
-app home directory, application code here
-build | compiled directory, intermediate file |
-demo | some routines |
-| doc | Some SDK-related documents, Markdown format, can be read online at github, can also be opened using the relevant software to read, the official website Wiki archive will provide `html` format document, you can open the browser directly to read
-| hex | last generated burnable file |
+| ---     | --- |
+|app      |home directory, application code here
+|build    | compiled directory, intermediate file |
+|demo     | some routines |
+| doc     | Some SDK-related documents, Markdown format, can be read online at github, can also be opened using the relevant software to read, the official website Wiki archive will provide `html` format document, you can open the browser directly to read
+| hex     | last generated burnable file |
 | include | SDK file directory |
-| init | system initialization directory, you can ignore, do not recommend changes |
+| init    | system initialization directory, you can ignore, do not recommend changes |
 
 ## (B) routine
 
