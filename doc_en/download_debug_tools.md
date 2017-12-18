@@ -13,11 +13,11 @@ Update `coolwatcher to the latest version`
 * Open `CSDTK / cooltools / coolwatcher.exe`
 
 * Select the 8955 for the options on the left and the `lastcomport` for the right to download the port for debugging the serial port (` HST`) for the connection module. </br>
-! [coolwatcher startup options] (./assets/coolwatcher_open.png) </br>
+![coolwatcher startup options](./assets/coolwatcher_open.png) </br>
 Click Ok
 
 * Wait for the connection to succeed, the following screen appears </br>
-! [coolwatcher main interface and download button] (./assets/coolwatcher_download.png) </br>
+![coolwatcher main interface and download button](./assets/coolwatcher_download.png) </br>
 > If there is a connection failure, please refer to [coolwatcher can not connect reason] (# coolwatcher can not connect) part
 
 * Click the <kbd> lod </kbd> icon in the image below to select the firmware you want to download
@@ -25,14 +25,14 @@ Click Ok
 * If you are using it for the first time, you need to click the <kbd> DRY </kbd> icon and select the file whose name contains `8955 ramrun spi32m .lod` (under project` platform / ramrun` or coolwatcher` cooltools \ chipgen \ Modem2G \ toolpool \ plugins \ fastpf \ flash_programmers` directory).
 Only need to set once, will remember later
 
-* Click the <kbd> download </kbd> icon to download, the normal effect as shown below, the bottom right corner of the Command column will have a progress mark </ br>
-![coolwatcher Downloading] (./assets/coolwatcher_downloading.png) </ br>
+* Click the <kbd> download </kbd> icon to download, the normal effect as shown below, the bottom right corner of the Command column will have a progress mark </br>
+![coolwatcher Downloading](./assets/coolwatcher_downloading.png) </br>
 > If the download failed, please refer to [coolwatcher download failed reason] (# coolwatcher can not download) part
 
 
 ## coolwatcher can not connect
 
-! [Unable to connect module] (./assets/coolwatcher_connect_fail.png)
+![Unable to connect module](./assets/coolwatcher_connect_fail.png)
 
 Solution:
 
@@ -40,7 +40,7 @@ Solution:
 
 * Ensure that the serial port is not occupied by other software
 
-* Check the serial number is wrong, set the serial number when restarting, or do not restart click the lower right corner <kbd> CoolHost </kbd> icon to set </ br>
+* Check the serial number is wrong, set the serial number when restarting, or do not restart click the lower right corner <kbd> CoolHost </kbd> icon to set </br>
 ! [CoolHost settings] (./assets/coolwatcher_connect_settings.png)
 
 Then click <kbd> connect </kbd> to reconnect the serial port
