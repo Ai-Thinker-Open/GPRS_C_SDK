@@ -46,10 +46,10 @@ Open `CSDTK / cygwin / Cygwin.bat` as an administrator and run` chmod 777 -R / c
 
 ** ** Compilation **
 After the environment is set up, try to open cygwin, type it
-`` `
+```
 work gprs_c_sdk
 ./build.sh demo gpip
-`` `
+```
 Compile, compile will generate a `build` directory, the compiler will be completed in the` hex` directory to generate two format `lod` file, which is the target file we used to download to the development board
 
 * ** Target Document Description **
