@@ -24,11 +24,11 @@ There are various routines in the `demo` directory, starting with a simple GPIO
 
 ### GPIO pin used
 
-* ** Compile a look at the phenomenon of **: `./build.sh demo gpio`, and then downloaded to the development board, the first to burn the` hex` directory larger file `** _ B **. Lod`, just burn the small file `` ** _ flash.lod` behind
+* **Compile a look at the phenomenon of**: `./build.sh demo gpio`, and then downloaded to the development board, the first time burn the large file in ` hex` `** _ B **. Lod`, the second time burn the small file` ** _ flash.lod`.
 After programming, the LED of the development board will blink
 
-* ** Code **: The amount of demo code is very small, as follows:
-`` `
+* **Code**: The amount of demo code is very small, as follows:
+```
 #include <api_os.h>
 #include <api_hal_gpio.h>
 #include "demo_gpio.h"
@@ -63,14 +63,14 @@ void gpio_Main (void)
         NULL, NULL, GPIO_Main_TASK_STACK_SIZE, GPIO_Main_TASK_PRIORITY, 0, 0, "main Task");
     OS_SetUserMainHandle (& gpioTaskHandle);
 }
-`` `
+```
 
-* ** Entry Function **: The entry function is `gpio_Main`,
+* **Entry Function**: The entry function is `gpio_Main`,
   * Which gpio_Main is an entry function, the name must be `demo folder name _Main ()`
   In `gpio_Main ()` must create a main task, not used too much thread and operating system does not matter, here is the simplest function, `OS_CreateTask` create a task, the first parameter is a function of the task Name, `GPIO_Main_TASK_STACK_SIZE` and` GPIO_Main_TASK_PRIORITY` are the task stack size and task priority (the lower the value the higher the priority)
   * Then `OS_SetUserMainHandle`, this function must be called once, it is very important. It is mainly to tell the SDK application which is the main task, so that the underlying SDK to know who sent the event (for example, SDK found no card, you need to send the API_EVENT_ID_NO_SIMCARD event to the main task
 
-* ** GPIO Usage **: GPO was created in the main task after the main task was created. The task function created here is: `Gpio_MainTask ()`
+* **GPIO Usage**: GPO was created in the main task after the main task was created. The task function created here is: `Gpio_MainTask ()`
   * Define a structure `GPIO_config_t gpioLedBlue`, set the pin and mode
     `` `
     gpioLedBlue mode = GPIO_MODE_OUTPUT; // Output mode
