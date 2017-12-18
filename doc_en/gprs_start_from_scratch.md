@@ -72,10 +72,10 @@ void gpio_Main (void)
 
 * **GPIO Usage**: GPO was created in the main task after the main task was created. The task function created here is: `Gpio_MainTask ()`
   * Define a structure `GPIO_config_t gpioLedBlue`, set the pin and mode
-    `` `
+    ```
     gpioLedBlue mode = GPIO_MODE_OUTPUT; // Output mode
     gpioLedBlue pin = GPIO_PIN_LED_BLUE; // Pin is GPIO27 pin
-    `` `
+    ```
   * Then initialize GPIO using the `GPIO_Init ()` function
   * Then you can call `GPIO_SetLevel ()` in `while (1) {}` to set the GPIO output level
   * It should be noted that in the current version of the SDK, it is best to add an `OS_Sleep (1)` in while (1), otherwise it may be troublesome to download the program! How to solve this problem in the download and debugging documents said
@@ -86,12 +86,12 @@ Of course, there are other GPIO functions, such as as input, as an interrupt pin
 
 ### minimum system, operating system (OS) use
 
-Compared to GPIO, the main task of the OS routine is no longer directly in the while (1) {} `operation, but in the main task to listen for events from the SDK, the definition of the event and the meaning of the parameters in` api_event.h` as defined and explained. There is something else to do to create one more task
+Compared to GPIO, the main task of the OS routine is no longer directly in the `while (1) {} ` operation, but in the main task to listen for events from the SDK, the definition of the event and the meaning of the parameters in` api_event.h` as defined and explained. There is something else to do to create one more task
 
-* ** The most basic structure of the application **
+* **The most basic structure of the application**
 
 The main task should be written as follows:
-`` `
+```
 void EventDispatch (API_Event_t * pEvent);
 
 void socket_MainTask (void * pData)
@@ -108,12 +108,12 @@ void socket_MainTask (void * pData)
         }
     }
 }
-`` `
-Which `OS_WaitEvent` is blocking waiting for the arrival of the event, does not support non-blocking temporarily (the third parameter can only be` OS_TIME_OUT_WAIT_FOREVER`)
+```
+Which `OS_WaitEvent` is blocking waiting for the arrival of the event, does not support non-blocking temporarily (the third parameter can only be `OS_TIME_OUT_WAIT_FOREVER` )
 
 Then in the EventDispatch function to handle the event, release the memory after processing, OS_Free will automatically determine whether the law
 
-`` `
+```
 void EventDispatch (API_Event_t * pEvent)
 {
     switch (pEvent-> id)
@@ -131,7 +131,7 @@ void EventDispatch (API_Event_t * pEvent)
             break;
     }
 }
-`` `
+```
 
 Here mainly dealt with two events,
 One is not read the SIM card event, `param1` parameter represents the card number, there is a description in` api_event.h`
@@ -145,35 +145,35 @@ Including sending events, semaphores, etc. can see the header file
 
 To use socket, need to do the following steps:
 
-* 1. ** Register to base station network **
+* 1. **Register to base station network**
     Open automatically registered, the registration will be completed parameter `API_EVENT_ID_NETWORK_REGISTERED_HOME` or` API_EVENT_ID_NETWORK_REGISTERED_ROAMING` event
 
-* 2. ** Attached to the base station network **
+* 2. **Attached to the base station network**
     After successful registration, use `Network_StartAttach ()` to attach, trigger `API_EVENT_ID_NETWORK_ATTACHED` after successful attachment
 
-* 3. ** Activate GPRS Context **
+* 3. **Activate GPRS Context**
     After the attachment is successful, use the following statement for context activation
-    `` `
+    ```
     Network_PDP_Context_t context = {
                 .apn = "cmnet",
                 .userName = "",
                 .userPasswd = ""
             };
             Network_StartActive (context);
-    `` `
+    ```
     Among them, the context is defined context, set the correct apn and other information, the use of mobile Internet card, just set apn to `cmnet`
     Activation will trigger the `API_EVENT_ID_NETWORK_ACTIVATED` event, this module will have the ability to GPRS networking
 
-* 4. ** Create socket connection and communication **
+* 4. **Create socket connection and communication**
 
     See routine
 
     Call socket related API to establish communication:
-    `` `
+    ```
     int fd = Socket_TcpipConnect (TCP, SERVER_IP, SERVER_PORT);
     Socket_TcpipWrite (fd, buffer, length);
     length = Socket_TcpipRead (fd, buffer, length);
-    `` `
+    ```
     At present, these APIs are event-based APIs, and API_EVENT_ID_SOCKET_CONNECTED will be generated when the connection is established successfully. After the data is received, an API_EVENT_ID_SOCKET_RECEIVED event will be generated, which can be viewed in the socket routine.
     Follow-up version will update the blocking method, easier to use, easy to use in some simple applications
 
