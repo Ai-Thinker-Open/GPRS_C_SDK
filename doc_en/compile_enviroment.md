@@ -17,17 +17,17 @@ Extract to a folder, such as `C: \ CSDTK`
 
 * Edit `CSDTK / cygwin / .bashrc` file
   * Modify `PROJECT_PATH = 'C: \ projects'`, where `C: \ projects` is the project directory, modify your own project directory
-  `` `
-  C: __
-      | ___ projects
-                   | __ GPRS_C_SDK
-                                | __ app
-                                | __ demo
-                                | __ doc
-                                | __ include
-                                | __ init
-                                | __ platform
-  `` `
+  ```
+  C:__
+      |___ projects
+                   |__ GPRS_C_SDK
+                                |__ app
+                                |__ demo
+                                |__ doc
+                                |__ include
+                                |__ init
+                                |__ platform
+  ```
   * Change the cooltools directory in `COOLTOOLS_PATH` (eg` / cygdrive / C / CSDTK / cooltools`). Note that you need to use the slash `/` and start with `/ cygdrive`, because cygwin defaults to mounting the windows' / cygdrive` directory)
   * Save closed, re-open cygwin to take effect
 * Edit `Cygwin.bat` file, modify
