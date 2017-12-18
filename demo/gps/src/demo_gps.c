@@ -111,7 +111,7 @@ void gps_testTask(void *pData)
         Write(tmp,strlen(tmp));
 
         memset(strTmp,0,sizeof(strTmp));
-        Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->Latitude, gpsInfo->Longitude);
+        Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->latitude, gpsInfo->longitude);
         OS_Sleep(5000);
     }
 }
