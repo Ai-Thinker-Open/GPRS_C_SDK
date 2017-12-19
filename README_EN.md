@@ -12,7 +12,7 @@ Anxin GPRS module can be used to develop SDK C language version
 ## (A) hardware
 
 * **A9 GPRS Module** </br>
-! [] (./doc/assets/A9.png) </br>
+![](./doc/assets/A9.png) </br>
 feature:
   * 32-bit core, clocked at up to 312MHz, 4k instruction cache, 4k data cache
   * Up to 29 GPIOs (two GPIOs as download ports)
