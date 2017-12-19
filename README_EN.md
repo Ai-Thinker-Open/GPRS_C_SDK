@@ -20,7 +20,7 @@ feature:
   * 1 USB1.1 interface
   * 2 UART interface with flow control (+1 download debug serial port)
   * 2 SPI interface
-  * 3 I <sup> 2 </ sup> C interfaces
+  * 3 I <sup> 2 </sup> C interfaces
   * 1 SDMMC controller (interface)
   * 2 10-bit ADC interface
   * 32Mb (4MB) SPI NOR Flash
