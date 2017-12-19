@@ -41,15 +41,15 @@ Solution:
 * Ensure that the serial port is not occupied by other software
 
 * Check the serial number is wrong, set the serial number when restarting, or do not restart click the lower right corner <kbd> CoolHost </kbd> icon to set </br>
-! [CoolHost settings] (./assets/coolwatcher_connect_settings.png)
+![CoolHost settings](./assets/coolwatcher_connect_settings.png)
 
 Then click <kbd> connect </kbd> to reconnect the serial port
 
 ## coolwatcher can not download
 
-! [Can not download] (./assets/coolwatcher_download_fail.png)
+![Can not download](./assets/coolwatcher_download_fail.png)
 
-* [ramrun file error] (https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues/1), try using project directory `platform / ramrun` and coolwatcher` CSDTK \ cooltools \ chipgen \ Modem2G \ toolpool \ plugins \ fastpf \ flash_programmers` directory * _8955 _ * _ spi32m_ramrun.lod`
+*[ramrun file error](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues/1), try using project directory `platform / ramrun` and coolwatcher` CSDTK \ cooltools \ chipgen \ Modem2G \ toolpool \ plugins \ fastpf \ flash_programmers` directory `* _8955 _ * _ spi32m_ramrun.lod`
 
 * It is possible that the program has entered hibernation mode and is reset by the module reset button before downloading
 
@@ -57,8 +57,8 @@ Then click <kbd> connect </kbd> to reconnect the serial port
 
 * Serial port other problems, unplug the USB to serial port module re-insert the computer, and then re-connect the serial port
 
-* Boot into the program into the sleep mode or thread using the while (1) `dead loop and completely take up resources, such as:
-`` `
+* Boot into the program into the sleep mode or thread using the `while (1)` dead loop and completely take up resources, such as:
+```
 void LoopTask (VOID * pData)
 {
     uint64_t count = 0;
@@ -72,10 +72,11 @@ void LoopTask (VOID * pData)
         }
     }
 }
-`` `
-** Solution: ** Press the module reset button, the USB transfer serial port module data transmission indicator flashing (that is, the module has been started and send data to the serial port) press the download button for a second, not to try on how many times
+```
+**Solution:** Press the module reset button, the USB transfer serial port module data transmission indicator flashing (that is, the module has been started and send data to the serial port) press the download button for a second, not to try on how many times
 In order to completely prevent this problem, it is recommended not to write such a program, it is best to use the time in the loop trigger or delay at least `OS_Sleep ()`)
-`` `
+
+```
 void LoopTask (VOID * pData)
 {
     uint64_t count = 0;
@@ -90,9 +91,9 @@ void LoopTask (VOID * pData)
         }
     }
 }
-`` `
+```
 or
-`` `
+```
 void LoopTask (VOID * pData)
 {
     uint64_t count = 0;
@@ -108,9 +109,9 @@ void LoopTask (VOID * pData)
     }
     OS_Sleep (1);
 }
-`` `
+```
 Or event handling
-`` `
+```
 void AppMainTask (VOID * pData)
 {
     API_Event_t * event = NULL;
@@ -125,7 +126,7 @@ void AppMainTask (VOID * pData)
         }
     }
 }
-`` `
+```
 
 
 ## debug
@@ -134,13 +135,13 @@ void AppMainTask (VOID * pData)
 
 
 
-* View debug information: Open `Plugins`-> Active Tracer`, the interface and function as shown below
+* View debug information: Open `Plugins`-> `Active Tracer`, the interface and function as shown below
 
-! [tracer] (./assets/coolwatcher_trace.png)
+![tracer](./assets/coolwatcher_trace.png)
 
 Need to set up Tracer before use, set as follows 1 ~ 6 steps:
 
-! [Tracer Settings] (./assets/coolwatcher_trace_settings.png)
+![Tracer Settings](./assets/coolwatcher_trace_settings.png)
 
 * The program needs to output the debugging information You can call `Trace (uint16_t nIndex, PCSTR fmt, ...)` in `api_debug.h`, where` nIndex` corresponds to `MMI 01` ~` MMI 16 `
 
@@ -154,12 +155,12 @@ Need to set up Tracer before use, set as follows 1 ~ 6 steps:
 Here simulated an exception, null pointer assignment exception, the general emergence of such problems are the problem of indiscriminate flight!
 Open GBD, and set the select elf file
 
-! [Pointer exception] (./assets/coolwatcher_gdb_launch.png)
+![Pointer exception](./assets/coolwatcher_gdb_launch.png)
 
-! [Select elf file] (./assets/coolwatcher_gdb_settings.png)
+![Select elf file](./assets/coolwatcher_gdb_settings.png)
 
 Open the GBD terminal and enter `bt` or` bt f` to view the message
 
-! [Abnormal information] (./assets/coolwatcher_gdb_error_info.png)
+![Abnormal information](./assets/coolwatcher_gdb_error_info.png)
 
 It should be noted that this GDB is not in the manual does not support the function of the break point, break point need to write breakpoint statements in the code Caixing, so only to see the crash information on the line, and then use the crash it! !
