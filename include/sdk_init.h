@@ -10,6 +10,7 @@
 #include <api_inc_network.h>
 #include <api_inc_socket.h>
 #include <api_inc_os.h>
+#include <api_inc_sim.h>
 #include <api_inc_sms.h>
 #include <api_inc_time.h>
 #include <api_sim.h>
