@@ -5,6 +5,7 @@
 
 /*#################      OS       #################################*/
 typedef void (*PTASK_FUNC_T)(PVOID pParameter);
+typedef void (*OS_CALLBACK_FUNC_T)(void* param);
 typedef struct _OS_HEAP_STATUS
 {
     UINT32 nUsedSize;

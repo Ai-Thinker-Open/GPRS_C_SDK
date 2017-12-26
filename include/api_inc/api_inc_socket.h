@@ -19,5 +19,6 @@ typedef enum{
     DNS_STATUS_MAX
 }DNS_Status_t;
 
+typedef VOID (*DNS_CALLBACK_FUNC_T)(void *param);
 
 #endif

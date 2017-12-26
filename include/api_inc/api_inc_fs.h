@@ -52,7 +52,14 @@
 // archived
 #define FS_ATTR_ARCHIVE   0x00000020
 
+typedef struct
+{
+    UINT64 totalSize;    // Total size
+    UINT64 usedSize;     // Has used  size
+} API_FS_INFO;
 
+#define FS_DEVICE_NAME_T_FLASH  "TF"
+#define FS_DEVICE_NAME_FLASH    "FLASH"
 
 // uint32_t Assic2Unicode(const uint8_t* in, uint32_t in_len, uint8_t** out, uint32_t* out_len,uint8_t nCharset[12]);
 // UINT16 AnsiiToUnicodeString(INT8 *pOutBuffer, INT8 *pInBuffer );
