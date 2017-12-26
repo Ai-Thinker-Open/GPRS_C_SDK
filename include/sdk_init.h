@@ -13,7 +13,6 @@
 #include <api_inc_sim.h>
 #include <api_inc_sms.h>
 #include <api_inc_time.h>
-#include <api_sim.h>
 #include <api_inc_pm.h>
 #include <api_inc_call.h>
 #include <api_inc_adc.h>
@@ -27,6 +26,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
     bool                (*Trace)(uint16_t nIndex,const char* fmt, ...);
+    void                (*__assert)(const char* fmt);
 
     //power
     bool                (*PM_PowerEnable)(Power_Type_t powerType, bool isOn);
@@ -177,6 +177,9 @@ typedef struct T_INTERFACE_VTBL_TAG
     MQTT_Error_t        (*MQTT_Publish)(MQTT_Client_t* client, const char* topic, const void* payload, uint16_t payloadLen, uint8_t dup, uint8_t qos, uint8_t retain,
                                     MQTT_Request_Callback_t callback, void* arg);
     uint8_t             (*MQTT_IsConnected)(MQTT_Client_t* client);
+
+    //sim
+    bool                (*SIM_GetICCID)(uint8_t* iccid);
 
 
 } T_INTERFACE_VTBL_TAG;

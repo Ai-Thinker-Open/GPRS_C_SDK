@@ -2,8 +2,12 @@
 #ifndef _ASSERT_H_
 #define _ASSERT_H_
 
-#  include "cs_types.h"
+#  include "sdk_init.h"
 
-void Assert(bool);
+
+#define __assert     CSDK_FUNC(__assert)
+
+#define assert(boolcondition) { if(!(boolcondition)) __assert( \
+    "ASSERTION FAILED"); }
 
 #endif
