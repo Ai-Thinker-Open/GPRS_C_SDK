@@ -22,25 +22,6 @@ Buffer_t gpsNmeaBuffer;
 uint8_t  gpsDataBuffer[GPS_DATA_BUFFER_MAX_LENGTH];
 uint8_t tmp[1024];
 
-void Write(uint8_t* data,uint32_t len)
-{
-    uint8_t sendLen = 0;
-    uint8_t* pdata = data;
-    while(len)
-    {
-        if(len > 16)
-            sendLen = 16;
-        else
-            sendLen = len;
-        UART_Write(UART1,pdata,sendLen);
-        OS_Sleep(5);
-        pdata+=sendLen;
-        len -= sendLen;
-        
-    }
-}
-
-
 
 void GpsUpdate()
 {
@@ -108,7 +89,7 @@ void gps_testTask(void *pData)
 
     while(1)
     {
-        Write(tmp,strlen(tmp));
+        UART_Write(UART1,tmp,strlen(tmp));
 
         memset(strTmp,0,sizeof(strTmp));
         Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->latitude, gpsInfo->longitude);
