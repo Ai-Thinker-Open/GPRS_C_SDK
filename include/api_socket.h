@@ -62,6 +62,15 @@ typedef enum{
 /// \return DNS_Status_t , the status of dns
 #define DNS_GetHostByName                          CSDK_FUNC(DNS_GetHostByName)
 
+#define DNS_GetHostByNameEX                        CSDK_FUNC(DNS_GetHostByNameEX)
+/**
+ * 
+ * 
+ * @return 0: success !=0:fail
+ */
+#define DNS_GetHostByName2                         CSDK_FUNC(DNS_GetHostByName2)
+
+
 /*******************************************************************************************/
 
 

@@ -2,6 +2,10 @@
 #define __API_INC_FS_H__
 
 #include <cs_types.h>
+
+#define FS_TFLASH_ROOT "/t"
+
+
 /*#################      fs      #################################*/
 // Read only.
 #define FS_O_RDONLY                0
@@ -52,56 +56,26 @@
 // archived
 #define FS_ATTR_ARCHIVE   0x00000020
 
+//--------------------------------------------------------------------------------------------------
+// Seek flag define.
+//--------------------------------------------------------------------------------------------------
+// Seek from beginning of file.
+#define FS_SEEK_SET                 0
 
+// Seek from current position.
+#define FS_SEEK_CUR                 1
 
-// uint32_t Assic2Unicode(const uint8_t* in, uint32_t in_len, uint8_t** out, uint32_t* out_len,uint8_t nCharset[12]);
-// UINT16 AnsiiToUnicodeString(INT8 *pOutBuffer, INT8 *pInBuffer );
-UINT32 Ascii2Unicode(const UINT8 *in, UINT32 in_len, UINT8 **out, UINT32 *out_len, UINT8 nCharset[12]);
+// Set file pointer to EOF plus "offset"
+#define FS_SEEK_END                 2
 
-int32_t  API_FS_Open(
-    PCSTR    fileName,
-    uint32_t operationFlag,
-    uint32_t mode
-);
+typedef struct
+{
+    UINT64 totalSize;    // Total size
+    UINT64 usedSize;     // Has used  size
+} API_FS_INFO;
 
-
-int32_t  API_FS_Close(
-    int32_t fd
-);
-
-int32_t  API_FS_Read(
-    int32_t  fd,
-    uint8_t* pBuffer,
-    uint32_t length
-);
-
-int32_t  API_FS_Write(
-    int32_t  fd,
-    uint8_t* pBuffer,
-    uint32_t length
-);
-
-uint32_t API_FS_Flush(
-    int32_t fd
-);
-
-int32_t API_FS_Create(
-    PCSTR fileName,
-    uint32_t mode
-);
-
-int32_t  API_FS_Delete(
-    PCSTR fileName
-);
-
-int32_t API_FS_Mkdir(
-    PCSTR fileName,
-    uint32_t mode
-);
-
-int32_t API_FS_Rmdir(
-    PCSTR fileName
-);
+#define FS_DEVICE_NAME_T_FLASH  "TF"
+#define FS_DEVICE_NAME_FLASH    "FLASH"
 
 // Error code define.
 ///////////////////////////////////////////////////////////////////////////////

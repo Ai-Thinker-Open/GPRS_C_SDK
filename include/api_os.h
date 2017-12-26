@@ -14,15 +14,6 @@
 
 #include <sdk_init.h>
 
-#define OS_WAIT_FOREVER 0xFFFFFFFF
-#define OS_NO_WAIT 0x0
-
-#define OS_EVENT_PRI_NORMAL 0
-#define OS_EVENT_PRI_URGENT 1
-
-
-#define OS_TIME_OUT_WAIT_FOREVER 0xFFFFFFFF
-#define OS_TIME_OUT_NO_WAIT      0x0
 /*
 #define OS_WAIT_FOREVER 0xFFFFFFFF
 #define OS_NO_WAIT 0x0
@@ -259,6 +250,15 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \return void , 
 #define OS_UnlockMutex                              CSDK_FUNC(OS_UnlockMutex)
 
+
+/**
+  *
+  * @param hTask Task handle that must have OS_WaitEvent(hTask.....)
+  *
+  */
+#define OS_StartCallbackTimer                       CSDK_FUNC(OS_StartCallbackTimer)
+#define OS_StopCallbackTimer                        CSDK_FUNC(OS_StopCallbackTimer)
+#define OS_QueryCallbackTimer                       CSDK_FUNC(OS_QueryCallbackTimer)
 
 #endif
 
