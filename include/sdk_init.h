@@ -96,7 +96,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     int                 (*Socket_TcpipWrite)(int socketFd, uint8_t* data, uint16_t length);
     int                 (*Socket_TcpipRead)( int socketFd, uint8_t* data, uint16_t length);
     bool                (*Socket_TcpipClose)(int socketFd);
-    DNS_Status_t        (*DNS_GetHostByName)(uint8_t* domain, uint8_t* ip);
+    DNS_Status_t        (*DNS_GetHostByName)(const char* domain, char* ip);
     uint32_t            (*DNS_GetHostByNameEX)(const char *hostname, char* ip, DNS_CALLBACK_FUNC_T func, void* param);
     int32_t             (*DNS_GetHostByName2)(const uint8_t* domain, uint8_t* ip);
     
