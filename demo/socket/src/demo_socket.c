@@ -117,7 +117,7 @@ void EventDispatch(API_Event_t* pEvent)
         case API_EVENT_ID_SOCKET_ERROR:
         {
             int fd = pEvent->param1;
-            Trace(2,"socket %d error occurred!!!",fd);
+            Trace(2,"socket %d error occurred,cause:%d",fd,pEvent->param2);
             break;
         }
         case API_EVENT_ID_DNS_SUCCESS:
