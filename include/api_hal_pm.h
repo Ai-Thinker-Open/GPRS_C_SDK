@@ -1,6 +1,6 @@
 /*
- * @File  api_hal_power_manager.h
- * @Brief 
+ * @File  api_hal_pm.h
+ * @Brief api of power manager
  * 
  * @Author: Neucrack 
  * @Date: 2017-10-28 10:10:24 
@@ -9,9 +9,12 @@
  */
 
 
-#ifndef __API_POWER_MANAGER_H__
-#define __API_POWER_MANAGER_H__
+#ifndef __API_HAL_PM_H__
+#define __API_HAL_PM_H__
 
+#include <sdk_init.h>
+
+/*
 typedef enum{
     POWER_TYPE_VPAD = 0,            // GPIO0  ~ GPIO7  and GPIO25 ~ GPIO36    2.8V   //always on
     POWER_TYPE_MMC,                 // GPIO8  ~ GPIO13                        1.9V
@@ -28,7 +31,14 @@ typedef enum{
     POWER_ON_CAUSE_RESET    ,
     POWER_ON_CAUSE_MAX
 }Power_On_Cause_t;
+*/
 
+#define PM_PowerEnable      CSDK_FUNC(PM_PowerEnable)
+#define PM_SleepMode        CSDK_FUNC(PM_SleepMode)
+#define PM_Voltage          CSDK_FUNC(PM_Voltage)
+#define PM_ShutDown         CSDK_FUNC(PM_ShutDown)
+#define PM_Restart          CSDK_FUNC(PM_Restart)
+#define PowerEnable         CSDK_FUNC(PM_PowerEnable)
 
 #endif
 

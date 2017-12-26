@@ -13,7 +13,7 @@
 #include <api_inc_sms.h>
 #include <api_inc_time.h>
 #include <api_sim.h>
-#include <api_hal_power_manager.h>
+#include <api_inc_pm.h>
 #include <api_inc_call.h>
 #include <api_inc_adc.h>
 #include <api_inc_mqtt.h>
