@@ -260,5 +260,14 @@ void OS_UnlockMutex(HANDLE mutex);
 #define OS_UnlockMutex                              CSDK_FUNC(OS_UnlockMutex)
 
 
+/**
+  *
+  * @param hTask Task handle that must have OS_WaitEvent(hTask.....)
+  *
+  */
+#define OS_StartCallbackTimer                       CSDK_FUNC(OS_StartCallbackTimer)
+#define OS_StopCallbackTimer                        CSDK_FUNC(OS_StopCallbackTimer)
+#define OS_QueryCallbackTimer                       CSDK_FUNC(OS_QueryCallbackTimer)
+
 #endif
 
