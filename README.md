@@ -109,7 +109,7 @@ A9/A9G开发板，方便开发和调试
   * 或者使用如下命令克隆工程到本地（需先安装`git`，注意克隆时需要加`--recursive`参数，不然获得的SDK文件不全）。
   > 这种方式可以保证是最新的代码
 ```
-git clone https://github.com/Ai-Thinker-Open/GPRS-C-SDK.git --recursive
+git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
 
 #### SDK目录结构：
