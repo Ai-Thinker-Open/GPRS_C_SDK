@@ -14,15 +14,6 @@
 
 #include <sdk_init.h>
 
-#define OS_WAIT_FOREVER 0xFFFFFFFF
-#define OS_NO_WAIT 0x0
-
-#define OS_EVENT_PRI_NORMAL 0
-#define OS_EVENT_PRI_URGENT 1
-
-
-#define OS_TIME_OUT_WAIT_FOREVER 0xFFFFFFFF
-#define OS_TIME_OUT_NO_WAIT      0x0
 /*
 #define OS_WAIT_FOREVER 0xFFFFFFFF
 #define OS_NO_WAIT 0x0
