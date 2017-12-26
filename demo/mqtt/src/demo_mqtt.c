@@ -24,7 +24,7 @@
 static HANDLE mainTaskHandle = NULL;
 static HANDLE secondTaskHandle = NULL;
 
-bool flag = false;
+static HANDLE semMqttStart = NULL;
 
 
 typedef enum{
@@ -69,9 +69,7 @@ static void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_ACTIVATED:
             Trace(1,"network activate success.."); 
-            Trace(1,"MQTT flag:%d",flag);
-            flag = true; 
-            Trace(1,"MQTT flag:%d",flag);
+            OS_ReleaseSemaphore(semMqttStart);
             break;
         
         case API_EVENT_ID_SOCKET_CONNECTED:
@@ -183,12 +181,9 @@ void SecondTaskEventDispatch(MQTT_Event_t* pEvent)
 void SecondTask(void *pData)
 {
     MQTT_Event_t* event=NULL;
-
-    while(!flag)
-    {
-        Trace(1,"!flag");
-        OS_Sleep(1000);
-    }
+    semMqttStart = OS_CreateSemaphore(0);
+    OS_WaitForSemaphore(semMqttStart,OS_WAIT_FOREVER);
+    OS_DeleteSemaphore(semMqttStart);
     Trace(1,"start mqtt test");
     MQTT_Client_t* client = MQTT_ClientNew();
     MQTT_Connect_Info_t ci;
@@ -216,7 +211,6 @@ void SecondTask(void *pData)
 void MainTask(void *pData)
 {
     API_Event_t* event=NULL;
-    flag = 0;
 
     secondTaskHandle = OS_CreateTask(SecondTask,
         NULL, NULL, SECOND_TASK_STACK_SIZE, SECOND_TASK_PRIORITY, 0, 0, SECOND_TASK_NAME);
