@@ -39,7 +39,7 @@ void uart_MainTask()
         uint8_t temp[20];
         uint8_t buffer[50];
 
-        sprintf(temp,"hello:%d\n", ++times);
+        sprintf(temp,"hello:%d,1234567890 1234567890\n", ++times);
         UART_Write(UART1,temp,strlen(temp)+1);
         Trace(1,"UART_Write:%s %p",temp, &times);
         memset(buffer,0,sizeof(buffer));

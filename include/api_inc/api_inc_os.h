@@ -16,10 +16,9 @@
 #define OS_TIME_OUT_NO_WAIT      0x0
 
 
-typedef struct _OS_HEAP_STATUS
-{
-    UINT32 nUsedSize;
-    UINT32 nTotalSize;
+typedef struct{
+    uint32_t usedSize;
+    uint32_t totalSize;
 }OS_Heap_Status_t;
 
 typedef void (*PTASK_FUNC_T)(PVOID pParameter);

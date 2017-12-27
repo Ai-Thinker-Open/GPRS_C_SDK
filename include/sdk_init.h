@@ -112,7 +112,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     /*sms*/
     bool                (*SMS_SetFormat)(SMS_Format_t format, SIM_ID_t simID);
     bool                (*SMS_SetParameter)(SMS_Parameter_t* smsParameter,SIM_ID_t simID);
-    bool                (*SMS_SendMessage)(const char* phoneNumber, uint8_t* message,  uint8_t length, SIM_ID_t simID);
+    bool                (*SMS_SendMessage)(const char* phoneNumber, const uint8_t* message,  uint8_t length, SIM_ID_t simID);
     const char*         (*SMS_GetCharset)(Charset_t);
     bool                (*SMS_Unicode2LocalLanguage)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*SMS_LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
@@ -121,7 +121,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     const char*         (*GetCharset)(Charset_t index);
     bool                (*Unicode2LocalLanguage)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
-    uint32_t            (*Ascii2Unicode)(const UINT8 *in, uint32_t in_len, UINT8 **out, uint32_t *out_len, UINT8 nCharset[12]);
+    bool                (*Unicode2LocalLanguageBigEndian)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
+    bool                (*LocalLanguage2UnicodeBigEndian)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
 
     /*fs*/
     int32_t             (*API_FS_Open)(PCSTR    fileName,uint32_t operationFlag,uint32_t mode);
@@ -185,9 +186,6 @@ typedef struct T_INTERFACE_VTBL_TAG
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
-
-// #define Trace                                   CSDK_FUNC(Trace)
-#define PowerEnable                             CSDK_FUNC(PowerEnable)
 
 
 #endif
