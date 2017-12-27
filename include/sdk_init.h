@@ -112,7 +112,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     /*sms*/
     bool                (*SMS_SetFormat)(SMS_Format_t format, SIM_ID_t simID);
     bool                (*SMS_SetParameter)(SMS_Parameter_t* smsParameter,SIM_ID_t simID);
-    bool                (*SMS_SendMessage)(const char* phoneNumber, uint8_t* message,  uint8_t length, SIM_ID_t simID);
+    bool                (*SMS_SendMessage)(const char* phoneNumber, const uint8_t* message,  uint8_t length, SIM_ID_t simID);
     const char*         (*SMS_GetCharset)(Charset_t);
     bool                (*SMS_Unicode2LocalLanguage)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*SMS_LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
