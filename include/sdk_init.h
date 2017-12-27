@@ -187,8 +187,5 @@ typedef struct T_INTERFACE_VTBL_TAG
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
 
-// #define Trace                                   CSDK_FUNC(Trace)
-#define PowerEnable                             CSDK_FUNC(PowerEnable)
-
 
 #endif
