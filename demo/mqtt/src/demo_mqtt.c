@@ -189,7 +189,7 @@ void SecondTask(void *pData)
     MQTT_Connect_Info_t ci;
     MQTT_Error_t err;
     memset(&ci,0,sizeof(MQTT_Connect_Info_t));
-    ci.client_id = "Neucrack";
+    ci.client_id = CLIENT_ID;
     ci.keep_alive = 60;
     ci.clean_session = 1;
     ci.use_ssl = false;
