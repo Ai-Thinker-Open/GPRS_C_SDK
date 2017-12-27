@@ -8,16 +8,18 @@
 #include "api_debug.h"
 #include "api_event.h"
 #include "api_fs.h"
+#include "api_charset.h"
 
-#define CONFIG_FILE_NAME "/test.txt"
+#define CONFIG_FILE_NAME "/test0.conf"
+#define TF_CARD_TEST_FILE_NAME "/t/test_TF_card.txt"
+#define TF_CARD_TEST_STRING    "12346test string, please open with utf-8! 哈哈哈哈，请用UTF-8编码打开这个文件哦，不然看不到中文\r\n\r\n"
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
 #define MAIN_TASK_NAME          "Fs Test Task"
-#define FS_TASK_NAME            "Fs  Task"
 
 static HANDLE mainTaskHandle = NULL;
-static HANDLE fsTaskHandle = NULL;
+
 
 typedef struct{
     int a;
@@ -25,28 +27,51 @@ typedef struct{
     int c;
 }Data_t;
 
+void TraceBytes(uint16_t level, uint8_t* data, uint32_t len, uint8_t base, uint16_t lenRow)
+{
+    uint8_t buff[lenRow*4+1];
+    uint32_t count = 0;
+
+    memset(buff,0,sizeof(buff));
+    while(count<len)
+    {
+        if(base == 10)
+        {
+            snprintf(buff+strlen(buff),sizeof(buff)-strlen(buff),"%d ",data[count++]);
+        }
+        else if(base == 16)
+        {
+            snprintf(buff+strlen(buff),sizeof(buff)-strlen(buff),"%02x ",data[count++]);
+        }
+        if(count%lenRow == 0 || count==len)
+        {
+            Trace(level,"%s",buff);
+            memset(buff,0,sizeof(buff));
+        }
+    }
+}
+
 bool SaveData(Data_t* data)
 {
     int32_t fd;
     int32_t ret;
-    // UINT8 *unicodeName = NULL;
-    // UINT32 outlen = 0;
+    bool retBool;
+    uint8_t *unicodeName = NULL;
+    uint32_t outlen = 0;
 
-    // ret = Ascii2Unicode(CONFIG_FILE_NAME, strlen(CONFIG_FILE_NAME), &unicodeName, &outlen, NULL);
-    // if(ret != 0)
-        // return false;
-
-    fd = API_FS_Open(CONFIG_FILE_NAME, FS_O_RDWR | FS_O_CREAT, 0);
+    retBool = LocalLanguage2UnicodeBigEndian(CONFIG_FILE_NAME, strlen(CONFIG_FILE_NAME)+1,CHARSET_UTF_8, &unicodeName, &outlen);
+    if(!retBool)
+        return false;
+    fd = API_FS_Open(unicodeName, FS_O_RDWR | FS_O_CREAT, 0);
 	if ( fd < 0)
 	{
         Trace(1,"Open file failed:%d",fd);
-        // OS_Free(unicodeName);
+        OS_Free(unicodeName);
 		return false;
 	}
     ret = API_FS_Write(fd, (uint8_t*)data, sizeof(Data_t));
-    // API_FS_Flush(fd);
     API_FS_Close(fd);
-    // OS_Free(unicodeName);
+    OS_Free(unicodeName);
     if(ret <= 0)
         return false;
 	return true;
@@ -55,22 +80,23 @@ bool ReadData(Data_t* data)
 {
     int32_t fd;
     int32_t ret;
-    // UINT8 *unicodeName = NULL;
-    // UINT32 outlen = 0;
+    bool retBool;
+    uint8_t *unicodeName = NULL;
+    uint32_t outlen = 0;
 
-
-    // ret = Ascii2Unicode(CONFIG_FILE_NAME, strlen(CONFIG_FILE_NAME), &unicodeName, &outlen, NULL);
-    // if(ret != 0)
-    //     return false;
-    fd = API_FS_Open(CONFIG_FILE_NAME, (FS_O_RDONLY|FS_O_CREAT), 0);
+    retBool = LocalLanguage2UnicodeBigEndian(CONFIG_FILE_NAME, strlen(CONFIG_FILE_NAME)+1,CHARSET_UTF_8, &unicodeName, &outlen);
+    if(!retBool)
+        return false;
+    fd = API_FS_Open(unicodeName, (FS_O_RDONLY|FS_O_CREAT), 0);
 	if ( fd < 0)
 	{
+        OS_Free(unicodeName);
 		return false;
     }
     ret = API_FS_Read(fd, (uint8_t*)data, sizeof(Data_t)) ;
     Trace(1,"read ret:%d,sizeof(Data_t):%d",ret,sizeof(Data_t));
     API_FS_Close(fd);
-    // OS_Free(unicodeName);
+    OS_Free(unicodeName);
     if(ret <= 0)
         return false;
 	return true;
@@ -79,8 +105,25 @@ bool ReadData(Data_t* data)
 void FsTestCase()
 {
     Data_t data;
+    API_FS_INFO fsInfo;
+    int sizeUsed = 0, sizeTotal = 0;
+    Trace(1,"Start Fs test!");
 
-    Trace(1,"Start Fs test");
+    if(API_FS_GetFSInfo(FS_DEVICE_NAME_FLASH,&fsInfo) < 0)
+    {
+        Trace(1,"Get FS Flash device info fail!");
+    }
+    sizeUsed  = fsInfo.usedSize;
+    sizeTotal = fsInfo.totalSize;
+    Trace(1,"flash used:%d Bytes, total size:%d Bytes",sizeUsed,sizeTotal);
+    if(API_FS_GetFSInfo(FS_DEVICE_NAME_T_FLASH,&fsInfo) < 0)
+    {
+        Trace(1,"Get FS T Flash device info fail!");
+    }
+    sizeUsed  = fsInfo.usedSize;
+    sizeTotal = fsInfo.totalSize;
+    float mb = sizeTotal/1024.0/1024.0;
+    Trace(1,"T Flash used:%d Bytes, total size:%d Bytes(%d.%03d MB)",sizeUsed,sizeTotal,(int)mb, (int)((mb-(int)mb)*1000)  );
     //read
     if(!ReadData(&data))
     {
@@ -118,6 +161,43 @@ void FsTestCase()
 
 }
 
+void FsTFTest()
+{
+    int32_t fd;
+    int32_t ret;
+    bool retBool;
+    uint8_t *unicodeName = NULL;
+    uint32_t outlen = 0;
+
+    retBool = LocalLanguage2UnicodeBigEndian(TF_CARD_TEST_FILE_NAME, strlen(TF_CARD_TEST_FILE_NAME)+1,CHARSET_UTF_8, &unicodeName, &outlen);
+    if(!retBool)
+        return false;
+    fd = API_FS_Open(unicodeName, FS_O_RDWR | FS_O_CREAT, 0);
+	if ( fd < 0)
+	{
+        Trace(1,"Open file failed:%d",fd);
+        OS_Free(unicodeName);
+		return false;
+	}
+    ret = API_FS_Write(fd, (uint8_t*)TF_CARD_TEST_STRING, strlen(TF_CARD_TEST_STRING));
+    API_FS_Close(fd);
+    OS_Free(unicodeName);
+    if(ret <= 0)
+        return false;
+	return true;
+}
+
+
+void FsTestTask(void* param)
+{
+    OS_Sleep(5000);
+    FsTestCase();
+    FsTFTest();
+    while(1)
+    {
+        OS_Sleep(5000);
+    }
+}
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -129,7 +209,7 @@ void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
-            FsTestCase();
+            
             break;
         default:
             break;
@@ -137,23 +217,20 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 
-void Init()
-{
-
-}
-
 void FsTest(void *pData)
 {
     API_Event_t* event=NULL;
 
-    Init();
+    OS_CreateTask(FsTestTask,
+        NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
 
     while(1)
     {
-        if(OS_WaitEvent(mainTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
+            OS_Free(event->pParam2);
             OS_Free(event);
         }
     }

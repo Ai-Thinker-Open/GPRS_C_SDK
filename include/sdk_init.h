@@ -121,7 +121,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     const char*         (*GetCharset)(Charset_t index);
     bool                (*Unicode2LocalLanguage)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
-    uint32_t            (*Ascii2Unicode)(const UINT8 *in, uint32_t in_len, UINT8 **out, uint32_t *out_len, UINT8 nCharset[12]);
+    bool                (*Unicode2LocalLanguageBigEndian)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
+    bool                (*LocalLanguage2UnicodeBigEndian)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
 
     /*fs*/
     int32_t             (*API_FS_Open)(PCSTR    fileName,uint32_t operationFlag,uint32_t mode);
