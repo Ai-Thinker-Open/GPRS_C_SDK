@@ -13,6 +13,7 @@
 #include "demo_mqtt.h"
 
 
+
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
 #define MAIN_TASK_NAME          "Main Test Task"
@@ -29,6 +30,7 @@ static HANDLE semMqttStart = NULL;
 
 typedef enum{
     MQTT_EVENT_CONNECTED = 0,
+    MQTT_EVENT_DISCONNECTED ,
     MQTT_EVENT_MAX
 }MQTT_Event_ID_t;
 
@@ -37,6 +39,13 @@ typedef struct {
     MQTT_Client_t* client;
 }MQTT_Event_t;
 
+typedef enum{
+    MQTT_STATUS_DISCONNECTED = 0,
+    MQTT_STATUS_CONNECTED       ,
+    MQTT_STATUS_MAX
+}MQTT_Status_t;
+
+MQTT_Status_t mqttStatus = MQTT_STATUS_DISCONNECTED;
 
 
 static void EventDispatch(API_Event_t* pEvent)
@@ -113,15 +122,15 @@ void OnMqttReceiedData(void* arg, const uint8_t* data, uint16_t len, MQTT_Flags_
 void OnMqttConnection(MQTT_Client_t *client, void *arg, MQTT_Connection_Status_t status)
 {
     Trace(1,"MQTT connection status:%d",status);
+    MQTT_Event_t* event = (MQTT_Event_t*)OS_Malloc(sizeof(MQTT_Event_t));
+    if(!event)
+    {
+        Trace(1,"MQTT no memory");
+        return ;
+    }
     if(status == MQTT_CONNECTION_ACCEPTED)
     {
         Trace(1,"MQTT succeed connect to broker");
-        MQTT_Event_t* event = (MQTT_Event_t*)OS_Malloc(sizeof(MQTT_Event_t));
-        if(!event)
-        {
-            Trace(1,"MQTT no memory");
-            return ;
-        }
         //!!! DO NOT suscribe here(interrupt function), do MQTT suscribe in task, or it will not excute
         event->id = MQTT_EVENT_CONNECTED;
         event->client = client;
@@ -129,6 +138,9 @@ void OnMqttConnection(MQTT_Client_t *client, void *arg, MQTT_Connection_Status_t
     }
     else
     {
+        event->id = MQTT_EVENT_DISCONNECTED;
+        event->client = client;
+        OS_SendEvent(secondTaskHandle,event,OS_TIME_OUT_WAIT_FOREVER,OS_EVENT_PRI_NORMAL);
         Trace(1,"MQTT connect to broker fail,error code:%d",status);
     }
     Trace(1,"MQTT OnMqttConnection() end");
@@ -147,7 +159,11 @@ void OnTimerPublish(void* param)
 {
     MQTT_Error_t err;
     MQTT_Client_t* client = (MQTT_Client_t*)param;
-
+    if(mqttStatus != MQTT_STATUS_CONNECTED)
+    {
+        Trace(1,"MQTT not connected to broker! can not publish");
+        return;
+    }
     Trace(1,"MQTT OnTimerPublish");
     err = MQTT_Publish(client,PUBLISH_TOPIC,PUBLISH_PAYLOEAD,strlen(PUBLISH_PAYLOEAD),1,2,0,OnPublish,NULL);
     if(err != MQTT_ERROR_NONE)
@@ -165,6 +181,7 @@ void SecondTaskEventDispatch(MQTT_Event_t* pEvent)
     switch(pEvent->id)
     {
         case MQTT_EVENT_CONNECTED:
+            mqttStatus = MQTT_STATUS_CONNECTED;
             Trace(1,"MQTT connected, now subscribe topic:%s",SUBSCRIBE_TOPIC);
             MQTT_Error_t err;
             MQTT_SetInPubCallback(pEvent->client, OnMqttReceived, OnMqttReceiedData, NULL);
@@ -172,6 +189,9 @@ void SecondTaskEventDispatch(MQTT_Event_t* pEvent)
             if(err != MQTT_ERROR_NONE)
                 Trace(1,"MQTT subscribe error, error code:%d",err);
             StartTimerPublish(PUBLISH_INTERVAL,pEvent->client);
+            break;
+        case MQTT_EVENT_DISCONNECTED:
+            mqttStatus = MQTT_STATUS_DISCONNECTED;
             break;
         default:
             break;
@@ -190,6 +210,8 @@ void SecondTask(void *pData)
     MQTT_Error_t err;
     memset(&ci,0,sizeof(MQTT_Connect_Info_t));
     ci.client_id = CLIENT_ID;
+    ci.client_user = CLIENT_USER;
+    ci.client_pass = CLIENT_PASS;
     ci.keep_alive = 60;
     ci.clean_session = 1;
     ci.use_ssl = false;

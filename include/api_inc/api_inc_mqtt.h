@@ -103,7 +103,7 @@ typedef enum
     /** Refused user credentials */
     MQTT_CONNECTION_REFUSED_USERNAME_PASS    = 4,
     /** Refused not authorized */
-    MQTT_CONNECTION_REFUSED_NOT_AUTHORIZED_  = 5,
+    MQTT_CONNECTION_REFUSED_NOT_AUTHORIZED   = 5,
     /** Disconnected */
     MQTT_CONNECTION_DISCONNECTED             = 256,
     /** Timeout */
