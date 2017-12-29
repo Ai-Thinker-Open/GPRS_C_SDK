@@ -82,6 +82,7 @@ void GPIO_TestTask()
 #endif
 
 #if 1
+int aaaa=0,bbbb=0,cccc=123;
 void GPIO_TestTask()
 {
     static GPIO_LEVEL ledBlueLevel = GPIO_LEVEL_LOW;
@@ -105,6 +106,9 @@ void GPIO_TestTask()
     {
         ledBlueLevel = (ledBlueLevel==GPIO_LEVEL_HIGH)?GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH;
         Trace(1,"ledBlueLevel toggle:%d",ledBlueLevel);
+        Trace(1,"aaaa:%d",aaaa);
+        Trace(1,"bbbb:%d",bbbb);
+        Trace(1,"cccc:%d",cccc);
         for(int i=0;i<GPIO_PIN_MAX;++i)
         {
             gpioLedBlue.pin = i;
@@ -174,6 +178,9 @@ void GPIO_TestTask()
     {
         ledBlueLevel = (ledBlueLevel==GPIO_LEVEL_HIGH)?GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH;
         Trace(1,"ledBlueLevel toggle:%d",ledBlueLevel);
+        Trace(1,"aaaa:%d",aaaa);
+        Trace(1,"bbbb:%d",bbbb);
+        Trace(1,"cccc:%d",cccc);
         for(int i=14;i<=18;++i)
         {
             gpioLedBlue.pin = i;
