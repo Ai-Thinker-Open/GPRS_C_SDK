@@ -48,7 +48,6 @@ SECTIONS
     /* RAM */
     . = USER_RAM_BASE;
     /* RW */
-    /*.cust_data . : AT ( ADDR( .cust_data) )*/
     .cust_data . : AT ( __user_rw_lma )
     {
         __user_rw_start = .;
@@ -62,6 +61,7 @@ SECTIONS
     __user_rw_end = .;
     __user_rw_size = __user_rw_end - __user_rw_start;
     
+    __user_bss_start = .;
     /* ZI */
     .cust_bss . : AT (ADDR(.cust_bss))
     {
@@ -74,5 +74,7 @@ SECTIONS
         *(.rambss)
         . = ALIGN(0x10);
     }
+    __user_bss_end = .;
+    __user_bss_size = __user_bss_end - __user_bss_start;
     #include "discard.ld"
 }
