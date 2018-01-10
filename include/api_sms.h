@@ -24,6 +24,15 @@
 /// \return bool , 
 #define SMS_SendMessage                             CSDK_FUNC(SMS_SendMessage)
 
+
+#define SMS_SetServerCenterInfo                     CSDK_FUNC(SMS_SetServerCenterInfo)
+#define SMS_GetServerCenterInfo                     CSDK_FUNC(SMS_GetServerCenterInfo)
+#define SMS_ListMessageRequst                       CSDK_FUNC(SMS_ListMessageRequst)
+#define SMS_DeleteMessage                           CSDK_FUNC(SMS_DeleteMessage)
+#define SMS_GetStorageInfo                          CSDK_FUNC(SMS_GetStorageInfo)
+#define SMS_SetNewMessageStorage                    CSDK_FUNC(SMS_SetNewMessageStorage)
+
+
 /// \brief  const char* SMS_GetCharset(Charset_t);
 /// \param  HANDLE hSem  , 
 /// \return const char* , get the charset

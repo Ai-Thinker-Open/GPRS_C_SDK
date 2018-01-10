@@ -163,6 +163,8 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \return bool , 
 #define OS_Sleep                                    CSDK_FUNC(OS_Sleep)
 
+#define OS_SleepUs                                  CSDK_FUNC(OS_SleepUs)
+
 /// \brief  bool                OS_WaitEvent(HANDLE hTask,PVOID *pEvent,UINT32 nTimeOut);
 /// \param  HANDLE hTask  , the task to wait event 
 /// \param  PVOID pEvent  , the pEvent pointer

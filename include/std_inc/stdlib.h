@@ -1,6 +1,6 @@
 
-#ifndef STDLIB_H
-#define    STDLIB_H
+#ifndef  STDLIB_H
+#define  STDLIB_H
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,6 +37,12 @@ void *
 bsearch (const void *key, const void *base, size_t nmemb, size_t size,
          int (*compar) __P ((const void *, const void *)));
 
+
+
+#include "api_os.h"
+#define malloc  OS_Malloc
+#define free    OS_Free
+#define realloc OS_Realloc
 
 #ifdef __cplusplus
 }
