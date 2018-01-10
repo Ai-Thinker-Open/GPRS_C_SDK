@@ -58,6 +58,6 @@ typedef enum{
     API_SOCKET_ERROR_ARG        = -16
 }API_Socket_Error_t;
 
-typedef VOID (*DNS_CALLBACK_FUNC_T)(void *param);
+typedef VOID (*DNS_CALLBACK_FUNC_T)(DNS_Status_t status, void* param);
 
 #endif

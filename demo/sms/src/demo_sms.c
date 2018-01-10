@@ -14,7 +14,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////configuration//////////////////////////////////////////////////
-#define TEST_PHONE_NUMBER "150****0062"
+#define TEST_PHONE_NUMBER "13415840120"
 const uint8_t unicodeMsg[] = {0x00, 0x61, 0x00, 0x61, 0x00, 0x61, 0x6d, 0x4b, 0x8b, 0xd5, 0x77, 0xed, 0x4f, 0xe1}; //unicode:aaa测试短信
 const uint8_t gbkMsg[]     = {0x62, 0x62, 0x62, 0xB0, 0xA1, 0xB0, 0xA1, 0xB0, 0xA1, 0xB0, 0xA1, 0x63, 0x63, 0x63 };//GBK    :bbb啊啊啊啊ccc
 const uint8_t utf8Msg[]    = "utf-8测试短信";//Cause the encoding format of this file(sms.c) is UTF-8
@@ -45,6 +45,11 @@ void SMSInit()
     if(!SMS_SetParameter(&smsParam,SIM0))
     {
         Trace(1,"sms set parameter error");
+        return;
+    }
+    if(!SMS_SetNewMessageStorage(SMS_STORAGE_SIM_CARD))
+    {
+        Trace(1,"sms set message storage fail");
         return;
     }
 }
@@ -124,6 +129,29 @@ void SendSMS()
     SendUtf8();
 }
 
+void ServerCenterTest()
+{
+    uint8_t addr[32];
+    uint8_t temp;
+    SMS_Server_Center_Info_t sca;
+    sca.addr = addr;
+    SMS_GetServerCenterInfo(&sca);
+    Trace(1,"server center address:%s,type:%d",sca.addr,sca.addrType);
+    temp = sca.addr[strlen(sca.addr)-1];
+    sca.addr[strlen(sca.addr)-1] = '0';
+    if(!SMS_SetServerCenterInfo(&sca))
+        Trace(1,"SMS_SetServerCenterInfo fail");
+    else
+        Trace(1,"SMS_SetServerCenterInfo success");
+    SMS_GetServerCenterInfo(&sca);
+    Trace(1,"server center address:%s,type:%d",sca.addr,sca.addrType);
+    sca.addr[strlen(sca.addr)-1] = temp;
+    if(!SMS_SetServerCenterInfo(&sca))
+        Trace(1,"SMS_SetServerCenterInfo fail");
+    else
+        Trace(1,"SMS_SetServerCenterInfo success");
+}
+
 void EventDispatch(API_Event_t* pEvent)
 {
     switch(pEvent->id)
@@ -137,24 +165,24 @@ void EventDispatch(API_Event_t* pEvent)
             break;
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
-            Trace(1,"network register success");
+            Trace(2,"network register success");
             flag |= 2;
             break;
         case API_EVENT_ID_SMS_SENT:
-            Trace(1,"Send Message Success");
+            Trace(2,"Send Message Success");
             break;
         case API_EVENT_ID_SMS_RECEIVED:
-            Trace(1,"received message");
+            Trace(2,"received message");
             SMS_Encode_Type_t encodeType = pEvent->param1;
             uint32_t contentLength = pEvent->param2;
             uint8_t* header = pEvent->pParam1;
             uint8_t* content = pEvent->pParam2;
 
-            Trace(1,"message header:%s",header);
-            Trace(1,"message content length:%d",contentLength);
+            Trace(2,"message header:%s",header);
+            Trace(2,"message content length:%d",contentLength);
             if(encodeType == SMS_ENCODE_TYPE_ASCII)
             {
-                Trace(1,"message content:%s",content);
+                Trace(2,"message content:%s",content);
                 UART_Write(UART1,content,contentLength);
             }
             else
@@ -163,7 +191,7 @@ void EventDispatch(API_Event_t* pEvent)
                 memset(tmp,0,500);
                 for(int i=0;i<contentLength;i+=2)
                     sprintf(tmp+strlen(tmp),"\\u%02x%02x",content[i],content[i+1]);
-                Trace(1,"message content(unicode):%s",tmp);//you can copy this string to http://tool.chinaz.com/tools/unicode.aspx and display as Chinese
+                Trace(2,"message content(unicode):%s",tmp);//you can copy this string to http://tool.chinaz.com/tools/unicode.aspx and display as Chinese
                 uint8_t* gbk = NULL;
                 uint32_t gbkLen = 0;
                 if(!SMS_Unicode2LocalLanguage(content,contentLength,CHARSET_CP936,&gbk,&gbkLen))
@@ -173,12 +201,27 @@ void EventDispatch(API_Event_t* pEvent)
                     memset(tmp,0,500);
                     for(int i=0;i<gbkLen;i+=2)
                         sprintf(tmp+strlen(tmp),"%02x%02x ",gbk[i],gbk[i+1]);
-                    Trace(1,"message content(GBK):%s",tmp);//you can copy this string to http://m.3158bbs.com/tool-54.html# and display as Chinese
-                    UART_Write(UART1,gbk,gbkLen);
+                    Trace(2,"message content(GBK):%s",tmp);//you can copy this string to http://m.3158bbs.com/tool-54.html# and display as Chinese
+                    UART_Write(UART1,gbk,gbkLen);//use serial tool that support GBK decode if have Chinese, eg: https://github.com/Neutree/COMTool
                 }
                 OS_Free(gbk);
             }
             break;
+        case API_EVENT_ID_SMS_LIST_MESSAGE:
+        {
+            SMS_Message_Info_t* messageInfo = (SMS_Message_Info_t*)pEvent->pParam1;
+            Trace(1,"message header index:%d,status:%d,number type:%d,number:%s,time:\"%u/%02u/%02u,%02u:%02u:%02u+%02d\"", messageInfo->index, messageInfo->status,
+                                                                                        messageInfo->phoneNumberType, messageInfo->phoneNumber,
+                                                                                        messageInfo->time.year, messageInfo->time.month, messageInfo->time.day,
+                                                                                        messageInfo->time.hour, messageInfo->time.minute, messageInfo->time.second,
+                                                                                        messageInfo->time.timeZone);
+            Trace(1,"message content len:%d,data:%s",messageInfo->dataLen,messageInfo->data);
+            UART_Write(UART1, messageInfo->data, messageInfo->dataLen);//use serial tool that support GBK decode if have Chinese, eg: https://github.com/Neutree/COMTool
+            UART_Write(UART1,"\r\n\r\n",4);
+            //need to free data here
+            OS_Free(messageInfo->data);
+            break;
+        }
         case API_EVENT_ID_SMS_ERROR:
             Trace(10,"SMS error occured! cause:%d",pEvent->param1);
         default:
@@ -188,17 +231,28 @@ void EventDispatch(API_Event_t* pEvent)
     //system initialize complete and network register complete, now can send message
     if(flag == 3)
     {
-        SendSMS();
+        SMS_Storage_Info_t storageInfo;
+        // SendSMS();
+        ServerCenterTest();
+        SMS_GetStorageInfo(&storageInfo,SMS_STORAGE_SIM_CARD);
+        Trace(1,"sms storage sim card info, used:%d,total:%d",storageInfo.used,storageInfo.total);
+        SMS_GetStorageInfo(&storageInfo,SMS_STORAGE_FLASH);
+        Trace(1,"sms storage flash info, used:%d,total:%d",storageInfo.used,storageInfo.total);
+        if(!SMS_DeleteMessage(5,SMS_STATUS_ALL,SMS_STORAGE_SIM_CARD))
+            Trace(1,"delete sms fail");
+        else
+            Trace(1,"delete sms success");
+        SMS_ListMessageRequst(SMS_STATUS_ALL,SMS_STORAGE_SIM_CARD);
         flag = 0;
     }
 }
 
 
 
-void sms_MainTask(void* pData)
+void SMSTest(void* pData)
 {
     API_Event_t* event=NULL;
-    flag = 0;
+
     Init();
 
     while(1)
@@ -212,9 +266,10 @@ void sms_MainTask(void* pData)
         }
     }
 }
+
 void sms_Main()
 {
-    mainTaskHandle = OS_CreateTask(sms_MainTask,
+    mainTaskHandle = OS_CreateTask(SMSTest,
         NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
     OS_SetUserMainHandle(&mainTaskHandle);
 }

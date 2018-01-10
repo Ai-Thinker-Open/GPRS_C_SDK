@@ -121,7 +121,7 @@ void EventDispatch(API_Event_t* pEvent)
             break;
         }
         case API_EVENT_ID_DNS_SUCCESS:
-            Trace(2,"DNS get ip address from domain success(event),domain:%s,ip:%s",pEvent->param2,pEvent->param1);
+            Trace(2,"DNS get ip address from domain success(event),domain:%s,ip:%s",pEvent->pParam1,pEvent->pParam2);
             break;
 
         case API_EVENT_ID_DNS_ERROR:
@@ -149,10 +149,11 @@ void socket_MainTask(void *pData)
 
     while(1)
     {
-        if(OS_WaitEvent(socketTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(socketTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
+            OS_Free(event->pParam2);
             OS_Free(event);
         }
     }
