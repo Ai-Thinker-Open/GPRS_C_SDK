@@ -26,7 +26,7 @@
 typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
-    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...);
+    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
     void                (*__assert)(const char* fmt);
 
     //power
