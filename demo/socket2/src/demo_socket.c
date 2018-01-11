@@ -59,15 +59,19 @@ void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_ACTIVATED:
             Trace(2,"network activate success");
-            OS_ReleaseSemaphore(sem);
+            if(sem)
+                OS_ReleaseSemaphore(sem);
             break;
 
         case API_EVENT_ID_SOCKET_CONNECTED:
-            OS_ReleaseSemaphore(sem);
+            Trace(2,"event connect");
+            if(sem)
+                OS_ReleaseSemaphore(sem);
             break;
 
         case API_EVENT_ID_SOCKET_SENT:
-            OS_ReleaseSemaphore(sem);
+            if(sem)
+                OS_ReleaseSemaphore(sem);
             break;
         case API_EVENT_ID_SOCKET_RECEIVED:
         {
