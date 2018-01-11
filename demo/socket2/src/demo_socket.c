@@ -59,19 +59,22 @@ void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_ACTIVATED:
             Trace(2,"network activate success");
-            if(sem)
-                OS_ReleaseSemaphore(sem);
+            // if(sem)
+            //     OS_ReleaseSemaphore(sem);
+            sem = 1;
             break;
 
         case API_EVENT_ID_SOCKET_CONNECTED:
             Trace(2,"event connect");
-            if(sem)
-                OS_ReleaseSemaphore(sem);
+            // if(sem)
+            //     OS_ReleaseSemaphore(sem);
+            sem = 1;
             break;
 
         case API_EVENT_ID_SOCKET_SENT:
-            if(sem)
-                OS_ReleaseSemaphore(sem);
+            // if(sem)
+            //     OS_ReleaseSemaphore(sem);
+            sem = 1;
             break;
         case API_EVENT_ID_SOCKET_RECEIVED:
         {
@@ -86,8 +89,9 @@ void EventDispatch(API_Event_t* pEvent)
         {
             int fd = pEvent->param1;
             Trace(2,"socket %d closed",fd);
-            if(sem)
-                OS_ReleaseSemaphore(sem);
+            // if(sem)
+            //     OS_ReleaseSemaphore(sem);
+            sem = 1;
             break;
         }
         case API_EVENT_ID_SOCKET_ERROR:
@@ -95,8 +99,9 @@ void EventDispatch(API_Event_t* pEvent)
             int fd = pEvent->param1;
             Trace(2,"socket %d error occurred,cause:%d",fd,pEvent->param2);
             errorCode = pEvent->param2;
-            if(sem)
-                OS_ReleaseSemaphore(sem);
+            // if(sem)
+            //     OS_ReleaseSemaphore(sem);
+            sem = 1;
             break;
         }
         default:
@@ -104,12 +109,20 @@ void EventDispatch(API_Event_t* pEvent)
     }
 }
 
-void WaitSem(HANDLE* sem)
+void CreateSem(HANDLE* sem_)
 {
-    *sem = OS_CreateSemaphore(0);
-    OS_WaitForSemaphore(*sem,OS_WAIT_FOREVER);
-    OS_DeleteSemaphore(*sem);
-    *sem = NULL;
+    *sem_ = 0;
+}
+
+void WaitSem(HANDLE* sem_)
+{
+    // *sem = OS_CreateSemaphore(0);
+    // OS_WaitForSemaphore(*sem,OS_WAIT_FOREVER);
+    // OS_DeleteSemaphore(*sem);
+    // *sem = NULL;
+    while(*sem_ == 0)
+        OS_Sleep(1);
+    *sem_ = 0;
 }
 
 bool Connect()
@@ -118,6 +131,7 @@ bool Connect()
     if(DNS_GetHostByName2(DNS_DOMAIN,(char*)buffer) != 0)
         return false;
     Trace(2,"DNS,domain:%s,ip:%s,strlen(ip):%d",DNS_DOMAIN,buffer,strlen(buffer));
+    CreateSem(&sem);
     socketFd = Socket_TcpipConnect(TCP,buffer,SERVER_PORT);
     Trace(2,"connect tcp server,socketFd:%d",socketFd);
     WaitSem(&sem);
@@ -132,6 +146,8 @@ bool Connect()
 }
 bool Write(uint8_t* data, uint16_t len)
 {
+    Trace(2,"Write");
+    CreateSem(&sem);
     int ret = Socket_TcpipWrite(socketFd,data,len);
     if(ret < 0)
     {
@@ -152,6 +168,7 @@ bool Write(uint8_t* data, uint16_t len)
 
 bool Close()
 {
+    CreateSem(&sem);
     Socket_TcpipClose(socketFd);
     WaitSem(&sem);
     return true;
@@ -161,7 +178,7 @@ void socketTestTask(void* param)
 {
     int failCount = 0;
     WaitSem(&sem);
-    Trace(2,"sem:%d,%p",sem,sem);
+    Trace(2,"sem:%d,%p",(int)sem,(void*)sem);
     Trace(1,"start connect now");
     Connect();
     while(1)
@@ -193,6 +210,8 @@ void socketTestTask(void* param)
 void socket_MainTask(void *pData)
 {
     API_Event_t* event=NULL;
+
+    CreateSem(&sem);
     OS_CreateTask(socketTestTask,
         NULL, NULL, TEST_TASK_STACK_SIZE, TEST_TASK_PRIORITY, 0, 0, TEST_TASK_NAME);
     while(1)
