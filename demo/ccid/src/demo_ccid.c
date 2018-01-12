@@ -63,6 +63,7 @@ void ccidTest(void *pData)
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
+            OS_Free(event->pParam2);
             OS_Free(event);
         }
     }
