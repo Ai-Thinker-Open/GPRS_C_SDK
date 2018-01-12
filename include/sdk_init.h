@@ -26,7 +26,7 @@
 typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
-    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...);
+    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
     void                (*__assert)(const char* fmt);
 
     //power
@@ -192,12 +192,12 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //i2c
     bool                (*I2C_Init)(I2C_ID_t i2c, I2C_Config_t config);
-    I2C_Error_t         (*I2C_ReadByte)(I2C_ID_t i2c, uint32_t slaveAddr, uint32_t memAddr, uint8_t* data);
-    I2C_Error_t         (*I2C_WriteByte)(I2C_ID_t i2c, uint32_t slaveAddr, uint32_t memAddr, uint8_t data);
-    I2C_Error_t         (*I2C_ReadBytes)(I2C_ID_t i2c, uint32_t slaveAddr, uint32_t memAddr, uint8_t* pData, uint32_t length);
-    I2C_Error_t         (*I2C_WriteBytes)(I2C_ID_t i2c, uint32_t slaveAddr, uint32_t memAddr, CONST uint8_t* pData, uint32_t length);
-    I2C_Error_t         (*I2C_ReadRawByte)(I2C_ID_t i2c, uint32_t CmdMask);
-    I2C_Error_t         (*I2C_WriteRawByte)(I2C_ID_t i2c, uint8_t SendByte, uint32_t CmdMask);
+    I2C_Error_t         (*I2C_Transmit)(I2C_ID_t i2c, uint16_t slaveAddr, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_Receive)(I2C_ID_t i2c, uint16_t slaveAddr, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_WriteMem)(I2C_ID_t i2c, uint16_t slaveAddr, uint32_t memAddr, uint8_t memSize, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_ReadMem)(I2C_ID_t i2c, uint16_t slaveAddr, uint32_t memAddr, uint8_t memSize, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_WriteRawByte)(I2C_ID_t i2c, uint8_t SendByte, I2C_CMD_Mask_t CmdMask, uint32_t timeOut);
+    uint8_t             (*I2C_ReadRawByte)(I2C_ID_t i2c, I2C_CMD_Mask_t CmdMask, uint32_t timeOut);
     bool                (*I2C_Close)(I2C_ID_t i2c);
 
     //std
