@@ -106,7 +106,7 @@ A9/A9G开发板，方便开发和调试
   * 可以从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
   > 这种方式获取的代码的发布的版本
   > 需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，不建议使用
-  * 或者使用如下命令克隆工程到本地（需先安装`git`，注意克隆时需要加`--recursive`参数，不然获得的SDK文件不全）。
+  * 或者使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
   > 这种方式可以保证是最新的代码
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
