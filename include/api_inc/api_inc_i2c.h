@@ -1,12 +1,8 @@
 #ifndef _API_INC_I2C_H
 #define _API_INC_I2C_H
 
-// <CmdMask> list
-#define I2C_MASTER_ACK              (1<<0)
-#define I2C_MASTER_RD               (1<<4)
-#define I2C_MASTER_STO              (1<<8)
-#define I2C_MASTER_WR               (1<<12)
-#define I2C_MASTER_STA              (1<<16)
+#define I2C_DEFAULT_TIME_OUT 10  //10ms
+
 
 typedef enum
 {
@@ -44,5 +40,15 @@ typedef enum{
 
     I2C_ERROR_MAX
 } I2C_Error_t;
+
+typedef enum{
+    I2C_CMD_MASK_MASTER_NACK   =     (1<<0)  ,
+    I2C_CMD_MASK_MASTER_READ   =     (1<<4)  ,
+    I2C_CMD_MASK_MASTER_STOP   =     (1<<8)  ,
+    I2C_CMD_MASK_MASTER_WRITE  =     (1<<12) ,
+    I2C_CMD_MASK_MASTER_START  =     (1<<16) ,
+    I2C_CMD_MASK_MAX
+} I2C_CMD_Mask_t;
+ 
 
 #endif

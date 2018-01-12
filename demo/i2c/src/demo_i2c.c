@@ -56,7 +56,8 @@ void SecondTask(void *pData)
 
     while(1)
     {
-        I2C_ReadByte(I2C_ACC, 0x19, 0x0f, &accId);
+        //read accelerator chip ID: 0x33
+        I2C_ReadMem(I2C_ACC, 0x19, 0x0F, 1, &accId, 1, I2C_DEFAULT_TIME_OUT);
         Trace(1,"accelerator id shold be 0x33, read:0X%02x",accId);
         OS_Sleep(3000);
     }
