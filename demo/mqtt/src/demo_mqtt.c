@@ -19,7 +19,7 @@
 #define MAIN_TASK_NAME          "Main Test Task"
 
 #define SECOND_TASK_STACK_SIZE    (2048 * 2)
-#define SECOND_TASK_PRIORITY      0
+#define SECOND_TASK_PRIORITY      1
 #define SECOND_TASK_NAME          "MQTT Test Task"
 
 static HANDLE mainTaskHandle = NULL;
