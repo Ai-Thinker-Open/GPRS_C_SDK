@@ -177,6 +177,7 @@ bool Close()
 void socketTestTask(void* param)
 {
     int failCount = 0;
+    int count = 0;
     WaitSem(&sem);
     Trace(2,"sem:%d,%p",(int)sem,(void*)sem);
     Trace(1,"start connect now");
@@ -202,6 +203,7 @@ void socketTestTask(void* param)
                 Trace(2,"write fail");
             }
         }
+        Trace(2,"count:%d",count++);
         OS_Sleep(5000);
     }
 }
