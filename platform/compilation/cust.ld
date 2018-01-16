@@ -17,6 +17,7 @@ SECTIONS
     ***************************************/
     /* flash start address*/
     . = USER_ROM_BASE;
+    __rom_start = .;
     
     /* RO */
     .section_init . : AT (ADDR(.section_init))

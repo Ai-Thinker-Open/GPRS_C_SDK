@@ -1,4 +1,27 @@
+#!/bin/bash
+#
+# Author: vencol,neucrack
+# 
 
+
+####################################
+# check lib files
+
+CSDK_LIB_PATH=./platform/csdk
+
+memdef_file=$(ls $CSDK_LIB_PATH|grep -w 'memd.def')
+elf_file=$(ls $CSDK_LIB_PATH|grep '.elf')
+lib_file=$(ls $CSDK_LIB_PATH|grep '.lod')
+
+if [[ "${memdef_file}aa" = "aa" || "${elf_file}aa" = "aa" || "${lib_file}aa" = "aa" ]]; then
+    echo "!!!!!!!!!!!!!!"
+    echo "NO LIB FILES"
+    echo "!!!!!!!!!!!!!!"
+    echo "please check platform/csdk folder"
+    echo "Plese download again from ( https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases ) "
+    exit 1
+fi
+#####################################
 
 start_time=`date +%s`
 #where the cygwin install in unix path,example if windows path is G:\CSDTK\cygwin,cygwin path may be /cygdrive/g/CSDTK/cygwin
@@ -10,7 +33,7 @@ start_time=`date +%s`
 
 #set the path
 # export PATH=$CYGWIN_HOME/bin:$CYGWIN_HOME/crosscompiler/bin:$CYGWIN_HOME/cooltools:/bin:/usr/bin;
-export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin;
+export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin:$PATH;
 # echo path:$PATH
 
 export SOFT_WORKDIR=`pwd`
@@ -111,5 +134,33 @@ end_time=`date +%s`
 time_distance=`expr ${end_time} - ${start_time}`
 date_time_now=$(date +%F\ \ %H:%M:%S)
 echo === Build Time: ${time_distance}s  at  ${date_time_now} === | tee -a ${LOG_FILE}
+
+
+# print RAM and ROM info
+
+MAP_FILE_PATH=./build/$2/$2.map
+MEMD_DEF_PATH=./platform/csdk/memd.def
+
+ram_total=$(grep  -n  "USER_RAM_SIZE" $MEMD_DEF_PATH | awk  '{print $3}')
+rom_total=$(grep  -n  "USER_ROM_SIZE" $MEMD_DEF_PATH | awk  '{print $3}')
+
+rom_start=$(grep  -n  "__rom_start = ." $MAP_FILE_PATH | awk  '{print $2}')
+rom_rw_start=$(grep  -n  "__user_rw_lma = ." $MAP_FILE_PATH | awk  '{print $2}')
+
+ram_start=$(grep  -n  "__user_rw_start = ." $MAP_FILE_PATH | awk  '{print $2}')
+ram_rw_data_end=$(grep  -n  "__user_rw_end = ." $MAP_FILE_PATH | awk  '{print $2}')
+ram_end=$(grep  -n  "__user_bss_end = ." $MAP_FILE_PATH | awk  '{print $2}')
+
+# echo $ram_start $ram_end
+ram_used=$(($ram_end-$ram_start))
+ram_used_percent=$(awk 'BEGIN{printf "%.2f%\n",('$ram_used'/'$ram_total')*100}')
+
+rw_data_size=$(($ram_rw_data_end-$ram_start))
+rom_used=$(($rom_rw_start-$rom_start+$rw_data_size))
+rom_used_percent=$(awk 'BEGIN{printf "%.2f%\n",('$rom_used'/'$rom_total')*100}')
+
+
+echo ROM total: ${rom_total}\($((${rom_total}))\) Bytes, used: $rom_used Bytes \($rom_used_percent\)
+echo RAM total: ${ram_total}\($((${ram_total}))\) Bytes, used: $ram_used Bytes \($ram_used_percent\)
 
 exit
