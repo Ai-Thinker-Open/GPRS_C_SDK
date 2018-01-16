@@ -112,11 +112,11 @@ void EventDispatch(API_Event_t* pEvent)
 void CreateSem(HANDLE* sem_)
 {
     *sem_ = 0;
+    // *sem = OS_CreateSemaphore(0);
 }
 
 void WaitSem(HANDLE* sem_)
 {
-    // *sem = OS_CreateSemaphore(0);
     // OS_WaitForSemaphore(*sem,OS_WAIT_FOREVER);
     // OS_DeleteSemaphore(*sem);
     // *sem = NULL;
@@ -149,7 +149,7 @@ bool Write(uint8_t* data, uint16_t len)
     Trace(2,"Write");
     CreateSem(&sem);
     int ret = Socket_TcpipWrite(socketFd,data,len);
-    if(ret < 0)
+    if(ret <= 0)
     {
         Trace(2,"socket write fail:%d",ret);
         return false;
