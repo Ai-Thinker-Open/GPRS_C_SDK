@@ -45,7 +45,7 @@ A9/A9G开发板，方便开发和调试
 特征：
   * 1个A9G模块（A9和A9G采用相同封装，引脚相同,所以开发板通用）
   * 引出模块29个GPIO（包括2个下载调试引脚（`HST_TX`,`HST_RX`）
-  * 1个SIM卡（Micro卡）卡槽(Mano卡<Micro卡<标准卡)
+  * 1个SIM卡（Micro卡）卡槽(Nano卡<Micro卡<标准卡)
   * 1个TF卡卡槽
   * 1个GPRS IPEX1代座子
   * 1个GPS  IPEX1代座子
