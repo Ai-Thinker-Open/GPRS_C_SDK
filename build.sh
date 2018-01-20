@@ -142,7 +142,7 @@ MAP_FILE_PATH=./build/$2/$2.map
 MEMD_DEF_PATH=./platform/csdk/memd.def
 
 map_file=$(ls ./build/$2|grep '.map')
-echo $map_file
+
 
 if [[ "${map_file}aa" = "aa" ]]; then
     echo "!!!!!!!!!!!!!!!!!!!!"
