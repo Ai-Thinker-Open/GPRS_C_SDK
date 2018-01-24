@@ -138,10 +138,21 @@ echo === Build Time: ${time_distance}s  at  ${date_time_now} === | tee -a ${LOG_
 
 # print RAM and ROM info
 
-MAP_FILE_PATH=./build/$2/$2.map
+if [[ $# -eq 1  ]]; then
+    if [[ "$1aa" != "cleanaa" ]]; then
+        mapPathName=$1
+    else
+        echo "clean complete"
+        exit 0
+    fi
+else
+    mapPathName=$2
+fi
+
+MAP_FILE_PATH=./build/$mapPathName/$mapPathName.map
 MEMD_DEF_PATH=./platform/csdk/memd.def
 
-map_file=$(ls ./build/$2|grep '.map')
+map_file=$(ls ./build/$mapPathName|grep '.map')
 
 
 if [[ "${map_file}aa" = "aa" ]]; then
