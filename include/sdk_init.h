@@ -19,6 +19,8 @@
 #include <api_inc_mqtt.h>
 #include <api_inc_charset.h>
 #include <api_inc_i2c.h>
+#include <api_inc_ssl.h>
+#include <api_inc_spi.h>
 
 
 
@@ -93,6 +95,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_StartDetach)(void);
     bool                (*Network_StartActive)(Network_PDP_Context_t context);
     bool                (*Network_StartDeactive)(uint8_t contextID);
+    bool                (*Network_GetIp)(char* ip, uint8_t size);
+    bool                (*Network_GetCellInfoRequst)();
     
     /*api_socket*/
     int                 (*Socket_TcpipConnect)(TCP_UDP_t tcpOrUdp, const char* ip,uint16_t port);
@@ -202,6 +206,28 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //std
     int                 (*sscanf)(const char * buf, const char * fmt, ...);
+
+    //ssl
+    SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);
+    SSL_Error_t         (*SSL_Connect)(SSL_Config_t* sslConfig, const char* server, const char* port);
+    int                 (*SSL_Write)(SSL_Config_t* sslConfig, uint8_t* data, int length, int timeoutMs);
+    int                 (*SSL_Read)(SSL_Config_t* sslConfig, uint8_t* data, int length, int timeoutMs);
+    SSL_Error_t         (*SSL_Close)(SSL_Config_t* sslConfig);
+    SSL_Error_t         (*SSL_Destroy)(SSL_Config_t* sslConfig);
+
+    //spi
+    bool                (*SPI_Init)(SPI_ID_t spiN, SPI_Config_t spiConfig);
+    bool                (*SPI_Close)(SPI_ID_t spiN);
+    uint32_t            (*SPI_Write)(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
+    uint32_t            (*SPI_Read)(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
+    bool                (*SPI_IsTxDone)(SPI_ID_t spiN);
+    bool                (*SPI_IsTxDmaDone)(SPI_ID_t spiN);
+    bool                (*SPI_IsRxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_ClearTxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_ClearRxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_FlushFIFOs)(SPI_ID_t spiN);
+    void                (*SPI_SetIrqHandler)(SPI_ID_t spiN, SPI_Irq_Handler_t handler);
+    void                (*SPI_SetIrqMask)(SPI_ID_t spiN, SPI_Irq_Flags_t irqMask);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;

@@ -48,13 +48,13 @@ typedef struct{
     void* mqttClient;
 }MQTT_Client_t;
 
-// typedef enum{
-//     MQTT_SSL_VERSION_SSLv3 = 0,
-//     MQTT_SSL_VERSION_TLSv1    ,
-//     MQTT_SSL_VERSION_TLSv1_1  ,
-//     MQTT_SSL_VERSION_TLSv1_2  ,
-//     MQTT_SSL_VERSION_MAX
-// }MQTT_SSL_Version_t;
+typedef enum{
+    MQTT_SSL_VERSION_SSLv3 = 0,
+    MQTT_SSL_VERSION_TLSv1    ,
+    MQTT_SSL_VERSION_TLSv1_1  ,
+    MQTT_SSL_VERSION_TLSv1_2  ,
+    MQTT_SSL_VERSION_MAX
+}MQTT_SSL_Version_t;
 
 typedef enum{
     MQTT_SSL_VERIFY_MODE_NONE     = 0,
@@ -88,6 +88,9 @@ typedef struct{
     const char*            ca_cert;
     const char*            client_cert;
     const char*            client_key;
+    const char*            broker_hostname;
+    MQTT_SSL_Version_t     ssl_min_version;
+    MQTT_SSL_Version_t     ssl_max_version;
 }MQTT_Connect_Info_t;
 
 typedef enum

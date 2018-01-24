@@ -48,26 +48,33 @@ typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 /// \brief  void Network_SetStatusChangedCallback(Network_Callback_Func_t callback);
 /// \param  Network_Callback_Func_t callback, set the network state change callback func
 /// \return void
-#define Network_SetStatusChangedCallback                    CSDK_FUNC(Network_SetStatusChangedCallback)
+#define Network_SetStatusChangedCallback  CSDK_FUNC(Network_SetStatusChangedCallback)
 
 /// \brief  bool Network_StartAttach();
 /// \param  void , start network attach
 /// \return bool
-#define Network_StartAttach                                 CSDK_FUNC(Network_StartAttach)
+#define Network_StartAttach               CSDK_FUNC(Network_StartAttach)
 
 /// \brief  bool Network_StartDetach();
 /// \param  void , start network detach
 /// \return bool
-#define Network_StartDetach                                 CSDK_FUNC(Network_StartDetach)
+#define Network_StartDetach               CSDK_FUNC(Network_StartDetach)
 
 /// \brief  bool Network_StartActive(Network_PDP_Context_t context);
 /// \param  Network_PDP_Context_t context, the pdp context need when active network
 /// \return bool
-#define Network_StartActive                                 CSDK_FUNC(Network_StartActive)
+#define Network_StartActive               CSDK_FUNC(Network_StartActive)
 
 /// \brief  bool Network_StartDeactive(uint8_t contextID);
 /// \param  uint8_t contextID, the pdp context id to start deactive network
 /// \return bool
-#define Network_StartDeactive                               CSDK_FUNC(Network_StartDeactive)
+#define Network_StartDeactive             CSDK_FUNC(Network_StartDeactive)
+
+
+// bool Network_GetIp(char* ip, uint8_t size);
+#define Network_GetIp                     CSDK_FUNC(Network_GetIp)
+
+// bool Network_GetCellInfoRequst();
+#define Network_GetCellInfoRequst         CSDK_FUNC(Network_GetCellInfoRequst)
 
 #endif
