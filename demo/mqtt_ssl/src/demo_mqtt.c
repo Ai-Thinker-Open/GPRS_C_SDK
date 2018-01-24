@@ -291,10 +291,13 @@ void SecondTask(void *pData)
     ci.keep_alive = 60;
     ci.clean_session = 1;
     ci.use_ssl = true;
+    ci.ssl_verify_mode = MQTT_SSL_VERIFY_MODE_REQUIRED;
     ci.ca_cert = ca_crt;
     ci.client_cert = client_crt;
     ci.client_key  = client_key;
-    ci.ssl_verify_mode = MQTT_SSL_VERIFY_MODE_REQUIRED;
+    ci.broker_hostname = BROKER_HOSTNAME;
+    ci.ssl_min_version   = MQTT_SSL_VERSION_SSLv3;
+    ci.ssl_max_version   = MQTT_SSL_VERSION_TLSv1_2;
 
     err = MQTT_Connect(client,BROKER_IP,BROKER_PORT,OnMqttConnection,NULL,&ci);
     if(err != MQTT_ERROR_NONE)
