@@ -28,6 +28,7 @@ typedef enum{
     API_EVENT_ID_NETWORK_ACTIVATE_FAILED           ,
     API_EVENT_ID_NETWORK_ACTIVATED                 ,
     API_EVENT_ID_NETWORK_GOT_TIME                  ,  //pParam1: RTC_Time_t*
+    API_EVENT_ID_NETWORK_CELL_INFO                 ,  //param1:cell number(1 serving cell and param1-1 neighbor cell) , pParam1: Network_Location_t*
 
     //DNS
     API_EVENT_ID_DNS_SUCCESS                       ,   //param1:IP address(uint32_t), pPram1:domain(char*), pParam2:ip(char*)

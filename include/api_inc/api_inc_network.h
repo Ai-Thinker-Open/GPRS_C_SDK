@@ -29,6 +29,23 @@ typedef struct{
     char    userPasswd[PDP_USER_PASSWD_MAX_LENGTH];
 }Network_PDP_Context_t;
 
+typedef struct 
+{
+    uint8_t  sMcc[3];
+    uint8_t  sMnc[3];
+    uint16_t sLac;
+    uint16_t sCellID;
+    uint8_t  iBsic;
+    int8_t   iRxLev;
+    uint8_t  iRxLevSub;
+    uint16_t nArfcn;
+} Network_Location_t;
+
+typedef enum{
+    NETWORK_ERROR_NONE = 0      ,
+    NETWORK_ERROR_MAX
+} Network_Error_t;
+
 typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 
 #endif
