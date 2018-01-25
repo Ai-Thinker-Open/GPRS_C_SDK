@@ -42,7 +42,7 @@ extern "C"{
 /// \param  length, the length of data to be got,
 ///         when in API_HAL_SPI_DIRECT_POLLING mode, it can only up to 16 bytes
 /// \return the length of data to be got 
-// uint32_t SPI_Read(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
+// uint32_t SPI_Read(SPI_ID_t spiN, uint8_t *data, uint32_t length);
 #define SPI_Read           CSDK_FUNC(SPI_Read)
 
 /// \brief  Check If SPI Finished Sendind Data

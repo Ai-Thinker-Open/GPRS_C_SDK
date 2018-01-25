@@ -219,7 +219,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*SPI_Init)(SPI_ID_t spiN, SPI_Config_t spiConfig);
     bool                (*SPI_Close)(SPI_ID_t spiN);
     uint32_t            (*SPI_Write)(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
-    uint32_t            (*SPI_Read)(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
+    uint32_t            (*SPI_Read)(SPI_ID_t spiN, uint8_t *data, uint32_t length);
     bool                (*SPI_IsTxDone)(SPI_ID_t spiN);
     bool                (*SPI_IsTxDmaDone)(SPI_ID_t spiN);
     bool                (*SPI_IsRxDmaDone)(SPI_ID_t spiN);
