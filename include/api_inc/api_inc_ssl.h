@@ -1,5 +1,5 @@
-#ifndef __API_SSL_H
-#define __API_SSL_H
+#ifndef __API_INC_SSL_H
+#define __API_INC_SSL_H
 
 #ifdef __cplusplus
 extern "C"{
