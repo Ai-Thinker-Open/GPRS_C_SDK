@@ -79,6 +79,8 @@ A9/A9G开发板，方便开发和调试
 * 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
 * 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
 * 使用 `./build.sh clean all` 清除所有中间文件
+* 使用 `./build.sh demo $PROJ release` 来生成release版本，比如`./build.sh demo gpio release`，
+  如果最后一个参数不是`release`，则默认是`debug`版本， `debug`版本在死机后会停止运行并可以使用GDB调试，而release版本在死机时会自动重启系统
 
 如果遇到问题，请仔细对比文档或者视频，看操作是否有错，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
 
