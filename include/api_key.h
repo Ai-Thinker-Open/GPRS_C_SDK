@@ -5,7 +5,7 @@
 typedef enum{
     KEY_POWER = 0x4B,
     KEY_MAX
-} Key_ID_t
+} Key_ID_t;
 
 #endif
 
