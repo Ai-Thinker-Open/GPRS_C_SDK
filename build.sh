@@ -5,11 +5,43 @@
 
 
 ####################################
+# help info
+
+function help()
+{
+    echo "Usage:"
+    echo "use './build.sh PROJECTNAME' to build the project in ./PROJECTNAME             "
+    echo "               eg: ./build.sh app                                              "
+    echo "use './build.sh demo PROJECTNAME' to build demo in ./demo/PROJECTNAME          "
+    echo "use './build.sh clean PROJECTNAME' to clean the project PROJECTNAME build files"
+    echo "use './build.sh clean all' to clean all the project build files                "
+    echo "use './build.sh ... release' to build release software                         "
+    echo "               eg: './build.sh demo gpio release'                              "
+}
+
+if [[ "$1x" == "helpx" || "$1x" == "-hx" || "$1x" == "-helpx" || "$1x" == "--helpx" ]]; then
+    help
+    exit 0
+fi
+
+######################################
+
+
+compileMode='debug'
+paramNum=$#
+
+if [[ "${!#}x" == "releasex" ]]; then
+    compileMode='release'
+    paramNum=$(($paramNum-1))
+fi
+
+####################################
 # check lib files
 
-CSDK_LIB_PATH=./platform/csdk
+CSDK_MEM_DEF_PATH=./platform/csdk
+CSDK_LIB_PATH=./platform/csdk/$compileMode
 
-memdef_file=$(ls $CSDK_LIB_PATH|grep -w 'memd.def')
+memdef_file=$(ls $CSDK_MEM_DEF_PATH|grep -w 'memd.def')
 elf_file=$(ls $CSDK_LIB_PATH|grep '.elf')
 lib_file=$(ls $CSDK_LIB_PATH|grep '.lod')
 
@@ -17,8 +49,12 @@ if [[ "${memdef_file}aa" = "aa" || "${elf_file}aa" = "aa" || "${lib_file}aa" = "
     echo "!!!!!!!!!!!!!!"
     echo "NO LIB FILES"
     echo "!!!!!!!!!!!!!!"
-    echo "please check platform/csdk folder"
-    echo "Plese download again from ( https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases ) "
+    echo "please check  platform/csdk folder, it can not be empty"
+    echo ""
+    echo "Plese download again from "
+    echo ""
+    echo "      https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases"
+    echo ""
     exit 1
 fi
 #####################################
@@ -37,10 +73,14 @@ export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin:$PATH;
 # echo path:$PATH
 
 export SOFT_WORKDIR=`pwd`
-if [[ $# -eq 1  ]]; then
+
+echo "param number:$paramNum"
+echo "compileMode:$compileMode"
+
+if [[ $paramNum -eq 1  ]]; then
     export IS_PROJECT_DIR=$SOFT_WORKDIR/$1
     if [[ ! -d $IS_PROJECT_DIR ]]; then
-        echo "cust project $1 error path $IS_PROJECT_DIR";
+        echo "project $1 error path:$IS_PROJECT_DIR";
         exit
     fi
     
@@ -51,10 +91,8 @@ if [[ $# -eq 1  ]]; then
         sed -i '15d' Makefile
         sed -i "15i\LOCAL_MODULE_DEPENDS += $1" Makefile
     fi
-
-
     export PROJ_NAME=$1
-elif [[ $# -eq 2  ]]; then
+elif [[ $paramNum -eq 2  ]]; then
     if [[ "$1x" == "cleanx" ]]; then
         if [[ "$2x" == "allx" ]]; then
             rm -rf $SOFT_WORKDIR/build
@@ -64,7 +102,7 @@ elif [[ $# -eq 2  ]]; then
             rm -rf $SOFT_WORKDIR/hex/$2
             rm -f $SOFT_WORKDIR/build/$2_build.log
         fi
-        echo "clear project $2";
+        echo "clear project $2 end";
         exit
     elif [[ "$1x" == "demox" ]]; then
         export IS_PROJECT_DIR=$SOFT_WORKDIR/demo/$2
@@ -92,13 +130,8 @@ elif [[ $# -eq 2  ]]; then
         sed -i "15i\LOCAL_MODULE_DEPENDS += project/$2" Makefile
     fi
 else
-    echo "you can add you own module in the ./Makefile"
-    echo "this script usage:"
-    echo "use './make.sh PROJECTNAME' to build the project in ./PROJECTNAME";
-    echo "use './make.sh demo PROJECTNAME' to build the demo project in ./demo/PROJECTNAME";
-    echo "use './make.sh clean PROJECTNAME' to clean the project PROJECTNAME output";
-    echo "use './make.sh clean all' to clean all the project output";
-    exit
+    help
+    exit 0
 fi
 
 # if [[ ! -d target/$PROJ_NAME ]]; then
@@ -117,15 +150,21 @@ echo "compile project $PROJ_NAME";
 echo "compile path $IS_PROJECT_DIR";
 
 MAKE_J_NUMBER=`cat /proc/cpuinfo | grep vendor_id | wc -l`
+echo "core number:$MAKE_J_NUMBER"
+rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
+
 cd $SOFT_WORKDIR
 if [ ${MAKE_J_NUMBER} -gt 1 ]; then
-    make -j${MAKE_J_NUMBER} 2>&1 | tee ${LOG_FILE}
+    make -j${MAKE_J_NUMBER} CT_RELEASE=$compileMode 2>&1 | tee ${LOG_FILE}
 else
-    make 2>&1 | tee ${LOG_FILE}
+    make CT_RELEASE=$compileMode 2>&1 | tee ${LOG_FILE}
 fi
 
-rm -f $SOFT_WORKDIR/hex/*.lod
-cp -f $SOFT_WORKDIR/hex/$PROJ_NAME/*.lod $SOFT_WORKDIR/hex
+rm -f $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}/*
+rm -rf $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+mkdir $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+cp -f $SOFT_WORKDIR/hex/$PROJ_NAME/* $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
 # if [[ "$1x" == "initx" ]]; then
 #     cp build/init/init/lib/libinit_*.a platform/lib/libinit.a
 # fi
@@ -138,11 +177,10 @@ echo === Build Time: ${time_distance}s  at  ${date_time_now} === | tee -a ${LOG_
 
 # print RAM and ROM info
 
-if [[ $# -eq 1  ]]; then
+if [[ $paramNum -eq 1  ]]; then
     if [[ "$1aa" != "cleanaa" ]]; then
         mapPathName=$1
     else
-        echo "clean complete"
         exit 0
     fi
 else

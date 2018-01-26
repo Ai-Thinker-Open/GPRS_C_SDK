@@ -85,7 +85,7 @@ export HEX_PATH ?= ${SOFT_WORKDIR}/hex
 # platform elf & lod file
 AM_MODEL := ${strip ${AM_MODEL}}
 ifneq "${AM_MODEL}" ""
-    AM_PLT_ELF_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}}
+    AM_PLT_ELF_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}/${CT_RELEASE}}
     AM_PLT_ELF_FILE := ${wildcard ${AM_PLT_ELF_PATH}/*.elf}
     AM_PLT_ELF_FILE_BASENAME := ${notdir ${AM_PLT_ELF_FILE}}
     ifeq "${words ${AM_PLT_ELF_FILE}}" "0"
@@ -99,7 +99,7 @@ ifneq "${AM_MODEL}" ""
         export ELFCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/elfCombine.pl
     endif
     
-    AM_PLT_LOD_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}}
+    AM_PLT_LOD_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}/${CT_RELEASE}}
     AM_PLT_LOD_FILE := ${wildcard ${AM_PLT_ELF_PATH}/*.lod}
     ifeq "${words ${AM_PLT_LOD_FILE}}" "0"
         ${warning WARNING: No platform lod file at path: ${AM_PLT_LOD_PATH}}
@@ -311,7 +311,7 @@ MAP := ${BAS}.map
 HEX := ${BAS}.srec
 BAS_FINAL := ${BINARY_PATH}/${LODBASE_NO_PATH}
 ifneq "${AM_PLT_ELF_FILE}" ""
-BIN_FINAL := ${BAS_FINAL}_BASE_${AM_MODEL}.elf
+BIN_FINAL := ${BAS_FINAL}_BASE_${AM_MODEL}_${CT_RELEASE}.elf
 else
 BIN_FINAL := ${BAS_FINAL}.elf
 endif
@@ -394,7 +394,7 @@ endif #AM_CONFIG_SUPPORT
 
 ifneq "${AM_PLT_LOD_FILE}" ""
 PLT_LOD_VERSION := $(shell echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/')
-WITH_PLT_LOD_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}.lod
+WITH_PLT_LOD_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}_${CT_RELEASE}.lod
 CFG_Lod_File_WITH_PLT := `echo ${BAS_FINAL}_\`echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/'\`.lod  | sed 's/.*\(SW_.*\.lod\)$$/\1/'`
 endif
 
@@ -678,7 +678,7 @@ endif
 	cp -f $(AM_PLT_LOD_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(AM_PLT_ELF_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(BIN_FINAL) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
-	cp -f ${BAS_FINAL}_BASE_${AM_MODEL}.map ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
+	cp -f ${BAS_FINAL}_BASE_${AM_MODEL}_${CT_RELEASE}.map ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(LOD_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 
 	@${ECHO} "Creat map Zip..."
