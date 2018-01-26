@@ -9,6 +9,8 @@ typedef enum{
     //system
     API_EVENT_ID_POWER_ON = 0                      ,   //param1: shows power on cause:
     API_EVENT_ID_SYSTEM_READY                      ,
+    API_EVENT_ID_KEY_DOWN                          ,   //param1:key id(Key_ID_t)
+    API_EVENT_ID_KEY_UP                            ,   //param1:key id(Key_ID_t)
 
     //SIM card
     API_EVENT_ID_NO_SIMCARD                        ,   //param1: card id
