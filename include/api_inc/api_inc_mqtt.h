@@ -86,11 +86,14 @@ typedef struct{
     bool                   use_ssl;
     MQTT_SSL_Verify_Mode_t ssl_verify_mode;
     const char*            ca_cert;
+    const char*            ca_crl;
     const char*            client_cert;
     const char*            client_key;
+    const char*            client_key_passwd;
     const char*            broker_hostname;
     MQTT_SSL_Version_t     ssl_min_version;
     MQTT_SSL_Version_t     ssl_max_version;
+    const char*            entropy_custom;
 }MQTT_Connect_Info_t;
 
 typedef enum

@@ -293,11 +293,14 @@ void SecondTask(void *pData)
     ci.use_ssl = true;
     ci.ssl_verify_mode = MQTT_SSL_VERIFY_MODE_REQUIRED;
     ci.ca_cert = ca_crt;
+    ci.ca_crl = NULL;
     ci.client_cert = client_crt;
     ci.client_key  = client_key;
+    ci.client_key_passwd = NULL;
     ci.broker_hostname = BROKER_HOSTNAME;
     ci.ssl_min_version   = MQTT_SSL_VERSION_SSLv3;
     ci.ssl_max_version   = MQTT_SSL_VERSION_TLSv1_2;
+    ci.entropy_custom    = "GPRS_A9";
 
     err = MQTT_Connect(client,BROKER_IP,BROKER_PORT,OnMqttConnection,NULL,&ci);
     if(err != MQTT_ERROR_NONE)
