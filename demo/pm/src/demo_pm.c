@@ -43,18 +43,18 @@ void EventDispatch(API_Event_t* pEvent)
             break;
 
         case API_EVENT_ID_POWER_ON:
-            Trace(1,"Power on ,cause:%d",pEvent->param1);
+            Trace(1,"Power on ,cause:0x%02x",pEvent->param1);
             break;
 
         case API_EVENT_ID_KEY_DOWN:
-            Trace(1,"key down, key:%d",pEvent->param1);
+            Trace(1,"key down, key:0x%02x",pEvent->param1);
             if(pEvent->param1 == KEY_POWER)
             {
                 Trace(1,"power key press down now");
             }
             break;
         case API_EVENT_ID_KEY_UP:
-            Trace(1,"key release, key:%d",pEvent->param1);
+            Trace(1,"key release, key:0x%02x",pEvent->param1);
             if(pEvent->param1 == KEY_POWER)
             {
                 Trace(1,"power key release now");
