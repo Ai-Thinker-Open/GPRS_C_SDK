@@ -24,6 +24,7 @@ uint8_t SPI_ReadOneByte(SPI_ID_t SPIx)
 	SPI_Write(SPIx, &temp, 1);
 	while(!SPI_IsTxDone(SPIx));
 	SPI_Read(SPIx, &r_byte, 1);
+	return r_byte;
 }
 
 uint32_t SPI_ReadWriteData(SPI_ID_t SPIx, uint8_t *s_data, uint8_t *r_data, uint32_t length)
@@ -178,11 +179,11 @@ void Spi_MainTask()
 }
 #endif
 
-void spi_Main(HANDLE* pHandleMainTask)
+void spi_Main()
 {
     mainTaskHandle = OS_CreateTask(Spi_MainTask ,
         NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
-    *pHandleMainTask = mainTaskHandle;
+    OS_SetUserMainHandle(&mainTaskHandle);
 }
 
 
