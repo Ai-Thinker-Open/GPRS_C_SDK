@@ -80,11 +80,11 @@ A9/A9G开发板，方便开发和调试
 同时，如果你是使用git进行克隆，请设置git在pull时不将`<LF>`转换为`<CR><LF>`，设置方法参考[这里](https://www.jianshu.com/p/305a138883d4)
 
 * 如果已经搭建好了，使用`build.sh`脚本来编译工程，打开cygwin进入到工程目录，有以下参数：
-* 使用 `./build.sh $PROJ`来编译你的应用模块，如 `./build.sh app` 则是编译app目录下的源码
-* 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
-* 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
-* 使用 `./build.sh clean all` 清除所有中间文件
-* 使用 `./build.sh demo $PROJ release` 来生成release版本，比如`./build.sh demo gpio release`，
+  * 使用 `./build.sh $PROJ`来编译你的应用模块，如 `./build.sh app` 则是编译app目录下的源码
+  * 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
+  * 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
+  * 使用 `./build.sh clean all` 清除所有中间文件
+  * 使用 `./build.sh demo $PROJ release` 来生成release版本，比如`./build.sh demo gpio release`，
   如果最后一个参数不是`release`，则默认是`debug`版本， `debug`版本在死机后会停止运行并可以使用GDB调试，而**release版本在死机时会自动重启系统**，所以实际投入使用时请使用release版本，测试时使用debug版本
 
 * 如果遇到问题，请仔细对比文档或者视频，看操作是否有错，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
