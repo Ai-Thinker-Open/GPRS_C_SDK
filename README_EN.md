@@ -85,7 +85,7 @@ If you encounter problems, please carefully compare the document or video to fin
 
 ## ( C ) Download, Debug
 
-Refer to [Download, Debug Documentation](./doc/em/download_debug_tool_en.md)
+Refer to [Download, Debug Documentation](./doc/en/download_debug_tools.md)
 
 After build, there's two `*.lod` files in the hex folder, the bigger one should be burn to board if the program is first time burn, you can only download the small one later. 
 
