@@ -9,6 +9,8 @@ typedef enum{
     //system
     API_EVENT_ID_POWER_ON = 0                      ,   //param1: shows power on cause:
     API_EVENT_ID_SYSTEM_READY                      ,
+    API_EVENT_ID_KEY_DOWN                          ,   //param1:key id(Key_ID_t)
+    API_EVENT_ID_KEY_UP                            ,   //param1:key id(Key_ID_t)
 
     //SIM card
     API_EVENT_ID_NO_SIMCARD                        ,   //param1: card id
@@ -28,9 +30,10 @@ typedef enum{
     API_EVENT_ID_NETWORK_ACTIVATE_FAILED           ,
     API_EVENT_ID_NETWORK_ACTIVATED                 ,
     API_EVENT_ID_NETWORK_GOT_TIME                  ,  //pParam1: RTC_Time_t*
+    API_EVENT_ID_NETWORK_CELL_INFO                 ,  //param1:cell number(1 serving cell and param1-1 neighbor cell) , pParam1: Network_Location_t*
 
     //DNS
-    API_EVENT_ID_DNS_SUCCESS                       ,   //param1:IP address(uint32_t), pPram1:domain(uint8_t*)
+    API_EVENT_ID_DNS_SUCCESS                       ,   //param1:IP address(uint32_t), pPram1:domain(char*), pParam2:ip(char*)
     API_EVENT_ID_DNS_ERROR                         ,
 
 
@@ -45,6 +48,7 @@ typedef enum{
     API_EVENT_ID_SMS_SENT                          ,
     API_EVENT_ID_SMS_RECEIVED                      ,  //param1:SMS_Encode_Type_t, param2:message content length, pParam1:message header info, pParam2:message content
     API_EVENT_ID_SMS_ERROR                         ,  //param1:SMS_Error_t cause
+    API_EVENT_ID_SMS_LIST_MESSAGE                  ,  //pParam1:SMS_Message_Info_t*(!!!pParam1->data need to free!!!)
 
     //uart
     API_EVENT_ID_UART_RECEIVED                     ,   //param1: uart number, param2: length, pParam1: data

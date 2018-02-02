@@ -18,6 +18,9 @@
 #include <api_inc_adc.h>
 #include <api_inc_mqtt.h>
 #include <api_inc_charset.h>
+#include <api_inc_i2c.h>
+#include <api_inc_ssl.h>
+#include <api_inc_spi.h>
 
 
 
@@ -25,7 +28,7 @@
 typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
-    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...);
+    bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
     void                (*__assert)(const char* fmt);
 
     //power
@@ -45,12 +48,13 @@ typedef struct T_INTERFACE_VTBL_TAG
     uint32_t            (*OS_SuspendTask)(HANDLE hTask);
     bool                (*OS_ResumeTask)(HANDLE hTask);
     bool                (*OS_Sleep)(uint32_t nMillisecondes);
+    void                (*OS_SleepUs)(uint32_t us);
     bool                (*OS_WaitEvent)(HANDLE hTask,PVOID *pEvent,uint32_t nTimeOut);
     bool                (*OS_SendEvent)(HANDLE hTask,PVOID pEvent,uint32_t nTimeOut,UINT16 nOption);
     bool                (*OS_ResetEventQueue)(HANDLE hTask);
     bool                (*OS_IsEventAvailable)(HANDLE hTask);
     PVOID               (*OS_Malloc)(uint32_t nSize);
-    PVOID               (*OS_Realloc)(VOID *ptr,uint32_t nSize);
+    PVOID               (*OS_Realloc)(void* ptr,uint32_t nSize);
     bool                (*OS_Free)(PVOID pMemBlock);
     bool                (*OS_GetHeapUsageStatus)(OS_Heap_Status_t *pOsHeapStatus);
     HANDLE              (*OS_CreateSemaphore)(uint32_t nInitCount);
@@ -91,6 +95,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_StartDetach)(void);
     bool                (*Network_StartActive)(Network_PDP_Context_t context);
     bool                (*Network_StartDeactive)(uint8_t contextID);
+    bool                (*Network_GetIp)(char* ip, uint8_t size);
+    bool                (*Network_GetCellInfoRequst)();
     
     /*api_socket*/
     int                 (*Socket_TcpipConnect)(TCP_UDP_t tcpOrUdp, const char* ip,uint16_t port);
@@ -98,7 +104,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     int                 (*Socket_TcpipRead)( int socketFd, uint8_t* data, uint16_t length);
     bool                (*Socket_TcpipClose)(int socketFd);
     DNS_Status_t        (*DNS_GetHostByName)(const char* domain, char* ip);
-    uint32_t            (*DNS_GetHostByNameEX)(const char *hostname, char* ip, DNS_CALLBACK_FUNC_T func, void* param);
+    DNS_Status_t        (*DNS_GetHostByNameEX)(const char *hostname, char* ip, DNS_CALLBACK_FUNC_T func, void* param);
     int32_t             (*DNS_GetHostByName2)(const uint8_t* domain, uint8_t* ip);
     
     /*time*/
@@ -113,6 +119,12 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*SMS_SetFormat)(SMS_Format_t format, SIM_ID_t simID);
     bool                (*SMS_SetParameter)(SMS_Parameter_t* smsParameter,SIM_ID_t simID);
     bool                (*SMS_SendMessage)(const char* phoneNumber, const uint8_t* message,  uint8_t length, SIM_ID_t simID);
+    bool                (*SMS_SetServerCenterInfo)(SMS_Server_Center_Info_t* serverCenterInfo);
+    bool                (*SMS_GetServerCenterInfo)(SMS_Server_Center_Info_t* serverCenterInfo);
+    bool                (*SMS_ListMessageRequst)(SMS_Status_t smsStatus,SMS_Storage_t storage);
+    bool                (*SMS_DeleteMessage)(uint8_t index,SMS_Status_t status,SMS_Storage_t storage);
+    bool                (*SMS_GetStorageInfo)(SMS_Storage_Info_t* storageInfo, SMS_Storage_t storage);
+    bool                (*SMS_SetNewMessageStorage)(SMS_Storage_t storage);
     const char*         (*SMS_GetCharset)(Charset_t);
     bool                (*SMS_Unicode2LocalLanguage)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*SMS_LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
@@ -182,6 +194,40 @@ typedef struct T_INTERFACE_VTBL_TAG
     //sim
     bool                (*SIM_GetICCID)(uint8_t* iccid);
 
+    //i2c
+    bool                (*I2C_Init)(I2C_ID_t i2c, I2C_Config_t config);
+    I2C_Error_t         (*I2C_Transmit)(I2C_ID_t i2c, uint16_t slaveAddr, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_Receive)(I2C_ID_t i2c, uint16_t slaveAddr, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_WriteMem)(I2C_ID_t i2c, uint16_t slaveAddr, uint32_t memAddr, uint8_t memSize, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_ReadMem)(I2C_ID_t i2c, uint16_t slaveAddr, uint32_t memAddr, uint8_t memSize, uint8_t* pData, uint16_t length, uint32_t timeOut);
+    I2C_Error_t         (*I2C_WriteRawByte)(I2C_ID_t i2c, uint8_t SendByte, I2C_CMD_Mask_t CmdMask, uint32_t timeOut);
+    uint8_t             (*I2C_ReadRawByte)(I2C_ID_t i2c, I2C_CMD_Mask_t CmdMask, uint32_t timeOut);
+    bool                (*I2C_Close)(I2C_ID_t i2c);
+
+    //std
+    int                 (*sscanf)(const char * buf, const char * fmt, ...);
+
+    //ssl
+    SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);
+    SSL_Error_t         (*SSL_Connect)(SSL_Config_t* sslConfig, const char* server, const char* port);
+    int                 (*SSL_Write)(SSL_Config_t* sslConfig, uint8_t* data, int length, int timeoutMs);
+    int                 (*SSL_Read)(SSL_Config_t* sslConfig, uint8_t* data, int length, int timeoutMs);
+    SSL_Error_t         (*SSL_Close)(SSL_Config_t* sslConfig);
+    SSL_Error_t         (*SSL_Destroy)(SSL_Config_t* sslConfig);
+
+    //spi
+    bool                (*SPI_Init)(SPI_ID_t spiN, SPI_Config_t spiConfig);
+    bool                (*SPI_Close)(SPI_ID_t spiN);
+    uint32_t            (*SPI_Write)(SPI_ID_t spiN, const uint8_t *data, uint32_t length);
+    uint32_t            (*SPI_Read)(SPI_ID_t spiN, uint8_t *data, uint32_t length);
+    bool                (*SPI_IsTxDone)(SPI_ID_t spiN);
+    bool                (*SPI_IsTxDmaDone)(SPI_ID_t spiN);
+    bool                (*SPI_IsRxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_ClearTxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_ClearRxDmaDone)(SPI_ID_t spiN);
+    void                (*SPI_FlushFIFOs)(SPI_ID_t spiN);
+    void                (*SPI_SetIrqHandler)(SPI_ID_t spiN, SPI_Irq_Handler_t handler);
+    void                (*SPI_SetIrqMask)(SPI_ID_t spiN, SPI_Irq_Flags_t irqMask);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;

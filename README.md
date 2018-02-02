@@ -45,7 +45,7 @@ A9/A9G开发板，方便开发和调试
 特征：
   * 1个A9G模块（A9和A9G采用相同封装，引脚相同,所以开发板通用）
   * 引出模块29个GPIO（包括2个下载调试引脚（`HST_TX`,`HST_RX`）
-  * 1个SIM卡（Micro卡）卡槽(Mano卡<Micro卡<标准卡)
+  * 1个SIM卡（Micro卡）卡槽(Nano卡<Micro卡<标准卡)
   * 1个TF卡卡槽
   * 1个GPRS IPEX1代座子
   * 1个GPS  IPEX1代座子
@@ -79,6 +79,8 @@ A9/A9G开发板，方便开发和调试
 * 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
 * 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
 * 使用 `./build.sh clean all` 清除所有中间文件
+* 使用 `./build.sh demo $PROJ release` 来生成release版本，比如`./build.sh demo gpio release`，
+  如果最后一个参数不是`release`，则默认是`debug`版本， `debug`版本在死机后会停止运行并可以使用GDB调试，而**release版本在死机时会自动重启系统**，所以实际投入使用时请使用release版本，测试时使用debug版本
 
 如果遇到问题，请仔细对比文档或者视频，看操作是否有错，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
 
@@ -100,13 +102,14 @@ A9/A9G开发板，方便开发和调试
 
 #### 获得SDK
 
-* 方法一：在 <a target="_blank" href="http://wiki.ai-thinker.com/gprs">安信可官网Wiki</a>下载发布的压缩包
+代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
 
-* 方法二（建议）：在代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
-  * 可以从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
+* 方法一：从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
   > 这种方式获取的代码的发布的版本
   > 需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，不建议使用
-  * 或者使用如下命令克隆工程到本地（需先安装`git`，注意克隆时需要加`--recursive`参数，不然获得的SDK文件不全）。
+
+
+* 方法二：使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
   > 这种方式可以保证是最新的代码
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive

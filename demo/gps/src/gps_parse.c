@@ -124,7 +124,7 @@ bool GPS_ParseOneNMEA(uint8_t* oneNmeaData)
         gpsInfo__.NS_Indicator = *( GetDataIndexOfComma(nmeaData, 3 ) );
         //******************longitude************************************//
         temp = GetDataIndexOfComma(nmeaData, 4 );
-        if ( ( *temp >= 0x31 ) && ( *temp <= 0x39 ) ){
+        if ( ( *temp >= 0x30 ) && ( *temp <= 0x39 ) ){
             memcpy( gpsInfo__.longitude, temp, 10 );
             gpsInfo__.longitude[10] = 0;
         } else {
@@ -188,7 +188,7 @@ bool GPS_ParseOneNMEA(uint8_t* oneNmeaData)
         gpsInfo__.NS_Indicator = *( GetDataIndexOfComma(nmeaData, 4 ) );
         //********************************longitude********************//
         temp = GetDataIndexOfComma(nmeaData, 5 );
-        if ( ( *temp >= 0x31 ) && ( *temp <= 0x39 ) ){
+        if ( ( *temp >= 0x30 ) && ( *temp <= 0x39 ) ){
             memcpy( gpsInfo__.longitude, temp, 10 );
             gpsInfo__.longitude[10] = 0;
         } else {

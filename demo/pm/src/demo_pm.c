@@ -8,7 +8,7 @@
 #include "api_debug.h"
 #include "api_event.h"
 #include "api_hal_pm.h"
-
+#include "api_key.h"
 
 
 
@@ -17,7 +17,7 @@
 #define MAIN_TASK_NAME          "Main Test Task"
 
 #define SECOND_TASK_STACK_SIZE    (2048 * 2)
-#define SECOND_TASK_PRIORITY      0
+#define SECOND_TASK_PRIORITY      1
 #define SECOND_TASK_NAME          "Second Test Task"
 
 static HANDLE mainTaskHandle = NULL;
@@ -42,6 +42,24 @@ void EventDispatch(API_Event_t* pEvent)
             Trace(2,"network register success");
             break;
 
+        case API_EVENT_ID_POWER_ON:
+            Trace(1,"Power on ,cause:0x%02x",pEvent->param1);
+            break;
+
+        case API_EVENT_ID_KEY_DOWN:
+            Trace(1,"key down, key:0x%02x",pEvent->param1);
+            if(pEvent->param1 == KEY_POWER)
+            {
+                Trace(1,"power key press down now");
+            }
+            break;
+        case API_EVENT_ID_KEY_UP:
+            Trace(1,"key release, key:0x%02x",pEvent->param1);
+            if(pEvent->param1 == KEY_POWER)
+            {
+                Trace(1,"power key release now");
+            }
+            break;
         default:
             break;
     }

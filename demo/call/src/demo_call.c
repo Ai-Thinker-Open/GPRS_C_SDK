@@ -23,7 +23,7 @@
 #define MAIN_TASK_NAME          "Main Test Task"
 
 #define SECOND_TASK_STACK_SIZE    (2048 * 2)
-#define SECOND_TASK_PRIORITY      0
+#define SECOND_TASK_PRIORITY      1
 #define SECOND_TASK_NAME          "Second Test Task"
 
 static HANDLE mainTaskHandle = NULL;
@@ -135,7 +135,7 @@ void MainTask(void *pData)
 
     while(1)
     {
-        if(OS_WaitEvent(mainTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);

@@ -19,7 +19,7 @@
 #define MAIN_TASK_NAME          "Main Test Task"
 
 #define SECOND_TASK_STACK_SIZE    (2048 * 2)
-#define SECOND_TASK_PRIORITY      0
+#define SECOND_TASK_PRIORITY      1
 #define SECOND_TASK_NAME          "MQTT Test Task"
 
 static HANDLE mainTaskHandle = NULL;
@@ -154,16 +154,14 @@ void OnPublish(void* arg, MQTT_Error_t err)
     else
         Trace(1,"MQTT publish error, error code:%d",err);
 }
-int a25bc[20]={23,32};
-int a2bc[50]={23,32};
-int a4bc[26]={23,32};
+
 void OnTimerPublish(void* param)
 {
     MQTT_Error_t err;
     MQTT_Client_t* client = (MQTT_Client_t*)param;
     if(mqttStatus != MQTT_STATUS_CONNECTED)
     {
-        Trace(1,"MQTT not connected to broker! can not publish %p %p %p", a25bc, a2bc, a4bc);
+        Trace(1,"MQTT not connected to broker! can not publish");
         return;
     }
     Trace(1,"MQTT OnTimerPublish");
