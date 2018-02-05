@@ -1,4 +1,4 @@
-#define USE_EVENT 0
+#define USE_EVENT 1
 
 #include <api_os.h>
 #include <api_hal_uart.h>
@@ -30,6 +30,7 @@ static void EventDispatch(API_Event_t* pEvent)
     switch(pEvent->id)
     {
         case API_EVENT_ID_UART_RECEIVED:
+            Trace(1,"uart received API_EVENT_ID_UART_RECEIVED:%d",pEvent->param1);
             if(pEvent->param1 == UART1)
             {
                 uint8_t data[pEvent->param2+1];
@@ -56,14 +57,15 @@ static void uart_MainTask()
         .useEvent = false,
     };
     uint32_t times = 0;
+#if USE_EVENT
+    API_Event_t* event=NULL;
+    config.useEvent = true;
+    config.rxCallback = NULL;
+#endif
     UART_Init(UART1,config);
     config.rxCallback = NULL;
     UART_Init(UART2,config);
 
-#if USE_EVENT
-    API_Event_t* event=NULL;
-    config.useEvent = true;
-#endif
 
     while(1)
     {
