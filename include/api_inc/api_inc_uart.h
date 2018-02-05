@@ -57,6 +57,7 @@ typedef enum{
 typedef struct{
     UART_Port_t port;
     uint32_t    length;
+    char *buf;//the receive buf
 }UART_Callback_Param_t;
 
 typedef enum{
