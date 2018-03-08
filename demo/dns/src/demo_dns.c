@@ -65,7 +65,7 @@ void EventDispatch(API_Event_t* pEvent)
             break;
         
         case API_EVENT_ID_DNS_SUCCESS:
-            Trace(1,"DNS get ip address from domain success(event),domain:%s,ip:%s",pEvent->param2,pEvent->param1);
+            Trace(1,"DNS get ip address from domain success(event),domain:%s,ip:%s",pEvent->pParam2,pEvent->pParam1);
             break;
 
         case API_EVENT_ID_DNS_ERROR:
