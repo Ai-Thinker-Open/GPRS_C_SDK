@@ -79,7 +79,6 @@ class LOD(object):
                     block_base = None
                     block_data = []
                 block_base = int(m.group(1), 16)
-                self.lodend = block_base
             else:
                 m = block_data_re.search(line)
                 if m is None or block_base is None:
@@ -125,8 +124,11 @@ class LOD(object):
     def start_address(self):
         return sorted(self.blocks.keys())[0]
 
-    def the_laset_end(self):
-        return self.lodend+0x10000
+    def remove_boot(self,outlod):
+        for block_base, block_data in iteritems(self.blocks):
+            if(int(block_base) < 0x08010000):
+                continue
+            outlod.blocks[block_base] = block_data
 
 def load_lod(fname):
     lod = LOD()
@@ -178,22 +180,28 @@ def dual_merge(bl, lod):
         output.blocks[block_base] = block_data
         pa += block_size
 
-    # third_begin = int(lod.attrs['USER_BASE'], 0) | 0x08000000
-    # lodend = lod.the_laset_end()
-    # while lodend < third_begin:
-    #     # output.blocks[lodend][0] = 0xff12345f
-    #     block_data = [0xffffffff] * int(0x10000)
-    #     output.blocks[lodend] = block_data
-    #     lodend += 0x10000
-
     output.attrnames = lod.attrnames
     for attr in output.attrnames:
         output.attrs[attr] = lod.attrs[attr]
     # output.attrs['BOOT_SECTOR'] = bl.attrs['BOOT_SECTOR']
     output.blocks.update(bl.blocks)
-
-
     return output
+
+
+def dual_otapack(lodstr):
+    lod = load_lod(lodstr)
+    if lod is None:
+        return 1
+    output = LOD()
+    if output is None:
+        return 1
+    lod.remove_boot(output)
+    for attr in lod.attrnames:
+        output.attrs[attr] = lod.attrs[attr]
+    otaout = lodstr[:-4] + "_ota.lod"
+    if not output.store(otaout):
+        return 1
+    return 0
 
 def main(argv):
     opt = optparse.OptionParser(usage="""%prog [options]
@@ -208,6 +216,7 @@ This utility will merge 2 LODs of dual boot into one LOD. During merge:
 
     opt.add_option("--opt", action="store", dest="op",
                    help="bootloader LOD file name")
+
     opt.add_option("--bl", action="store", dest="bl",
                    help="bootloader LOD file name")
     opt.add_option("--lod", action="store", dest="lod",
@@ -221,6 +230,8 @@ This utility will merge 2 LODs of dual boot into one LOD. During merge:
         print("please set you option!")
         return 1
 
+        #merge
+        #merge
     if opt.op == "merge":
         if opt.bl is None:
             print("bootloader LOD file name is not specified!")
@@ -245,6 +256,22 @@ This utility will merge 2 LODs of dual boot into one LOD. During merge:
 
         if not output.store(opt.output):
             return 1
+        #otapack
+        #otapack
+    elif opt.op == "otapack":
+        print("output LOD file name is not errro! %s %s"%(opt.bl[:-4], opt.lod[:-4]))
+        # python platform\compilation\lodCombine.py --opt otapack --bl hex\gpio_debug\gpio_B1506_debug.lod --lod hex\uart_debug\uart_B1506_debug.lod
+        if opt.bl is None:
+            print("bootloader LOD file name is not specified!")
+            return 1
+        if opt.lod is None:
+            print("second LOD file name is not specified!")
+            return 1
+
+        dual_otapack(opt.bl)
+        dual_otapack(opt.lod)
+        #other
+        #other
     else :
         print("output LOD file name is not errro!")
         return 1
