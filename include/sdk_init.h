@@ -29,6 +29,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
     bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
+    void                (*MEMBLOCK_Trace)(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
     void                (*__assert)(const char* fmt);
 
     //power
@@ -229,6 +230,10 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*SPI_SetIrqHandler)(SPI_ID_t spiN, SPI_Irq_Handler_t handler);
     void                (*SPI_SetIrqMask)(SPI_ID_t spiN, SPI_Irq_Flags_t irqMask);
 
+    //fota
+    bool                (*API_FotaByUartInit)(unsigned short size);
+    int                 (*API_FotaByUartData)(unsigned char *data, unsigned short len);
+    
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
