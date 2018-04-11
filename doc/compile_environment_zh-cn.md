@@ -3,7 +3,7 @@
 
 ## 1. 下载工具链以及下载调试工具及SDK
 
-* [下载CSDTK3.8](http://otge8q9ud.bkt.clouddn.com/CSDTK.7z)
+* [下载CSDTK3.8](https://pan.baidu.com/s/1rYLb_JpJJjn2ZCiblzAsMA)
 
 * [下载SDK](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases), 然后解压为`GPRS_C_SDK`文件夹放到某个目录下
 
@@ -48,7 +48,7 @@ set CYGWIN_PATH=C:\CSDTK\cygwin
 环境搭建完成后，尝试打开cygwin，输入
 ```
 work gprs_c_sdk
-./build.sh demo gpip
+./build.sh demo gpio
 ```
 进行编译，编译会生成一个`build`目录，编译完成会在`hex`目录下生成两个格式为`lod`的文件，这就是我们用来下载到开发板的目标文件
 
