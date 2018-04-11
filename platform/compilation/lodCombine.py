@@ -203,6 +203,22 @@ def dual_otapack(lodstr):
         return 1
     return 0
 
+def dual_addpack(fname, str):
+    try:
+        fh = open(fname, 'r+')
+    except:
+        print("failed to open %s for read" % fname)
+        return False
+
+    fh.seek(0,2)
+    len = fh.tell()
+    str += "\n%d\n"%len
+    fh.seek(0,0)
+    fh.write(str)
+    fh.close()
+    return True
+
+
 def main(argv):
     opt = optparse.OptionParser(usage="""%prog [options]
 
@@ -223,6 +239,16 @@ This utility will merge 2 LODs of dual boot into one LOD. During merge:
                    help="second LOD file name")
     opt.add_option("--output", action="store", dest="output",
                    help="output LOD file name")
+
+    opt.add_option("--old", action="store", dest="old",
+                   help="old LOD file name")
+    opt.add_option("--new", action="store", dest="new",
+                   help="new LOD file name")
+
+    opt.add_option("--pack", action="store", dest="pack",
+                   help="pack file name")
+    opt.add_option("--str", action="store", dest="str",
+                   help="str need to add")
 
     opt, argv = opt.parse_args(argv)
 
@@ -259,17 +285,29 @@ This utility will merge 2 LODs of dual boot into one LOD. During merge:
         #otapack
         #otapack
     elif opt.op == "otapack":
-        print("output LOD file name is not errro! %s %s"%(opt.bl[:-4], opt.lod[:-4]))
-        # python platform\compilation\lodCombine.py --opt otapack --bl hex\gpio_debug\gpio_B1506_debug.lod --lod hex\uart_debug\uart_B1506_debug.lod
-        if opt.bl is None:
-            print("bootloader LOD file name is not specified!")
+        # python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_debugnew.lod --new fota\fota_B1509_debug.lod
+        if opt.old is None:
+            print("old LOD file name is not specified!")
             return 1
-        if opt.lod is None:
-            print("second LOD file name is not specified!")
+        if opt.new is None:
+            print("new LOD file name is not specified!")
             return 1
+        print("old: %s new: %s"%(opt.old[:-4], opt.new[:-4]))
 
-        dual_otapack(opt.bl)
-        dual_otapack(opt.lod)
+        dual_otapack(opt.old)
+        dual_otapack(opt.new)
+        #otapack
+        #otapack
+    elif opt.op == "addpack":
+        # python platform\compilation\lodCombine.py --opt addpack --pack fota\fota1.pack --str fota\fota_B1509_debug.lod
+        if opt.pack is None:
+            print("pack file name is not specified!")
+            return 1
+        if opt.str is None:
+            print("str is not specified!")
+            return 1
+        print("output LOD file name is not errro!")
+        dual_addpack(opt.pack, opt.str)
         #other
         #other
     else :

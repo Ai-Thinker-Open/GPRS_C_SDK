@@ -15,10 +15,39 @@
 #define MAIN_TASK_PRIORITY      0 
 #define MAIN_TASK_NAME         "FOTA UART Test Task"
 
-#define FOTA_UART_HEADER         "size"
+#define FOTA_UART_HEADER         "fsize"
 #define FOTA_UART_SIZE        sizeof(FOTA_UART_HEADER)-1
 
 static HANDLE mainTaskHandle = NULL;
+// static void FOTA_ReceivedFileData(UINT8 *data, UINT16 len)
+// {
+//     static int fotasize=0;
+//     int pos = strstr(data, "\r\n");
+//     Trace(1,"uart received data,length:%d,data: %d, pos: ", len, (pos));
+//     MEMBLOCK_Trace(1, data, len, 16);
+//     if(fotasize == 0 && memcmp(data, FOTA_UART_HEADER, FOTA_UART_SIZE) == 0)
+//     {
+//         fotasize = atoi(data + FOTA_UART_SIZE);
+//         Trace(1,"uart fotasize:%d len:%d", fotasize, len);
+//         if(fotasize)
+//         {  
+//             if(!API_FotaInit(fotasize))
+//                 goto upgrade_faile;
+//         }
+//     }
+//     else if(fotasize)
+//     {
+//         Trace(1,"uart fota,fotasize:%d len:%d", fotasize, len);
+//         if(API_FotaReceiveData(data, len) == 0)
+//             goto upgrade_faile;
+//     }
+
+// upgrade_faile:
+//     Trace(1,"uart fota false");
+//     API_FotaClean();
+//     return 0;
+// }
+
 static void FOTA_ReceivedData(UINT8 *data, UINT16 len)
 {
     static int fotasize=0;
@@ -30,18 +59,22 @@ static void FOTA_ReceivedData(UINT8 *data, UINT16 len)
         Trace(1,"uart fotasize:%d len:%d", fotasize, len);
         if(fotasize)
         {  
-            if(!API_FotaByUartInit(fotasize))
-            {
-                Trace(1,"uart fota false");
-                fotasize = 0;
-            }
+            if(!API_FotaInit(fotasize))
+                goto upgrade_faile;
         }
     }
     else if(fotasize)
     {
         Trace(1,"uart fota,fotasize:%d len:%d", fotasize, len);
-        API_FotaByUartData(data, len);
+        if(API_FotaReceiveData(data, len) == 0)
+            goto upgrade_faile;
     }
+    return ;
+
+upgrade_faile:
+    Trace(1,"uart fota false");
+    API_FotaClean();
+    return ;
 }
 
 static void EventDispatch(API_Event_t* pEvent)
@@ -54,7 +87,8 @@ static void EventDispatch(API_Event_t* pEvent)
                 uint8_t data[pEvent->param2+1];
                 data[pEvent->param2] = 0;
                 memcpy(data,pEvent->pParam1,pEvent->param2);
-                FOTA_ReceivedData(data,pEvent->param2);
+                FOTA_ReceivedData(data,pEvent->param2); 
+                // FOTA_ReceivedFileData(data,pEvent->param2);
             }
             break;
         default:
@@ -73,7 +107,7 @@ static void FOTAUART_TestTask()
     };
     OS_Sleep(1000);//no task
     API_Event_t* event=NULL;
-    Trace(1,"uart2 init is new");
+    Trace(1,"uart2 init is");
     UART_Init(UART1,config);
 
     while(1)

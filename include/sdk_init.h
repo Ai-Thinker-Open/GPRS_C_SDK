@@ -25,6 +25,7 @@
 
 
 
+
 typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
@@ -231,9 +232,11 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*SPI_SetIrqMask)(SPI_ID_t spiN, SPI_Irq_Flags_t irqMask);
 
     //fota
-    bool                (*API_FotaByUartInit)(unsigned short size);
-    int                 (*API_FotaByUartData)(unsigned char *data, unsigned short len);
-    
+    bool                (*API_FotaInit)(int size);
+    int                 (*API_FotaReceiveData)(unsigned char *data, int len);
+    void                (*API_FotaClean)(void);
+    int                 (*API_FotaByServer)(char *url, void (*data_process)(const unsigned char *pData, int len) );
+
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
