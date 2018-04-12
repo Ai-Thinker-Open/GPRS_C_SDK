@@ -14,6 +14,7 @@
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
 #define MAIN_TASK_NAME          "CCID Test Task"
+#define MAIN_TASK_NAME          "CCID Test Task"
 
 static HANDLE mainTaskHandle = NULL;
 static HANDLE ccidTaskHandle = NULL;
