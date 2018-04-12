@@ -254,7 +254,7 @@ sub elf_combine
     $ld_parameters .= " --script $tmp_ld_file";
     $ld_parameters .= " $input_elf_file_1 $input_elf_file_2";
     `$ld $ld_parameters`;
-    print "$ld $ld_parameters";
+    # print "$ld $ld_parameters";
     $ret = $? >> 8;
     if(0 != $ret)
     {
