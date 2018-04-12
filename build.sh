@@ -98,8 +98,8 @@ elif [[ $paramNum -eq 2  ]]; then
             rm -rf $SOFT_WORKDIR/build
             rm -rf $SOFT_WORKDIR/hex
         else
-            rm -rf $SOFT_WORKDIR/build/$2
-            rm -rf $SOFT_WORKDIR/hex/$2
+            rm -rf $SOFT_WORKDIR/build/$2_$compileMode
+            rm -rf $SOFT_WORKDIR/hex/$2_$compileMode
             rm -f $SOFT_WORKDIR/build/$2_build.log
         fi
         echo "clear project $2 end";
