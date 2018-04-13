@@ -12,12 +12,11 @@ LOCAL_MODULE_DEPENDS += init
 ##################################################################################
 
 
-LOCAL_MODULE_DEPENDS += demo/fota
+LOCAL_MODULE_DEPENDS += demo/uart
 
 
 
-
-
+include module_list.mk
 #do not edit anything about the description above, if you don not know what you are doing
 
 ##################################################################################

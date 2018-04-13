@@ -16,9 +16,9 @@
 #---------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------
-# ¹¦ÄÜ:
-#     ½«Á½¸öelfÎÄ¼şºÏ²¢£¬Éú³ÉĞÂµÄelfÎÄ¼ş
-# ½â¾öÎÊÌâ£º
+# ï¿½ï¿½ï¿½ï¿½:
+#     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½elfï¿½Ä¼ï¿½ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½elfï¿½Ä¼ï¿½
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â£º
 #     1. 
 # ------------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ my $input_elf_file_1 = undef;
 my $input_elf_file_2 = undef;
 my $output_elf_file = undef;
 
-my $objstrip = '"mips-elf-strip.exe"';#objstrip¹¤¾ß
-my $objdump = '"mips-elf-objdump.exe"';#objdump¹¤¾ß
-my $ld = '"mips-elf-ld.exe"';#ld¹¤¾ß
+my $objstrip = '"mips-elf-strip.exe"';#objstripï¿½ï¿½ï¿½ï¿½
+my $objdump = '"mips-elf-objdump.exe"';#objdumpï¿½ï¿½ï¿½ï¿½
+my $ld = '"mips-elf-ld.exe"';#ldï¿½ï¿½ï¿½ï¿½
 
 my $ld_parameters = "-nostdlib --no-strip-discarded --oformat=elf32-littlemips --gc-sections";
 
@@ -66,14 +66,14 @@ EXTERN (boot_Sector_Nand)
 
 #/*********************************************************
 #  Function: dbg_out
-#  Description: Êä³öµ÷ÊÔĞÅÏ¢
+#  Description: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 #  Input:
-#    1. Êä³öĞÅÏ¢µÄµÈ¼¶
-#    2. ĞèÒªÊä³öµÄĞÅÏ¢
+#    1. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ÄµÈ¼ï¿½
+#    2. ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 #  Output:
 #  Return: 
 #  Others:
-#     ¸ù¾İµ±Ç°È«¾Ö±äÁ¿g_dbg_levelÀ´¾ö¶¨ÊÇ·ñĞèÒªÊä³öĞÅÏ¢
+#     ï¿½ï¿½ï¿½İµï¿½Ç°È«ï¿½Ö±ï¿½ï¿½ï¿½g_dbg_levelï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 #*********************************************************/
 sub dbg_out
 {
@@ -88,7 +88,7 @@ sub dbg_out
 
 #/*********************************************************
 #  Function: usage
-#  Description: Êä³ö¸Ãpl½Å±¾µÄÈ«²¿¹¦ÄÜÑ¡Ïî
+#  Description: ï¿½ï¿½ï¿½ï¿½ï¿½plï¿½Å±ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
 #  Input:
 #    1. 
 #  Output:
@@ -173,7 +173,7 @@ sub read_elf_section
                 {
                     if($sectionstr =~ /overlay/ && $str =~ /overlay/)
                     {
-                         #overlay section ÔÊĞíVMAµØÖ·ÖØ¸´
+                         #overlay section ï¿½ï¿½ï¿½ï¿½VMAï¿½ï¿½Ö·ï¿½Ø¸ï¿½
                     }
                     else
                     {
@@ -209,9 +209,9 @@ sub read_elf_section
 
 #/*********************************************************
 #  Function: elf_combine
-#  Description: prev_ld¹¦ÄÜ²ÎÊı½âÎö
+#  Description: prev_ldï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #  Input:
-#    1. ²ÎÊıÁĞ±íÊı×é
+#    1. ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½ï¿½
 #  Output:
 #  Return: 
 #  Others:
@@ -226,13 +226,13 @@ sub elf_combine
     
     my $tmp_ld_file = "tmp_ld_script.ld";
     
-    #·ÖÎöelfÖĞsectionĞÅÏ¢
+    #ï¿½ï¿½ï¿½ï¿½elfï¿½ï¿½sectionï¿½ï¿½Ï¢
     #`$objstrip -g $input_elf_file_1`;
     `$objstrip -g $input_elf_file_2`;
     read_elf_section($input_elf_file_1, \%sect_table, \%addr_table);
     read_elf_section($input_elf_file_2, \%sect_table, \%addr_table);
     
-    #Éú³ÉÁ´½ÓÊ±Ê¹ÓÃµÄ ld script ÎÄ¼ş
+    #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ê¹ï¿½Ãµï¿½ ld script ï¿½Ä¼ï¿½
     open(FH, ">$tmp_ld_file") or die "Cannot open tmp ld file:$!";
     print FH "$ld_script_header";
     print FH "SECTIONS\n{\n\n";
@@ -245,7 +245,7 @@ sub elf_combine
     print FH "\n}\n";
     close(FH);
     
-    #Éú³ÉĞÂµÄelfÎÄ¼ş
+    #ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½elfï¿½Ä¼ï¿½
     #${LD} -nostdlib -o ${BUILD_ROOT}/1.elf --no-strip-discarded --oformat=elf32-littlemips --script ${BUILD_ROOT}/3.ld -Map ${BUILD_ROOT}/1.map --gc-sections ${BUILD_ROOT}/SW_V001_A6300V_OPENAT.elf ${BUILD_ROOT}/SW_V867_A6300_ZH.elf
     my $map_file = $output_elf_file;
     $map_file =~ s/\.elf$/\.map/;
@@ -254,6 +254,7 @@ sub elf_combine
     $ld_parameters .= " --script $tmp_ld_file";
     $ld_parameters .= " $input_elf_file_1 $input_elf_file_2";
     `$ld $ld_parameters`;
+    # print "$ld $ld_parameters";
     $ret = $? >> 8;
     if(0 != $ret)
     {

@@ -519,7 +519,7 @@ ifeq ($(strip $(AM_SUBPROJ_SUPPORT)), TRUE)
 	${MAKE} AM_MAP_ZIP
 		
 else
-	find $(DES_CFP_FILE_DIR) -name "*.cfp" -exec rm {} \;
+	# find $(DES_CFP_FILE_DIR) -name "*.cfp" -exec rm {} \;
 	
 	@${ECHO} "CP  		  AUDIO CFP FILE......"
 	if [ $(AM_CFP_FILE_CNT) -gt 1 ]; then  \
@@ -620,6 +620,7 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 				${ECHO} "LODCOMBINE        Combine failed";   \
 				exit 1; \
 			fi;\
+			mv $(LOD_FILE) $(LODBASE)flash_${CT_RELEASE}.lod;\
 			${ECHO} "LODCOMBINE        Combine sucessful";                                     \
 		else                                                                                    \
 			${ECHO} "LODCOMBINE        Cannot find Platform lod file:$(AM_PLT_LOD_FILE)";   \
