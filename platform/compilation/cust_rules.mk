@@ -458,38 +458,38 @@ AM_SUBPROJ_ZIP = \
 	mv $(2)/$(1)/$(1).zip $(2);
 	
 
-# .PHONY: $(AM_SUBPROJECT_NAME)
-# $(AM_SUBPROJECT_NAME):
-# 	mkdir -p $(BAS_FINAL)_$@_$(PLT_LOD_VERSION)
+.PHONY: $(AM_SUBPROJECT_NAME)
+$(AM_SUBPROJECT_NAME):
+	mkdir -p $(BAS_FINAL)_$@_$(PLT_LOD_VERSION)
 
-# 	find $(call AM_SUBPROJECT_HEX_DIRNAME,$@) -name "*.cfp" -exec rm {} \; 
-# 	find $(call AM_SUBPROJECT_HEX_DIRNAME,$@) -name "*.bin" -exec rm {} \;
+	find $(call AM_SUBPROJECT_HEX_DIRNAME,$@) -name "*.cfp" -exec rm {} \; 
+	find $(call AM_SUBPROJECT_HEX_DIRNAME,$@) -name "*.bin" -exec rm {} \;
 	
-# 	@${ECHO}
-# 	@${ECHO} "CP FILE           SUB Project $@ Copy File..."
-# 	$(call AM_SUBPROJ_FILE_CP,$@,$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_CFP)),$(call AM_SUBPROJ_FILE_CNT,$@,$(AM_SUBPROJ_FILE_CFP)),$(AM_SUBPROJ_FILE_CFP))
-# 	$(call AM_SUBPROJ_FILE_CP,$@,$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_BIN)),$(call AM_SUBPROJ_FILE_CNT,$@,$(AM_SUBPROJ_FILE_BIN)),$(AM_SUBPROJ_FILE_BIN))
-# 	@${ECHO} "CP FILE           Copy File Sucessful"
+	@${ECHO}
+	@${ECHO} "CP FILE           SUB Project $@ Copy File..."
+	$(call AM_SUBPROJ_FILE_CP,$@,$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_CFP)),$(call AM_SUBPROJ_FILE_CNT,$@,$(AM_SUBPROJ_FILE_CFP)),$(AM_SUBPROJ_FILE_CFP))
+	$(call AM_SUBPROJ_FILE_CP,$@,$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_BIN)),$(call AM_SUBPROJ_FILE_CNT,$@,$(AM_SUBPROJ_FILE_BIN)),$(AM_SUBPROJ_FILE_BIN))
+	@${ECHO} "CP FILE           Copy File Sucessful"
 	
-# 	@${ECHO}
-# 	@${ECHO} "LODCOMBINE        SUB Project $@ Combine with AMC bin"
-# 	$(call AM_SUBPROJ_FILE_LOD_WITH_AMC,$@,$(LOD_FILE),$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_BIN)),$(call AM_SUBPROJECT_HEXAMC_NAME,$@))
+	@${ECHO}
+	@${ECHO} "LODCOMBINE        SUB Project $@ Combine with AMC bin"
+	$(call AM_SUBPROJ_FILE_LOD_WITH_AMC,$@,$(LOD_FILE),$(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_BIN)),$(call AM_SUBPROJECT_HEXAMC_NAME,$@))
 	
-# 	@${ECHO}
-# 	@${ECHO} "LODCOMBINE        SUB Project $@ Combine with Platform lod"
-# 	$(call AM_SUBPROJ_FILE_LOD_PLT,$@,$(AM_PLT_LOD_FILE),$(call AM_SUBPROJECT_HEXAMC_NAME,$@),$(call AM_SUBPROJECT_HEX_PLT_NAME,$@))
+	@${ECHO}
+	@${ECHO} "LODCOMBINE        SUB Project $@ Combine with Platform lod"
+	$(call AM_SUBPROJ_FILE_LOD_PLT,$@,$(AM_PLT_LOD_FILE),$(call AM_SUBPROJECT_HEXAMC_NAME,$@),$(call AM_SUBPROJECT_HEX_PLT_NAME,$@))
 
-# 	@${ECHO}
-# 	@${ECHO} "Creat Cfg         SUB Project $@ Creat Cfg File"
-# 	$(call AM_SUBPROJ_CFG,$@,$(notdir $(call AM_SUBPROJECT_HEX_PLT_NAME,$@)),$(notdir $(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_CFP))),$(call AM_SUBPROJ_CFG_FILENAME,$@))
-# 	@${ECHO} "Creat Cfg         Creat Cfg Sucessful"
+	@${ECHO}
+	@${ECHO} "Creat Cfg         SUB Project $@ Creat Cfg File"
+	$(call AM_SUBPROJ_CFG,$@,$(notdir $(call AM_SUBPROJECT_HEX_PLT_NAME,$@)),$(notdir $(call AM_SUBPROJ_FILE_NAME,$@,$(AM_SUBPROJ_FILE_CFP))),$(call AM_SUBPROJ_CFG_FILENAME,$@))
+	@${ECHO} "Creat Cfg         Creat Cfg Sucessful"
 	
-# 	@${ECHO}
-# 	@${ECHO} "Creat Zip         SUB Project $@ Creat ZIP File"
-# 	$(call AM_SUBPROJ_ZIP,$(notdir $(call AM_SUBPROJECT_HEX_DIRNAME,$@)),$(BINARY_PATH),$(notdir $(call AM_SUBPROJECT_HEXAMC_NAME,$@)))
-# 	@${ECHO} "Creat Zip         Creat Zip Sucessful"
-# 	@${ECHO}
-# 	@${ECHO}
+	@${ECHO}
+	@${ECHO} "Creat Zip         SUB Project $@ Creat ZIP File"
+	$(call AM_SUBPROJ_ZIP,$(notdir $(call AM_SUBPROJECT_HEX_DIRNAME,$@)),$(BINARY_PATH),$(notdir $(call AM_SUBPROJECT_HEXAMC_NAME,$@)))
+	@${ECHO} "Creat Zip         Creat Zip Sucessful"
+	@${ECHO}
+	@${ECHO}
 
 AM_MAP_ZIP: force
 	mkdir -p $(BINARY_PATH)/$(LODBASE_NO_PATH)_map
@@ -566,7 +566,7 @@ ifeq ($(strip $(USER_LOADER_SUPPORT)), LOADER)
 ifneq "${AM_PLT_LOD_FILE}" ""
 	@${ECHO}
 	@${ECHO} "LODCOMBINE        Combine Platform and Loader lod"
-	# find ${SOFT_WORKDIR}/platform/cust_loader/loader_plt -name "*.lod" -exec rm {} \;
+	find ${SOFT_WORKDIR}/platform/cust_loader/loader_plt -name "*.lod" -exec rm {} \;
 	
 	if [ -f $(LOD_FILE) ]; then                                                                 \
 		if [ -f $(AM_PLT_LOD_FILE) ]; then                                                       \

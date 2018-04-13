@@ -46,6 +46,7 @@ SECTIONS
         . = ALIGN(0x20);
     } 
 	__user_rw_lma = .;
+    __rom_size = __user_rw_lma - __rom_start;
     /* RAM */
     . = USER_RAM_BASE;
     /* RW */
