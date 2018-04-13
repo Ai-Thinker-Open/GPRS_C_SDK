@@ -24,7 +24,7 @@ if "%1%"x =="demo"x (
     sed -i "15d" Makefile
     sed -i "15i\LOCAL_MODULE_DEPENDS += demo/%2%" Makefile
     goto compile                   
-    REM goto end
+    REM goto end_exit
 )else (
     if "%1%"x =="clean"x (
         goto clean_project
@@ -37,7 +37,7 @@ if "%1%"x =="demo"x (
             sed -i "15d" Makefile
             sed -i "15i\LOCAL_MODULE_DEPENDS += %1%" Makefile
             goto compile                     
-            REM goto end
+            REM goto end_exit
         ) else (
             echo param %1% is not illege 
             goto usage_help
@@ -63,8 +63,7 @@ if "%1%"x =="demo"x (
     REM set /a rom_percent=rom_use*10000/%rom_total%
     echo ROM total:%rom_total% Bytes    use:%rom_use% Bytes
     echo RAM total:%ram_total% Bytes    use:%ram_use% Bytes
-
-    goto end
+    goto end_exit
 
 :clean_project
     if "%2%"x =="all"x (
@@ -76,7 +75,7 @@ if "%1%"x =="demo"x (
         rd /s/q %BUILD_PATH%\hex\%2%
         rd /s/q %BUILD_PATH%\build\%2%
     )                      
-    goto end
+    goto end_exit
 
 :usage_help
     echo usage:
@@ -87,9 +86,10 @@ if "%1%"x =="demo"x (
     echo use 'build.bat clean all'              to clean all the project build files                
     echo use 'build.bat ... release'            to build release software                         
     echo               eg: 'build.bat demo gpio release'                              
-    goto end
+    goto end_exit
 
-:end
+
+:end_exit
     set ss=%time:~6,2%
     set mm=%time:~3,2%
     set hh=%time:~0,2%
