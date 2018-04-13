@@ -1,7 +1,7 @@
 
 @echo off
 REM //set you csdtk path
-call G:\CSDTK41\CSDTKvars.bat
+call D:\CSDTK41\CSDTKvars.bat
 
 set ss=%time:~6,2%
 set mm=%time:~3,2%
@@ -50,6 +50,7 @@ if "%1%"x =="demo"x (
 :compile
     set LOG_FILE=build\%PROJ_NAME%_build.log
     make -r -j4 CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
+    REM make -r -j4 CT_RELEASE=%compileMode%  2>&1 
     REM copy hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod hex\%PROJ_NAME%\%PROJ_NAME%_flash_%compileMode%.lod
     REM del hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod
 
