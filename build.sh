@@ -100,6 +100,8 @@ elif [[ $paramNum -eq 2  ]]; then
         else
             rm -rf $SOFT_WORKDIR/build/$2_$compileMode
             rm -rf $SOFT_WORKDIR/hex/$2_$compileMode
+            rm -rf $SOFT_WORKDIR/build/$2
+            rm -rf $SOFT_WORKDIR/hex/$2
             rm -f $SOFT_WORKDIR/build/$2_build.log
         fi
         echo "clear project $2 end";
@@ -151,7 +153,7 @@ echo "compile path $IS_PROJECT_DIR";
 
 MAKE_J_NUMBER=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 echo "core number:$MAKE_J_NUMBER"
-rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
+# rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
 
 cd $SOFT_WORKDIR
 if [ ${MAKE_J_NUMBER} -gt 1 ]; then
@@ -160,11 +162,11 @@ else
     make CT_RELEASE=$compileMode 2>&1 | tee ${LOG_FILE}
 fi
 
-rm -f $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}/*
-rm -rf $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-mkdir $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-cp -f $SOFT_WORKDIR/hex/$PROJ_NAME/* $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
+# rm -f $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}/*
+# rm -rf $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+# mkdir $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+# cp -f $SOFT_WORKDIR/hex/$PROJ_NAME/* $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
+# rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
 # if [[ "$1x" == "initx" ]]; then
 #     cp build/init/init/lib/libinit_*.a platform/lib/libinit.a
 # fi

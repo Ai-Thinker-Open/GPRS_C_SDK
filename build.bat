@@ -1,7 +1,8 @@
 
 @echo off
-
+REM //set you csdtk path
 call G:\CSDTK41\CSDTKvars.bat
+
 set ss=%time:~6,2%
 set mm=%time:~3,2%
 set hh=%time:~0,2%
@@ -47,7 +48,10 @@ if "%1%"x =="demo"x (
 
 
 :compile
-    make -r -j4 CT_RELEASE=%compileMode%    
+    set LOG_FILE=build\%PROJ_NAME%_build.log
+    make -r -j4 CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
+    REM copy hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod hex\%PROJ_NAME%\%PROJ_NAME%_flash_%compileMode%.lod
+    REM del hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod
 
     set MAP_FILE_PATH=build\%PROJ_NAME%\%PROJ_NAME%.map
     set MEMD_DEF_PATH=platform\csdk\memd.def
@@ -61,8 +65,8 @@ if "%1%"x =="demo"x (
     set /a rom_use=%use_rom_size%+%use_rom_bss_size%   
     REM set /a ram_percent=%ram_use%*10000/%ram_total%
     REM set /a rom_percent=rom_use*10000/%rom_total%
-    echo ROM total:%rom_total% Bytes    use:%rom_use% Bytes
-    echo RAM total:%ram_total% Bytes    use:%ram_use% Bytes
+    echo ROM    total:%rom_total% Bytes     use:%rom_use% Bytes
+    echo RAM    total:%ram_total% Bytes     use:%ram_use% Bytes
     goto end_exit
 
 :clean_project

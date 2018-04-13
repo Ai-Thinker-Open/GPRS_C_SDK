@@ -620,6 +620,7 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 				${ECHO} "LODCOMBINE        Combine failed";   \
 				exit 1; \
 			fi;\
+			mv $(LOD_FILE) $(LODBASE)flash_${CT_RELEASE}.lod;\
 			${ECHO} "LODCOMBINE        Combine sucessful";                                     \
 		else                                                                                    \
 			${ECHO} "LODCOMBINE        Cannot find Platform lod file:$(AM_PLT_LOD_FILE)";   \
