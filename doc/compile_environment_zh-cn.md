@@ -3,7 +3,8 @@
 
 ## 1. 下载工具链以及下载调试工具及SDK
 
-* [下载CSDTK3.8](https://pan.baidu.com/s/1rYLb_JpJJjn2ZCiblzAsMA)
+* [下载CSDTK3.8](http://test.ai-thinker.com/csdk/CSDTK3.8_Setup.rar)用build.sh基于cygwin进行编译
+* [下载CSDTK4.1](http://test.ai-thinker.com/csdk/CSDTK4.1_Setup.rar.7z)用build.bat基于cmd进行编译(可能会提示缺少文件)
 
 * [下载SDK](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases), 然后解压为`GPRS_C_SDK`文件夹放到某个目录下
 

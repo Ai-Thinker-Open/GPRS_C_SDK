@@ -26,6 +26,14 @@ ifeq "$(SELECTED_RELEASE)" ""
     $(error "!!!! CT_RELEASE=${CT_RELEASE} - Not a valid release type !!!!")
 endif
 
+BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
+export BUILD_HOST_TYPE := $(shell sh -c $(BUILD_HOST_TYPE_CMD))
+
+ifeq "$(BUILD_HOST_TYPE)" "UNKNOWN"
+BUILD_HOST_UNAME := $(shell uname)
+$(error "$(BUILD_HOST_UNAME) is unsupported(LINUX, CYGWIN, WINDOWS)")
+endif
+$(info Build host is $(BUILD_HOST_TYPE))
 ##########################################
 # Define the tools to use
 ##########################################
@@ -319,8 +327,16 @@ endif
 MAP_FINAL := ${BAS_FINAL}.map
 HEX_FINAL := ${BAS_FINAL}.srec
 LODBASE   := ${BAS_FINAL}_
-LOD_FILE  := `cygpath -w $(LODBASE)flash.lod`
-BIN_FILE  := `cygpath -w $(LODBASE)flash.bin`
+ifeq "$(BUILD_HOST_TYPE)" "CYGWIN"
+	LOD_FILE := `cygpath -w $(LODBASE)flash.lod`
+	BIN_FILE := `cygpath -w $(LODBASE)flash.bin`
+else
+	# ifeq "$(BUILD_HOST_TYPE)" "WINDOWS"
+	LOD_FILE := $(LODBASE)flash.lod
+	BIN_FILE := $(LODBASE)flash.bin
+	# else
+	# endif
+endif
 CFG_FILE  := ${BAS_FINAL}.cfg
 
 

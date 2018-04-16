@@ -1,7 +1,7 @@
 
 @echo off
 REM //set you csdtk path
-call G:\CSDTK41\CSDTKvars.bat
+set USER_CSDTK=G:\CSDTK41
 
 set ss=%time:~6,2%
 set mm=%time:~3,2%
@@ -9,9 +9,15 @@ set hh=%time:~0,2%
 set /a startTime=(%hh%*60+%mm%)*60+%ss%
 
 
-
-
-set PATH=platform\compilation\win32;%PATH%
+if not defined CSDTK4INSTALLDIR (
+    set ptemp=platform\compilation\win32;
+    echo %USER_CSDTK%
+    call %USER_CSDTK%\CSDTKvars.bat
+    echo first time set csdtk auto
+) else (
+    set ptemp=
+)
+set PATH=%ptemp%%PATH%
 set SOFT_WORKDIR=%cd:\=/%
 set BUILD_PATH=%cd%
 set compileMode=debug
@@ -50,6 +56,7 @@ if "%1%"x =="demo"x (
 :compile
     set LOG_FILE=build\%PROJ_NAME%_build.log
     make -r -j4 CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
+    REM make -r -j4 CT_RELEASE=%compileMode%  2>&1 
     REM copy hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod hex\%PROJ_NAME%\%PROJ_NAME%_flash_%compileMode%.lod
     REM del hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod
 

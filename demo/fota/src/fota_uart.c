@@ -107,7 +107,7 @@ static void FOTAUART_TestTask()
     };
     OS_Sleep(1000);//no task
     API_Event_t* event=NULL;
-    Trace(1,"uart2 init is");
+    Trace(1,"uart2 init is ");
     UART_Init(UART1,config);
 
     while(1)
