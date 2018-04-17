@@ -5,7 +5,6 @@
 * 使用脚本生成ota包,old参数是旧包所在位置，new参数是新包所在位置,最后生成两个用于上传的ota包
 ```
 python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_debug-fold.lod --new fota\fota_B1508_debug-fnew.lod
-old: fota\fota_B1508_debug-fold new: fota\fota_B1508_debug-fnew
 ```
 * 把两个ota包按照相应的位置上传，选择旧包位置，选择新包位置，点击create
 ```
