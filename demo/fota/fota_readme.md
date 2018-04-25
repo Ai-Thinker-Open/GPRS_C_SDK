@@ -2,6 +2,7 @@
 ## 1.整体流程
 * 保留旧固件包
 * 生成新的固件包
+* 登录差分包服务器 http://111.205.140.137:11016/
 * 使用脚本生成ota包,old参数是旧包所在位置，new参数是新包所在位置,最后生成两个用于上传的ota包
 ```
 python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_debug-fold.lod --new fota\fota_B1508_debug-fnew.lod
