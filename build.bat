@@ -1,7 +1,7 @@
 
 @echo off
 REM //set you csdtk path
-set USER_CSDTK=%GPRS_CSDTK41_PATH%
+set USER_CSDTK=%GPRS_CSDTK42_PATH%
 if %USER_CSDTK%a==a (echo NO CSDTK,please install CSDTK firstly  && pause && exit)
 
 set ss=%time:~6,2%
@@ -56,6 +56,11 @@ if "%1%"x =="demo"x (
 
 :compile
     set LOG_FILE=%BUILD_PATH%\build\%PROJ_NAME%_build.log
+    if exist "%BUILD_PATH%\build" (
+        echo build folder exist
+    ) else (
+        md %BUILD_PATH%\build
+    )
     echo number of processors: %number_of_processors%
     make -r -j%number_of_processors% CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
     REM make -r -j4 CT_RELEASE=%compileMode%  2>&1 
