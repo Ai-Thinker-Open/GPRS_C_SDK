@@ -70,32 +70,12 @@ A9/A9G开发板，方便开发和调试
 
 ## (二) 开发环境搭建
 
-* 参见[开发环境搭建文档](./doc/compile_environment_zh-cn.md)
+* 开发环境搭建过程参见[开发环境搭建文档](./doc/compile_environment_zh-cn.md)
 
-* 也可以参考视频教程:[点击查看视频](https://www.bilibili.com/video/av16579395/)
-
-* **注意**
-在修改编译环境的文件或者是代码时，一定不能使用windows自带的记事本和写字板，请使用更加专业的编辑器(推荐使用[vscode](https://code.visualstudio.com/)，也可以使用[sublime](https://www.sublimetext.com/)，或者[atom](https://atom.io/)、[eclipse](http://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/oxygen2)或者其它你熟悉的编辑器。)
-同时，请修改编辑器设置，文件结尾符号设置为unix风格(`<LF>`(`\n`)结尾)(设置方法请自行到网络查找)
-同时，如果你是使用git进行克隆，请设置git在pull时不将`<LF>`转换为`<CR><LF>`，设置方法参考[这里](https://www.jianshu.com/p/305a138883d4)
-
-* 如果已经搭建好了，使用`build.sh`脚本来编译工程，打开cygwin进入到工程目录，有以下参数：
-  * 使用 `./build.sh $PROJ`来编译你的应用模块，如 `./build.sh app` 则是编译app目录下的源码
-  * 使用 `./build.sh demo $PROJ` 来编译demo目录下的特定例程
-  * 使用 `./build.sh clean $PROJ` 清除`$PROJ`目录的中间文件
-  * 使用 `./build.sh clean all` 清除所有中间文件
-  * 使用 `./build.sh demo $PROJ release` 来生成release版本，比如`./build.sh demo gpio release`，
-  如果最后一个参数不是`release`，则默认是`debug`版本， `debug`版本在死机后会停止运行并可以使用GDB调试，而**release版本在死机时会自动重启系统**，所以实际投入使用时请使用release版本，测试时使用debug版本
-
-* 如果遇到问题，请仔细对比文档或者视频，看操作是否有错，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
 
 ## (三) 下载、调试
 
 如何使用下载调试工具：参见[下载、调试文档](./doc/download_debug_tool_zh-cn.md)
-
-**需要下载到开发板的文件**：编译后`hex`目录下有`*_B*.lod`以及`*_flash.lod`两个文件，第一次下载需要下载第一个文件（较大的文件），后面只需要下载`*_flash.lod`文件即可
-
-如果遇到问题，参见文档中的常见问题，也可以在[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)里找有没有先例
 
 ## (四) SDK
 
@@ -111,7 +91,7 @@ A9/A9G开发板，方便开发和调试
 
 * 方法一：从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
   > 这种方式获取的代码的发布的版本
-  > 需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，不建议使用
+  > 需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，**请不要**使用这种方式获得源码！
 
 
 * 方法二：使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
@@ -131,6 +111,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 |hex     |  最后产生的可烧录文件        |
 |include |  SDK文件目录                |
 |init    |  系统初始化的目录，可以不用理会，不建议改动 |
+|platform|  库文件存放位置，**请保证platform/csdk目录不为空**|
 
 
 
@@ -141,11 +122,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 
 SDK的`demo`目录下有许多例程，有什么需要参照例程写就好了
 
-如果没有接触过GPRS，或者发现看不懂代码，或者对代码有疑问，请务必先仔细通看这个文档
-[GPRS及SDK从零开始。。](./doc/gprs_start_from_scratch_zh-cn.md)
-
-#### 关于fota
-参见[fota说明](./demo/fota/fota_readme.md)
+更多SDK文档看这里：[GPRS C SDK文档](./doc/doc_contents.md)
 
 
 
