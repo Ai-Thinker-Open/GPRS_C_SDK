@@ -122,7 +122,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 
 SDK的`demo`目录下有许多例程，有什么需要参照例程写就好了
 
-更多SDK文档看这里：[GPRS C SDK文档](./doc/doc_contents.md)
+更多SDK文档看这里：[GPRS C SDK文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/)
 
 
 
