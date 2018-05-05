@@ -70,12 +70,12 @@ A9/A9G开发板，方便开发和调试
 
 ## (二) 开发环境搭建
 
-* 开发环境搭建过程参见[开发环境搭建文档](./doc/compile_environment_zh-cn.md)
+* 开发环境搭建过程参见[开发环境搭建文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/c-sdk/kai-fa-huan-jing-an-zhuang.html)
 
 
 ## (三) 下载、调试
 
-如何使用下载调试工具：参见[下载、调试文档](./doc/download_debug_tool_zh-cn.md)
+如何使用下载调试工具：参见[下载、调试文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)
 
 ## (四) SDK
 
