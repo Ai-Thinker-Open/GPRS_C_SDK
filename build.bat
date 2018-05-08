@@ -1,7 +1,8 @@
 
 @echo off
 REM //set you csdtk path
-set USER_CSDTK=G:\CSDTK41
+set USER_CSDTK=%GPRS_CSDTK42_PATH%
+if %USER_CSDTK%a==a (echo NO CSDTK,please install CSDTK firstly  && pause && exit)
 
 set ss=%time:~6,2%
 set mm=%time:~3,2%
@@ -11,9 +12,9 @@ set /a startTime=(%hh%*60+%mm%)*60+%ss%
 
 if not defined CSDTK4INSTALLDIR (
     set ptemp=platform\compilation\win32;
-    echo %USER_CSDTK%
+    echo CSDTK PATH: %USER_CSDTK%
     call %USER_CSDTK%\CSDTKvars.bat
-    echo first time set csdtk auto
+    REM echo first time set csdtk auto
 ) else (
     set ptemp=
 )
@@ -30,7 +31,7 @@ if "%1%"x =="demo"x (
     )
     sed -i "15d" Makefile
     sed -i "15i\LOCAL_MODULE_DEPENDS += demo/%2%" Makefile
-    goto compile                   
+    goto compile
     REM goto end_exit
 )else (
     if "%1%"x =="clean"x (
@@ -54,8 +55,14 @@ if "%1%"x =="demo"x (
 
 
 :compile
-    set LOG_FILE=build\%PROJ_NAME%_build.log
-    make -r -j4 CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
+    set LOG_FILE=%BUILD_PATH%\build\%PROJ_NAME%_build.log
+    if exist "%BUILD_PATH%\build" (
+        echo build folder exist
+    ) else (
+        md %BUILD_PATH%\build
+    )
+    echo number of processors: %number_of_processors%
+    make -r -j%number_of_processors% CT_RELEASE=%compileMode%  2>&1 | tee %LOG_FILE%
     REM make -r -j4 CT_RELEASE=%compileMode%  2>&1 
     REM copy hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod hex\%PROJ_NAME%\%PROJ_NAME%_flash_%compileMode%.lod
     REM del hex\%PROJ_NAME%\%PROJ_NAME%_flash.lod
@@ -72,20 +79,25 @@ if "%1%"x =="demo"x (
     set /a rom_use=%use_rom_size%+%use_rom_bss_size%   
     REM set /a ram_percent=%ram_use%*10000/%ram_total%
     REM set /a rom_percent=rom_use*10000/%rom_total%
-    echo ROM    total:%rom_total% Bytes     use:%rom_use% Bytes
-    echo RAM    total:%ram_total% Bytes     use:%ram_use% Bytes
+    echo ROM    total:%rom_total% Bytes     used:%rom_use% Bytes
+    echo RAM    total:%ram_total% Bytes     used:%ram_use% Bytes
     goto end_exit
 
 :clean_project
-    if "%2%"x =="all"x (
-        echo delte %SOFT_WORKDIR%/hex
-        rd /s/q %BUILD_PATH%\hex
-        rd /s/q %BUILD_PATH%\build
+    if exist %BUILD_PATH%\hex (
+        if "%2%"x =="all"x (
+            echo delte %SOFT_WORKDIR%/hex
+            rd /s/q %BUILD_PATH%\hex
+            rd /s/q %BUILD_PATH%\build
+        ) else (
+            echo delte %SOFT_WORKDIR%/hex/%2%
+            rd /s/q %BUILD_PATH%\hex\%2%
+            rd /s/q %BUILD_PATH%\build\%2%
+        )
     ) else (
-        echo delte %SOFT_WORKDIR%/hex/%2%
-        rd /s/q %BUILD_PATH%\hex\%2%
-        rd /s/q %BUILD_PATH%\build\%2%
-    )                      
+        echo already clean
+    )
+    echo clean complete
     goto end_exit
 
 :usage_help
@@ -107,4 +119,4 @@ if "%1%"x =="demo"x (
     set /a endTime=(%hh%*60+%mm%)*60+%ss%
     set /a total=%endTime%-%startTime%
     echo === Build Time: %total%s at %date% %time% ===
-    pause
+    echo _____________________________________________________
