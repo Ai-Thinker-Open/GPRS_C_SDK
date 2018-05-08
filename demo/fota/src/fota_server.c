@@ -88,7 +88,7 @@ static void FOTASERVER_TestTask()
     while(1)
     {
         static int times = 0;
-        Trace(1,"fota server is new %s:%d",++times, SOFT_VERSION);
+        Trace(1,"fota server is new %s:%d", SOFT_VERSION, ++times);
         OS_Sleep(5000);
     }
 }

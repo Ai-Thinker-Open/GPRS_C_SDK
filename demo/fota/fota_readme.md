@@ -9,7 +9,7 @@ python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_de
 ```
 * 把两个ota包按照相应的位置上传，选择旧包位置，选择新包位置，点击create
 ```
-![](./doc/assets/fota.png)
+![](../../../doc/assets/fota.png)</br>
 ```
 * 保留生成的pack，可以先通过uart进行本地升级测试，再进行fota测试，具体参考代码GPRS_C_SDK\demo\fota\fota_uart.c
 * 把生成的pack包放到http文件服务器上

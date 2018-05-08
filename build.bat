@@ -1,7 +1,7 @@
 
 @echo off
 REM //set you csdtk path
-set USER_CSDTK=G:\CSDTK41
+set USER_CSDTK=G:\CSDTK42
 
 set ss=%time:~6,2%
 set mm=%time:~3,2%
