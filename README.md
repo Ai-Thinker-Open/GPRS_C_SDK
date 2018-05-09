@@ -11,9 +11,12 @@ Ai-Thinker GPRS development SDK written by C
 
 ## (一) 硬件
 
-* **A9 GPRS 模块**</br>
+### A9 GPRS 模块
+
 ![](./doc/assets/A9.png)</br>
-特征：
+
+##### 特征
+
   * 32位内核，主频高达312MHz，4k指令缓存，4k数据缓存
   * 多达29个GPIO（两个GPIO作为下载口）
   * 实时时钟、闹钟
@@ -33,16 +36,23 @@ Ai-Thinker GPRS development SDK written by C
   * 语音通话
   * 短信服务
 
-* **A9G GPRS+GPS+BDS模块**</br>
+### A9G GPRS+GPS+BDS模块
+ 
 ![](./doc/assets/A9G.png)</br>
-特征：
+
+##### 特征
+
   * A9所有特征
   * 集成GPS+BDS(和串口2连接)
 
-* **A9/A9G GPRS(+GPS+BDS) 开发板**</br>
+### A9/A9G GPRS(+GPS+BDS) 开发板
+
 ![](./doc/assets/A9G_dev.png)</br>
+
 A9/A9G开发板，方便开发和调试
-特征：
+
+##### 特征
+
   * 1个A9G模块（A9和A9G采用相同封装，引脚相同,所以开发板通用）
   * 引出模块29个GPIO（包括2个下载调试引脚（`HST_TX`,`HST_RX`）
   * 1个SIM卡（Micro卡）卡槽(Nano卡<Micro卡<标准卡)
@@ -51,47 +61,62 @@ A9/A9G开发板，方便开发和调试
   * 1个GPS  IPEX1代座子
   * 一个USB接口
   * 5v-4.2V DC-DC，故可以5v供电或者3.8~4.2V供电
-  * 1个加速度计LIS3DHx芯片
+  * 1个加速度计LIS3DHx芯片（购买时请咨询客服开发板有无加速度计）
   * 1个开机按键，1个复位按键
   * 2个连接到GPIO的LED灯
-  * 1个麦克风</br>
-![](./doc/assets/A9G_dev_pin.png)</br>
-> 注意图中的所有引脚名均为A9/A9G内主芯片的引脚，A9G内部串口2已经和GPS连接，即开启GPS后`RX`脚会输出GPS输出的原始信息
+  * 1个麦克风
 
-* **USB转串口模块**</br>
-![](./doc/assets/USB-UART.png)</br>
+##### pudding开发板引脚图
+
+![](./doc/assets/pudding_pin.png)</br>
+
+### USB转串口模块
+
+![](./doc/assets/USB-UART.png)
+
 需要注意的是，开发板上的USB接口不是USB转串口功能，而是USB1.1功能， 
 所以，为了下载和调试，需要一个USB转串口模块接板子上的`HST_TX`和`HST_RX`引脚
 
-* **锂电池**</br>
+### 锂电池
+
 用来给模块供电，或者使用5V电源也行，USB转串口模块直接供电也行，要保证有足够的电流供应
 
 
 
-## (二) 开发环境搭建
+## (二) SDK特征
 
-* 开发环境搭建过程参见[开发环境搭建文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/c-sdk/kai-fa-huan-jing-an-zhuang.html)
-
-
-## (三) 下载、调试
-
-如何使用下载调试工具：参见[下载、调试文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)
-
-## (四) SDK
-
-#### SDK特征
-
-* 提供易用的API，只要有C语言开发基础就可以快速使用
-* 集成大量功能，包括基本的GPIO、UART、SPI、IIC、ADC、OS、FS... ... 以及GPRS联网(socket、dns)、MQTT、短信、电话等
+1. 提供易用的API，只要有C语言开发基础就可以快速使用，并提供详细的例程和文档
+2. 集成大量功能，包括：
+    * GPIO
+    * UART
+    * 基础信息获取如ICCID、IMEI等
+    * SPI
+    * I2C
+    * ADC
+    * OS
+    * FS
+    * GPRS网络
+    * socket
+    * dns
+    * SSL/TLS
+    * MQTT
+    * 短信
+    * 通话
+    * 低功耗
+    * GPS
+    * RTC、网络时间
+    * FOTA
 
 
 #### 获得SDK
 
 代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
 
-* 方法一：从github[下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
+需要**注意**的是：使用**本页面右上角的绿色<kbd>Clone or download</kbd>按钮**下载会得到不包含`SDK-LIB`的压缩包，**请不要使用**这种方式获得源码！否则编译会报文件缺失的错误
+
+* 方法一：从github[发布页面下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
   > 这种方式获取的代码的发布的版本
-  > 需要**注意**的是：使用页面右上角的绿色<kbd>Clone or download</kbd>按钮下载会得到不包含`SDK-LIB`的压缩包，**请不要**使用这种方式获得源码！
+
 
 
 * 方法二：使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
@@ -116,13 +141,14 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 
 
 
-#### 使用SDK开发应用
+## （三） 开发文档及例程
 
-当做好基本准备后，就可以开始码代码了
 
-SDK的`demo`目录下有许多例程，有什么需要参照例程写就好了
+**文档地址**：[GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/)
 
-更多SDK文档看这里：[GPRS C SDK文档](https://neutree.gitbooks.io/gprs-c-sdk-doc/)
+包括[开发环境安装](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/c-sdk/kai-fa-huan-jing-an-zhuang.html)、[固件下载、调试](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)以及[GPRS基础知识](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/ji-chu-zhi-shi/gsmgprs.html)、API说明等
+
+例程在本项目的[demo](./demo)目录下
 
 
 
