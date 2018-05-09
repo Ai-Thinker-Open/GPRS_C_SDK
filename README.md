@@ -144,9 +144,9 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ## (三) 开发文档及例程
 
 
-**文档地址**：[GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/)
+**文档地址**：[GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)
 
-包括[开发环境安装](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/c-sdk/kai-fa-huan-jing-an-zhuang.html)、[固件下载、调试](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)以及[GPRS基础知识](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/ji-chu-zhi-shi/gsmgprs.html)、API说明等
+包括[开发环境安装](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/kai-fa-huan-jing-an-zhuang.html)、[固件下载、调试](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)以及[GPRS基础知识](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/ji-chu-zhi-shi/gsmgprs.html)、API说明等
 
 例程在本项目的[demo](./demo)目录下
 
