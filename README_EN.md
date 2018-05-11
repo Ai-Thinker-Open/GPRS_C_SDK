@@ -53,7 +53,7 @@ A9/A9G development board for easy development and debugging
   * 1 power key, and a reset button
   * 2 LED
   * 1 microphone </br>
-![](./doc/assets/A9G_dev_pin.png) </br>
+![](./doc/assets/pudding_pin.png) </br>
 
 
 * **USB to Serial Module** </br>
@@ -64,34 +64,7 @@ Therefore, in order to download or debug, you need at least one USB to serial po
 * **Lithium Battery** </br>
 board can be light up with 5V or 4.2V power, and ensure supply enough current
 
-
-## ( B ) Development environment
-
-See [Development Environment Documentation](./doc/en/compile_environment_en.md)
-
-Or refer to video tutorials: [Click to view video](https://www.bilibili.com/video/av16579395/)
-
-If you have already set up, use `build.sh` script to compile the project, open `cygwin`, into the project directory:
-* Use `./build.sh $ PROJ` to compile your application,
-  e.g. ` ./build.sh app`
-* Use `./build.sh demo $ PROJ` to compile demo project
-  e.g. `./build.sh demo gpio`
-* Use `./build.sh clean $ PROJ` to clear the build files of the` $ PROJ`
-* Use `./build.sh clean all` to clear all build files
-* Use `./build.sh ... release` to build release software
-  e.g. `./build.sh demo gpio release`
-
-If you encounter problems, please carefully compare the document or video to find if there is something wrong, you can alse refer to [issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)
-
-## ( C ) Download, Debug
-
-Refer to [Download, Debug Documentation](./doc/em/download_debug_tool_en.md)
-
-After build, there's two `*.lod` files in the hex folder, the bigger one should be burn to board if the program is first time burn, you can only download the small one later. 
-
-If you run into problems, see the FAQs in the documentation, or you can refer to[issue](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)
-
-## ( D ) SDK
+## ( B ) SDK
 
 #### SDK Features
 
@@ -101,10 +74,14 @@ Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, O
 
 #### Get the SDK
 
-* Download the latest released archive from github (https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases).
+**Attention**: Please **DO NOT** Download using the green <kbd> Clone or download </kbd> button in the top right corner of the page will result in tarballs without `SDK-LIB`
+
+there's two way to download SDK:
+
+* Download the latest released archive from [github release page](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases).
   > This release gets the released version of the code
-  > **Attention**: Download using the green <kbd> Clone or download </kbd> button in the top right corner of the page will result in tarballs without `SDK-LIB`, deprecated
-* Or clone directly(need to install `git`), and must with parameter` --recursive`, or get incomplete SDK files
+
+* Or clone directly(need to install `git`), and **must with parameter` --recursive`**, or get incomplete SDK files
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
@@ -126,10 +103,11 @@ demo | examples |
 
 #### Develop applications using the SDK
 
-Refer to the `demo` folder
+Examples refer to the `demo` folder
 
-If you have not been learned about GPRS, or can not understand the demo code, or have questions about the demo code, be sure to read through this document
-[GPRS ​​and SDK start from scratch. . ](./doc/en/gprs_start_from_scratch_en.md)
+**Doumentation** here:  [GPRS C SDK DOC](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en)
+
+Include [environment installation](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/installation.html) or [burn & debug](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/burn-debug.html) docs etc.
 
 
 ## ( E ) Feedback
