@@ -66,13 +66,13 @@ board can be light up with 5V or 4.2V power, and ensure supply enough current
 
 ## ( B ) SDK
 
-#### SDK Features
+### SDK Features
 
 * Provide easy-to-use API, as long as you have `C` language knowledge. 
 Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS etc.
 
 
-#### Get the SDK
+### Get the SDK
 
 **Attention**: Please **DO NOT** Download using the green <kbd> Clone or download </kbd> button in the top right corner of the page will result in tarballs without `SDK-LIB`
 
@@ -86,7 +86,7 @@ there's two way to download SDK:
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
 
-#### SDK directory structure:
+### SDK directory structure:
 
 | Contents | Description |
 | --- | --- |
@@ -101,7 +101,7 @@ demo | examples |
 
 
 
-#### Develop applications using the SDK
+### Develop applications using the SDK
 
 Examples refer to the `demo` folder
 
