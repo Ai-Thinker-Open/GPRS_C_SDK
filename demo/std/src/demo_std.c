@@ -54,7 +54,7 @@ void STD_TestTask()
         Trace(1,"atox:%d",d);
 
         float e = atof("123.456");
-        Trace(1,"atof:%d.%d",(int)(e),(int)(e*1000%1000));
+        Trace(1,"atof:%d.%d",(int)(e),((int)(e*1000)%1000));
 
         char* string = "-12345 stop here";
         char* stopString = NULL;
@@ -76,6 +76,12 @@ void STD_TestTask()
         int* item = NULL;
         item = bsearch(&key,num,10,sizeof(int),cmp);
         Trace(1,"item:%d",*item);
+
+        int read0,read1;
+        // sscanf("123 456","%d %d",&read0,&read1);//error!!!
+        sscanf("123","%d",&read0);
+        sscanf("456","%d",&read1);
+        Trace(1,"read0:%d, read1:%d",read0,read1);
 
         
         OS_Sleep(3000);
