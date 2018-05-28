@@ -633,7 +633,7 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 			# python $(LODPYCOMBINE_TOOL) --opt merge --bl $(AM_PLT_LOD_FILE) --lod $(LOD_FILE) --output $(WITH_PLT_LOD_FILE); \
 	# $(LODCOMBINE_TOOL) openat -l $(tepath)SW_V2000_csdk.lod -i $(tepath)uart_flash_debug.lod -o $(tepath)test.lod -u $(tepath)testota.lod; 
 	${ECHO}  "LODTOBIN          Sucessful"
-	@${ECHO} "LODPYCOMBINE        Combine user lod with Platform lod"
+	@${ECHO} "LODCOMBINE        Combine user lod with Platform lod"
 	if [ -f $(LOD_FILE) ]; then                                                                 \
 		if [ -f $(AM_PLT_LOD_FILE) ]; then  \
 			$(LODCOMBINE_TOOL) openat -l  $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE) -u $(WITH_PLT_OTA_FILE);   \
