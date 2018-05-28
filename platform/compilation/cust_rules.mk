@@ -20,6 +20,9 @@ ifeq ($(MAKELEVEL),0)
 ifeq "$(strip $(CT_RELEASE))" ""
     export CT_RELEASE := debug
 endif
+
+export tepath := ${SOFT_WORKDIR}/platform/compilation/
+
 VALID_RELEASE_LIST :=release debug
 SELECTED_RELEASE := $(filter $(VALID_RELEASE_LIST), $(CT_RELEASE))
 ifeq "$(SELECTED_RELEASE)" ""
@@ -412,6 +415,7 @@ endif #AM_CONFIG_SUPPORT
 ifneq "${AM_PLT_LOD_FILE}" ""
 PLT_LOD_VERSION := $(shell echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/')
 WITH_PLT_LOD_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}_${CT_RELEASE}.lod
+WITH_PLT_OTA_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}_${CT_RELEASE}_ota.lod
 CFG_Lod_File_WITH_PLT := `echo ${BAS_FINAL}_\`echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/'\`.lod  | sed 's/.*\(SW_.*\.lod\)$$/\1/'`
 endif
 
@@ -625,13 +629,14 @@ else
 ifneq "${AM_PLT_LOD_FILE}" ""
 	@${ECHO}
 	@${ECHO} "LODTOBIN  $(LOD_FILE)"
-	# $(LOD_TO_BIN) ${LOD_FILE} -0
-	# 		$(LODCOMBINE_TOOL) openat -l $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE); 
+	# $(LOD_TO_BIN) ${LOD_FILE} -0                                                   \
+			# python $(LODPYCOMBINE_TOOL) --opt merge --bl $(AM_PLT_LOD_FILE) --lod $(LOD_FILE) --output $(WITH_PLT_LOD_FILE); \
+	# $(LODCOMBINE_TOOL) openat -l $(tepath)SW_V2000_csdk.lod -i $(tepath)uart_flash_debug.lod -o $(tepath)test.lod -u $(tepath)testota.lod; 
 	${ECHO}  "LODTOBIN          Sucessful"
 	@${ECHO} "LODPYCOMBINE        Combine user lod with Platform lod"
 	if [ -f $(LOD_FILE) ]; then                                                                 \
-		if [ -f $(AM_PLT_LOD_FILE) ]; then                                                       \
-			python $(LODPYCOMBINE_TOOL) --opt merge --bl $(AM_PLT_LOD_FILE) --lod $(LOD_FILE) --output $(WITH_PLT_LOD_FILE); \
+		if [ -f $(AM_PLT_LOD_FILE) ]; then  \
+			$(LODCOMBINE_TOOL) openat -l  $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE) -u $(WITH_PLT_OTA_FILE);   \
 			if [ $$? -gt 0 ]; then \
 				${ECHO} "LODCOMBINE        Combine failed";   \
 				exit 1; \
