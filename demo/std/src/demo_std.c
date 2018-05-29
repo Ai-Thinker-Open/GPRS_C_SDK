@@ -83,8 +83,8 @@ void STD_TestTask()
         sscanf("456","%d",&read1);
         Trace(1,"read0:%d, read1:%d",read0,read1);
 
-        a = atan(1);
-        gcvt(a, 3, bufff);
+        double f = atan(1);
+        gcvt(f, 3, bufff);
         Trace(1,"atan(1) = %s",bufff);
 
 
