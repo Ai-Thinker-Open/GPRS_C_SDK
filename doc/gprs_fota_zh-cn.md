@@ -1,17 +1,17 @@
 # FOTA使用说明
 ## 1.整体流程
-* 保留旧固件包
-* 生成新的固件包
-* 登录差分包服务器 http://111.205.140.137:11016/
-* 使用脚本生成ota包,old参数是旧包所在位置，new参数是新包所在位置,最后生成两个用于上传的ota包
+* 保留旧固件包,如V1_ota.lod
+* 生成新的固件包，如V2_ota.lod
+* 使用脚本命令生成差异包,如
 ```
-python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_debug-fold.lod --new fota\fota_B1508_debug-fnew.lod
+build.bat fota V1_ota.lod V2_ota.lod V1toV2.pack
+参数解释：
+V1_ota.lod 旧固件所在路径(可相对于build.bat，也可使用绝对路径)
+V2_ota.lod 需要更新固件所在路径(可相对于build.bat，也可使用绝对路径)
+V1toV2.pack 生成的差异包(放到服务器上的)
 ```
-* 把两个ota包按照相应的位置上传，选择旧包位置，选择新包位置，点击create
-```
-![](../../../doc/assets/fota.png)</br>
-```
-* 保留生成的pack，可以先通过uart进行本地升级测试，再进行fota测试，具体参考代码GPRS_C_SDK\demo\fota\fota_uart.c
+* 如果没有提示出错，![成功如图](./assets/fota_success.png)
+* 保留生成的pack，可以先通过uart进行本地升级测试，再进行server测试，具体参考代码GPRS_C_SDK\demo\fota\fota_uart.c
 * 把生成的pack包放到http文件服务器上
 * 修改GPRS_C_SDK\demo\fota\fota_server.c代码中http的url，实现fota
 ```

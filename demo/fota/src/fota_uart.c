@@ -73,7 +73,7 @@ static void FOTA_ReceivedData(UINT8 *data, UINT16 len)
 
 upgrade_faile:
     Trace(1,"uart fota false");
-    API_FotaClean();
+    // API_FotaClean();
     return ;
 }
 
@@ -107,7 +107,7 @@ static void FOTAUART_TestTask()
     };
     OS_Sleep(1000);//no task
     API_Event_t* event=NULL;
-    Trace(1,"uart2 init is new");
+    Trace(1,"uart2 init is");
     UART_Init(UART1,config);
 
     while(1)
