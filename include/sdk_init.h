@@ -245,6 +245,10 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*API_FotaClean)(void);
     int                 (*API_FotaByServer)(char *url, void (*data_process)(const unsigned char *pData, int len) );
 
+    //sys
+    uint32_t            (*SYS_EnterCriticalSection)(void);
+    void                (*SYS_ExitCriticalSection)(uint32_t status);
+
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
