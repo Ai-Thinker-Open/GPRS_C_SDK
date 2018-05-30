@@ -239,3 +239,6 @@ __gedf2
 __subdf3
 __floatsidf
 __divdf3
+__gtdf2
+__ltdf2
+

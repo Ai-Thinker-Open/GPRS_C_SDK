@@ -5,6 +5,7 @@
 #include "api_debug.h"
 #include "api_os.h"
 #include "api_event.h"
+#include "math.h"
 
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
@@ -24,7 +25,6 @@ int cmp ( const void *a , const void *b )
 { 
     return *(int *)a - *(int *)b; 
 } 
-
 
 void STD_TestTask()
 {
@@ -82,6 +82,11 @@ void STD_TestTask()
         sscanf("123","%d",&read0);
         sscanf("456","%d",&read1);
         Trace(1,"read0:%d, read1:%d",read0,read1);
+
+        double f = atan(1);
+        gcvt(f, 3, bufff);
+        Trace(1,"atan(1) = %s",bufff);
+
 
         
         OS_Sleep(3000);

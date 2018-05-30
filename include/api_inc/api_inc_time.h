@@ -41,6 +41,7 @@ typedef struct{
     uint8_t  minute;
     uint8_t  second;
     int8_t   timeZone;
+    int8_t   timeZoneMinutes;
 }RTC_Time_t;
 
 #define CLOCKS_PER_SEC   (16384.0)
