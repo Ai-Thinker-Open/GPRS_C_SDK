@@ -208,6 +208,14 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //std
     int                 (*sscanf)(const char * buf, const char * fmt, ...);
+    long                (*atol)(const char *s);
+    long long           (*atoll)(const char *s);
+    int                 (*atox)(const char *s, int len);
+    double              (*atof)(const char *s);
+    unsigned char*      (*itoa)(int value, char *str, int radix);
+    char*               (*gcvt)(double value, int ndigit, char *buf);
+    int                 (*rand) (void);
+    void                (*srand)(unsigned int seed);
 
     //ssl
     SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);
