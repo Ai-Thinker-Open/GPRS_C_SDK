@@ -121,6 +121,7 @@ if "%1%"x =="demo"x (
 
 :usage_help
     echo usage:
+    echo use 'build.bat fota old.lod new.lod fota.pack'
     echo use 'build.bat PROJECTNAME'            to build the project in ./PROJECTNAME             
     echo               eg: build.bat app                                              
     echo use 'build.bat demo PROJECTNAME'       to build demo in ./demo/PROJECTNAME          
