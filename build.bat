@@ -37,18 +37,22 @@ if "%1%"x =="demo"x (
     if "%1%"x =="clean"x (
         goto clean_project
     ) else (
-        if exist "%1%" (
-            set PROJ_NAME=%1%
-            if "%2%"x =="release"x (
-                set compileMode=release
-            )
-            sed -i "15d" Makefile
-            sed -i "15i\LOCAL_MODULE_DEPENDS += %1%" Makefile
-            goto compile                     
-            REM goto end_exit
+        if "%1%"x =="fota"x (
+            goto run_fota
         ) else (
-            echo param %1% is not illege 
-            goto usage_help
+            if exist "%1%" (
+                set PROJ_NAME=%1%
+                if "%2%"x =="release"x (
+                    set compileMode=release
+                )
+                sed -i "15d" Makefile
+                sed -i "15i\LOCAL_MODULE_DEPENDS += %1%" Makefile
+                goto compile                     
+                REM goto end_exit
+            ) else (
+                echo param %1% is not illege 
+                goto usage_help
+            )
         )
     )
 ) 
@@ -100,8 +104,24 @@ if "%1%"x =="demo"x (
     echo clean complete
     goto end_exit
 
+:run_fota         
+    if exist "%2%" (
+        if exist "%3%" (
+            echo waiting for making fota pack...
+            echo this will take a few minutes
+            REM platform\compilation\fota\fotacreate.exe 4194304 65536 0.lod 1.lod 0.pack
+            platform\compilation\fota\fotacreate.exe 4194304 65536 %2% % %3% % %4%
+        ) else (
+            echo usage: 'build.bat fota old.lod new.lod fota.pack'
+        )
+    ) else (
+        echo usage: 'build.bat fota old.lod new.lod fota.pack'
+    )
+    goto end_exit
+
 :usage_help
     echo usage:
+    echo use 'build.bat fota old.lod new.lod fota.pack'
     echo use 'build.bat PROJECTNAME'            to build the project in ./PROJECTNAME             
     echo               eg: build.bat app                                              
     echo use 'build.bat demo PROJECTNAME'       to build demo in ./demo/PROJECTNAME          

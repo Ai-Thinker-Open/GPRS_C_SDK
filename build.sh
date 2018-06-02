@@ -10,6 +10,7 @@
 function help()
 {
     echo "Usage:"
+    echo "use ./build.bat fota old.lod new.lod fota.pack"
     echo "use './build.sh PROJECTNAME' to build the project in ./PROJECTNAME             "
     echo "               eg: ./build.sh app                                              "
     echo "use './build.sh demo PROJECTNAME' to build demo in ./demo/PROJECTNAME          "
@@ -131,6 +132,19 @@ elif [[ $paramNum -eq 2  ]]; then
         sed -i '15d' Makefile
         sed -i "15i\LOCAL_MODULE_DEPENDS += project/$2" Makefile
     fi
+elif [[ $paramNum -eq 4  ]]; then
+    if [[ "$1x" == "fotax" ]]; then
+        if [ -f "$2" ]; then
+            if [ -f "$3" ]; then
+                echo "waiting for making fota pack..."
+                echo "this will take a few minutes"
+                platform/compilation/fota/fotacreate.exe 4194304 65536 $2 $3 $4
+                exit 0
+            fi
+        fi
+    fi
+    help
+    exit 0
 else
     help
     exit 0
