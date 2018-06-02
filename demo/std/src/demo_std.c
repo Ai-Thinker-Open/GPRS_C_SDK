@@ -45,13 +45,13 @@ void STD_TestTask()
         Trace(1,"atoi:%d",a);
 
         long b = atol("12");
-        Trace(1,"atol:%d",b);
+        Trace(1,"atol:%d",(int)b);
 
         long c = atoll("12");
-        Trace(1,"atoll:%d",c);
+        Trace(1,"atoll:%d",(int)c);
 
         long d = atox("1234",4);
-        Trace(1,"atox:%d",d);
+        Trace(1,"atox:%d",(int)d);
 
         float e = atof("123.456");
         Trace(1,"atof:%d.%d",(int)(e),((int)(e*1000)%1000));
@@ -86,6 +86,66 @@ void STD_TestTask()
         double f = atan(1);
         gcvt(f, 3, bufff);
         Trace(1,"atan(1) = %s",bufff);
+
+        f = tan2(1,1);
+        gcvt(f, 3, bufff);
+        Trace(1,"atan2(1) = %s",bufff);
+
+        int g;
+        double h;
+        struct exception i;
+
+        f = acos(1);
+        f = asin(1);
+        f = atan(1);
+        f = atan2(1,1);
+        f = cos(1);
+        f = sin(1);
+        f = tan(1);
+        f = cosh(1);
+        f = sinh(1);
+        f = tanh(1);
+        f = exp(1);
+        f = frexp(1,&g);
+        f = ldexp(1,g);
+        f = log(1);
+        f = log10(1);
+        f = modf(1,&f);
+        f = pow(2,4);
+        f = sqrt(2);
+        f = ceil(1);
+        f = fabs(1);
+        f = floor(1);
+        f = fmod(1,1);
+        f = erf(1);
+        f = erfc(1);
+        f = gamma(1);
+        f = hypot(1,1);
+        f = isnan(1);
+        f = finite(1);
+        f = j0(1);
+        f = j1(1);
+        f = jn(1,1);
+        f = lgamma(1);
+        f = y0(1);
+        f = y1(1);
+        f = yn(1,1);
+        f = acosh(1);
+        f = asinh(1);
+        f = atanh(1);
+        f = cbrt(1);
+        f = logb(1);
+        f = nextafter(1,1);
+        f = remainder(1,1);
+        f = scalb(1,1);
+        f = matherr(&i);
+        f = significand(1);
+        f = copysign(1,1);
+        f = ilogb(1);
+        f = rint(1);
+        f = scalbn(1,1);
+        f = expm1(1);
+        f = log1p(1);
 
 
         

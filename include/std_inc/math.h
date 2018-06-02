@@ -27,6 +27,7 @@
 
 //#include <config.h>
 #include <stdlib.h>
+#include <sdk_init.h>
 
 /*
  * AIX includes a header that defines hz,
@@ -146,7 +147,8 @@ extern "C" {
 extern double acos __P((double));
 extern double asin __P((double));
 extern double atan __P((double));
-extern double atan2 __P((double, double));
+// extern double atan2 __P((double, double));
+#define atan2     CSDK_FUNC(atan2)
 extern double cos __P((double));
 extern double sin __P((double));
 extern double tan __P((double));
@@ -168,11 +170,13 @@ extern double sqrt __P((double));
 extern double ceil __P((double));
 extern double fabs __P((double));
 extern double floor __P((double));
-extern double fmod __P((double, double));
+// extern double fmod __P((double, double));
+#define fmod     CSDK_FUNC(fmod)
 
 extern double erf __P((double));
 extern double erfc __P((double));
-extern double gamma __P((double));
+// extern double gamma __P((double));
+// #define gamma     CSDK_FUNC(gamma)
 extern double hypot __P((double, double));
 
 #if !defined(isnan)
@@ -183,25 +187,30 @@ extern int finite __P((double));
 extern double j0 __P((double));
 extern double j1 __P((double));
 extern double jn __P((int, double));
-extern double lgamma __P((double));
+// extern double lgamma __P((double));
+// #define lgamma     CSDK_FUNC(lgamma)
 extern double y0 __P((double));
 extern double y1 __P((double));
 extern double yn __P((int, double));
 
 extern double acosh __P((double));
 extern double asinh __P((double));
-extern double atanh __P((double));
+// extern double atanh __P((double));
+// #define atanh     CSDK_FUNC(atanh)
 extern double cbrt __P((double));
 extern double logb __P((double));
-extern double nextafter __P((double, double));
+// extern double nextafter __P((double, double));
+// #define nextafter     CSDK_FUNC(nextafter)
 extern double remainder __P((double, double));
-#ifdef _SCALB_INT
-extern double scalb __P((double, int));
-#else
-extern double scalb __P((double, double));
-#endif
+// #ifdef _SCALB_INT
+// extern double scalb __P((double, int));
+// #else
+// // extern double scalb __P((double, double));
+// #define scalb     CSDK_FUNC(scalb)
+// #endif
 
-extern int matherr __P((struct exception *));
+// extern int matherr __P((struct exception *));
+// #define matherr     CSDK_FUNC(matherr)
 
 /*
  * IEEE Test Vector
@@ -213,7 +222,8 @@ extern double significand __P((double));
  */
 extern double copysign __P((double, double));
 extern int ilogb __P((double));
-extern double rint __P((double));
+// extern double rint __P((double));
+#define rint     CSDK_FUNC(rint)
 extern double scalbn __P((double, int));
 
 /*

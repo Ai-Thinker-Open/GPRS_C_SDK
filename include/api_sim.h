@@ -12,6 +12,7 @@
  * 
  */
 #define SIM_GetICCID     CSDK_FUNC(SIM_GetICCID)
+#define SIM_GetIMSI      CSDK_FUNC(SIM_GetIMSI)
 
 
 #endif

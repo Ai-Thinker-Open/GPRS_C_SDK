@@ -3,7 +3,7 @@
 
 /******************************************************************************/
 
-typedef void (*fota_handler_t)(const unsigned char *pData, int len);
+#include "sdk_init.h"
 /*********************************************************************************/
 /// \brief  init fota buf ,need large malloc
 /// \param  size to malloc

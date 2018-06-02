@@ -24,4 +24,15 @@
 #define API_FS_Rmdir        CSDK_FUNC(API_FS_Rmdir)
 #define API_FS_GetFSInfo    CSDK_FUNC(API_FS_GetFSInfo)
 
+//////only for new file system
+#define API_FS_SetUseOldVersion CSDK_FUNC(API_FS_SetUseOldVersion)
+#define API_FS_OpenDir          CSDK_FUNC(API_FS_OpenDir)
+#define API_FS_ReadDir          CSDK_FUNC(API_FS_ReadDir)
+#define API_FS_ReadDir_r        CSDK_FUNC(API_FS_ReadDir_r)
+#define API_FS_TellDir          CSDK_FUNC(API_FS_TellDir)
+#define API_FS_SeekDir          CSDK_FUNC(API_FS_SeekDir)
+#define API_FS_RewindDir        CSDK_FUNC(API_FS_RewindDir)
+#define API_FS_CloseDir         CSDK_FUNC(API_FS_CloseDir)
+#define API_FS_RealPath         CSDK_FUNC(API_FS_RealPath)
+
 #endif

@@ -241,4 +241,12 @@ __floatsidf
 __divdf3
 __gtdf2
 __ltdf2
-
+__make_fp
+__thenan_sf
+__subsf3
+__addsf3
+__floatsisf
+__unpack_f
+__truncdfsf2
+__pack_f
+__mulsf3

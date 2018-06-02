@@ -6,7 +6,18 @@
 #define FS_TFLASH_ROOT "/t"
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+//do not use old version if you haven‘t deployed your product before, 
+//just reserve to be compatible with the old version
+
+// #define FS_USE_OLD_VERSION
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+
 /*#################      fs      #################################*/
+#ifdef FS_USE_OLD_VERSION
 // Read only.
 #define FS_O_RDONLY                0
 
@@ -68,14 +79,46 @@
 // Set file pointer to EOF plus "offset"
 #define FS_SEEK_END                 2
 
+#else
+
+#define FS_O_RDONLY                0
+#define FS_O_WRONLY                1
+#define FS_O_RDWR                  2
+#define FS_O_ACCMODE               3
+#define FS_O_CREAT                 0x0200
+#define FS_O_EXCL                  0x0800
+#define FS_O_TRUNC                 0x0400
+#define FS_O_APPEND                0x0008
+#define FS_O_SYNC		           0x2000
+
+#define FS_SEEK_SET                 0
+#define FS_SEEK_CUR                 1
+#define FS_SEEK_END                 2
+
+typedef struct
+{
+    int16_t fs_index;
+    int16_t _reserved;
+}Dir_t;
+
+
+typedef struct
+{
+    int d_ino;
+    unsigned char d_type;
+    char d_name[256];
+}Dirent_t;
+
+#endif
+
 typedef struct
 {
     UINT64 totalSize;    // Total size
     UINT64 usedSize;     // Has used  size
 } API_FS_INFO;
 
-#define FS_DEVICE_NAME_T_FLASH  "TF"
-#define FS_DEVICE_NAME_FLASH    "FLASH"
+#define FS_DEVICE_NAME_T_FLASH  "/t"
+#define FS_DEVICE_NAME_FLASH    "/"
 
 // Error code define.
 ///////////////////////////////////////////////////////////////////////////////

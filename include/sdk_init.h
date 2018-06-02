@@ -21,6 +21,7 @@
 #include <api_inc_i2c.h>
 #include <api_inc_ssl.h>
 #include <api_inc_spi.h>
+#include <api_inc_fota.h>
 
 
 
@@ -47,7 +48,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*OS_StartTask)(HANDLE hTask,PVOID pParameter);
     void                (*OS_StopTask)(HANDLE hTask);
     bool                (*OS_DeleteTask)(HANDLE hTask);
-    uint32_t            (*OS_SuspendTask)(HANDLE hTask);
+    bool                (*OS_SuspendTask)(HANDLE hTask);
     bool                (*OS_ResumeTask)(HANDLE hTask);
     bool                (*OS_Sleep)(uint32_t nMillisecondes);
     void                (*OS_SleepUs)(uint32_t us);
@@ -139,6 +140,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*LocalLanguage2UnicodeBigEndian)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
 
     /*fs*/
+    void                (*API_FS_SetUseOldVersion)(bool useOldVersion);
     int32_t             (*API_FS_Open)(PCSTR    fileName,uint32_t operationFlag,uint32_t mode);
     int32_t             (*API_FS_Close)(int32_t fd);
     int32_t             (*API_FS_Read)(int32_t  fd,uint8_t* pBuffer,uint32_t length);
@@ -157,6 +159,14 @@ typedef struct T_INTERFACE_VTBL_TAG
     int32_t             (*API_FS_Mkdir)(PCSTR fileName,uint32_t mode);
     int32_t             (*API_FS_Rmdir)(PCSTR fileName);
     int32_t             (*API_FS_GetFSInfo)(PCSTR pDevName, API_FS_INFO* pFsInfo);
+    Dir_t*              (*API_FS_OpenDir)(const char* name);
+    Dirent_t*           (*API_FS_ReadDir)(Dir_t* pDir);
+    int                 (*API_FS_ReadDir_r)(Dir_t *pDir, Dirent_t *entry, Dirent_t **outDirent);
+    long                (*API_FS_TellDir)(Dir_t *pDir);
+    void                (*API_FS_SeekDir)(Dir_t *pDir, long loc);
+    void                (*API_FS_RewindDir)(Dir_t *pDir);
+    int                 (*API_FS_CloseDir)(Dir_t *pDir);
+    char*               (*API_FS_RealPath)(const char* path, char* resolvedPath);
 
     /*info*/
     bool                (*INFO_GetIMEI)(uint8_t* pImei);
@@ -195,6 +205,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //sim
     bool                (*SIM_GetICCID)(uint8_t* iccid);
+    bool                (*SIM_GetIMSI)(uint8_t* pImsi);
 
     //i2c
     bool                (*I2C_Init)(I2C_ID_t i2c, I2C_Config_t config);
@@ -216,6 +227,10 @@ typedef struct T_INTERFACE_VTBL_TAG
     char*               (*gcvt)(double value, int ndigit, char *buf);
     int                 (*rand) (void);
     void                (*srand)(unsigned int seed);
+    double              (*atan2)(double, double);
+    double              (*fmod)(double, double);
+    double              (*rint)(double);
+
 
     //ssl
     SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);
@@ -243,7 +258,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*API_FotaInit)(int size);
     int                 (*API_FotaReceiveData)(unsigned char *data, int len);
     void                (*API_FotaClean)(void);
-    int                 (*API_FotaByServer)(char *url, void (*data_process)(const unsigned char *pData, int len) );
+    int                 (*API_FotaByServer)(char *url, fota_handler_t data_process);
 
     //sys
     uint32_t            (*SYS_EnterCriticalSection)(void);
