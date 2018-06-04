@@ -87,10 +87,6 @@ void STD_TestTask()
         gcvt(f, 3, bufff);
         Trace(1,"atan(1) = %s",bufff);
 
-        f = tan2(1,1);
-        gcvt(f, 3, bufff);
-        Trace(1,"atan2(1) = %s",bufff);
-
         int g;
         double h;
         struct exception i;
@@ -119,26 +115,20 @@ void STD_TestTask()
         f = fmod(1,1);
         f = erf(1);
         f = erfc(1);
-        f = gamma(1);
         f = hypot(1,1);
         f = isnan(1);
         f = finite(1);
         f = j0(1);
         f = j1(1);
         f = jn(1,1);
-        f = lgamma(1);
         f = y0(1);
         f = y1(1);
         f = yn(1,1);
         f = acosh(1);
         f = asinh(1);
-        f = atanh(1);
         f = cbrt(1);
         f = logb(1);
-        f = nextafter(1,1);
         f = remainder(1,1);
-        f = scalb(1,1);
-        f = matherr(&i);
         f = significand(1);
         f = copysign(1,1);
         f = ilogb(1);
