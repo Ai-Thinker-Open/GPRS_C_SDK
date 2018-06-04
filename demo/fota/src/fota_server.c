@@ -11,7 +11,7 @@
 #define MAIN_TASK_NAME         "FOTA SERVER Test Task"
 
 
-#define SOFT_VERSION          "V3.0"
+#define SOFT_VERSION          "V3.1"
 #define FOTA_HTTP_SERVER      "http://www.vencol.top:8100/fota/%stonew.pack"
 
 

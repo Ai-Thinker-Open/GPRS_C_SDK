@@ -4,7 +4,7 @@
 
 void fota_Main(void)
 {
-    FOTA_UartTest();
-    // FOTASERVER_Test();
+    // FOTA_UartTest();
+    FOTASERVER_Test();
 }
 

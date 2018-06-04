@@ -12,7 +12,7 @@ LOCAL_MODULE_DEPENDS += init
 ##################################################################################
 
 
-LOCAL_MODULE_DEPENDS += demo/fs
+LOCAL_MODULE_DEPENDS += demo/fota
 
 
 
