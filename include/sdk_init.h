@@ -100,6 +100,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_StartDeactive)(uint8_t contextID);
     bool                (*Network_GetIp)(char* ip, uint8_t size);
     bool                (*Network_GetCellInfoRequst)();
+    bool                (*Network_GetAttachStatus)(uint8_t* status);
+    bool                (*Network_GetActiveStatus)(uint8_t* status);
     
     /*api_socket*/
     int                 (*Socket_TcpipConnect)(TCP_UDP_t tcpOrUdp, const char* ip,uint16_t port);

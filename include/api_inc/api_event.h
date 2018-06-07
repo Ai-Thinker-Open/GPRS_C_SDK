@@ -23,6 +23,7 @@ typedef enum{
     API_EVENT_ID_NETWORK_REGISTER_SEARCHING        ,
     API_EVENT_ID_NETWORK_REGISTER_DENIED           ,
     API_EVENT_ID_NETWORK_REGISTER_NO               ,
+    API_EVENT_ID_NETWORK_DEREGISTER                ,
     API_EVENT_ID_NETWORK_DETACHED                  ,
     API_EVENT_ID_NETWORK_ATTACH_FAILED             ,
     API_EVENT_ID_NETWORK_ATTACHED                  ,

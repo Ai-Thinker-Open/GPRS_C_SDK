@@ -71,6 +71,11 @@ typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 #define Network_StartDeactive             CSDK_FUNC(Network_StartDeactive)
 
 
+#define Network_GetAttachStatus           CSDK_FUNC(Network_GetAttachStatus)
+
+#define Network_GetActiveStatus           CSDK_FUNC(Network_GetActiveStatus)
+
+
 // bool Network_GetIp(char* ip, uint8_t size);
 #define Network_GetIp                     CSDK_FUNC(Network_GetIp)
 
