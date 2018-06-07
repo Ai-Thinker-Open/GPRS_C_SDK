@@ -12,7 +12,7 @@
 
 
 #define SOFT_VERSION          "V3.1"
-#define FOTA_HTTP_SERVER      "http://www.vencol.top:8100/fota/%stonew.pack"
+#define FOTA_HTTP_SERVER      "http://test.ai-thinker.com/csdk/fota/%stonew.pack"
 
 
 
