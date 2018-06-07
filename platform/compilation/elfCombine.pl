@@ -1,24 +1,9 @@
 #!/usr/bin/perl -w
-# --------------------------------------------------------------------------- #
-#       Copyright (C), AirM2M Comm. Co., Ltd. All rights reserved.            #
-# --------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------- #
-# This document contains proprietary information belonging to AirM2m.         #
-# Passing on and copying of this document, use and communication of its       #
-# contents is not permitted without prior written authorisation.              #
-# --------------------------------------------------------------------------- #
-#
-# when       who     what, where, why
-# YY.MM.DD   ---     ----------------
-# --------   ---     --------------------------------------------------------
-# 13.01.28   Lifei   Create
-#---------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------
-# ����:
-#     ������elf�ļ��ϲ��������µ�elf�ļ�
-# ������⣺
+# 功能:
+#     将两个elf文件合并，生成新的elf文件
+# 解决问题：
 #     1. 
 # ------------------------------------------------------------------------
 
@@ -27,6 +12,8 @@ use Config;
 use File::Find;
 use Getopt::Long;
 use File::Basename;
+use Cwd;
+use Cwd 'abs_path';
 
 my $g_dbg_level = "0";
    #0 No debug info
@@ -40,9 +27,9 @@ my $input_elf_file_1 = undef;
 my $input_elf_file_2 = undef;
 my $output_elf_file = undef;
 
-my $objstrip = '"mips-elf-strip.exe"';#objstrip����
-my $objdump = '"mips-elf-objdump.exe"';#objdump����
-my $ld = '"mips-elf-ld.exe"';#ld����
+my $objstrip = '"mips-elf-strip.exe"';#objstrip工具
+my $objdump = '"mips-elf-objdump.exe"';#objdump工具
+my $ld = '"mips-elf-ld.exe"';#ld工具
 
 my $ld_parameters = "-nostdlib --no-strip-discarded --oformat=elf32-littlemips --gc-sections";
 
@@ -61,19 +48,18 @@ EXTERN (_sxr_Irq_handler)
 EXTERN (boot_LoaderEnter)
 EXTERN (boot_Sector)
 EXTERN (boot_Sector_Nand)
-
 ";
 
 #/*********************************************************
 #  Function: dbg_out
-#  Description: ���������Ϣ
+#  Description: 输出调试信息
 #  Input:
-#    1. �����Ϣ�ĵȼ�
-#    2. ��Ҫ�������Ϣ
+#    1. 输出信息的等级
+#    2. 需要输出的信息
 #  Output:
 #  Return: 
 #  Others:
-#     ���ݵ�ǰȫ�ֱ���g_dbg_level�������Ƿ���Ҫ�����Ϣ
+#     根据当前全局变量g_dbg_level来决定是否需要输出信息
 #*********************************************************/
 sub dbg_out
 {
@@ -88,7 +74,7 @@ sub dbg_out
 
 #/*********************************************************
 #  Function: usage
-#  Description: �����pl�ű���ȫ������ѡ��
+#  Description: 输出该pl脚本的全部功能选项
 #  Input:
 #    1. 
 #  Output:
@@ -173,7 +159,7 @@ sub read_elf_section
                 {
                     if($sectionstr =~ /overlay/ && $str =~ /overlay/)
                     {
-                         #overlay section ����VMA��ַ�ظ�
+                         #overlay section 允许VMA地址重复
                     }
                     else
                     {
@@ -209,9 +195,9 @@ sub read_elf_section
 
 #/*********************************************************
 #  Function: elf_combine
-#  Description: prev_ld���ܲ�������
+#  Description: prev_ld功能参数解析
 #  Input:
-#    1. �����б�����
+#    1. 参数列表数组
 #  Output:
 #  Return: 
 #  Others:
@@ -226,13 +212,14 @@ sub elf_combine
     
     my $tmp_ld_file = "tmp_ld_script.ld";
     
-    #����elf��section��Ϣ
-    #`$objstrip -g $input_elf_file_1`;
-    `$objstrip -g $input_elf_file_2`;
+    #分析elf中section信息
+    # `$objstrip -g $input_elf_file_1`;
+    # `$objstrip -g $input_elf_file_2`;
     read_elf_section($input_elf_file_1, \%sect_table, \%addr_table);
     read_elf_section($input_elf_file_2, \%sect_table, \%addr_table);
     
-    #��������ʱʹ�õ� ld script �ļ�
+    
+    #生成链接时使用的 ld script 文件
     open(FH, ">$tmp_ld_file") or die "Cannot open tmp ld file:$!";
     print FH "$ld_script_header";
     print FH "SECTIONS\n{\n\n";
@@ -245,7 +232,7 @@ sub elf_combine
     print FH "\n}\n";
     close(FH);
     
-    #�����µ�elf�ļ�
+    #生成新的elf文件
     #${LD} -nostdlib -o ${BUILD_ROOT}/1.elf --no-strip-discarded --oformat=elf32-littlemips --script ${BUILD_ROOT}/3.ld -Map ${BUILD_ROOT}/1.map --gc-sections ${BUILD_ROOT}/SW_V001_A6300V_OPENAT.elf ${BUILD_ROOT}/SW_V867_A6300_ZH.elf
     my $map_file = $output_elf_file;
     $map_file =~ s/\.elf$/\.map/;
@@ -254,7 +241,6 @@ sub elf_combine
     $ld_parameters .= " --script $tmp_ld_file";
     $ld_parameters .= " $input_elf_file_1 $input_elf_file_2";
     `$ld $ld_parameters`;
-    # print "$ld $ld_parameters";
     $ret = $? >> 8;
     if(0 != $ret)
     {
@@ -338,7 +324,18 @@ else
     
     dbg_out("1", "parameter ok");
 
+    my $cwd = getcwd();
+    my $index1 = index($input_elf_file_1,$cwd)+length($cwd)+1;
+    my $index2 = length($input_elf_file_1);
+    $input_elf_file_1 = substr($input_elf_file_1,$index1,$index2);
+    # print "\n----$input_elf_file_1------\n";
+    $index1 = index($input_elf_file_2,$cwd)+length($cwd)+1;
+    $index2 = length($input_elf_file_2);
+    $input_elf_file_2 = substr($input_elf_file_2,$index1,$index2);
+    # print "\n----$input_elf_file_2------\n";
+
     elf_combine();
+
 }
 
 exit 0;
