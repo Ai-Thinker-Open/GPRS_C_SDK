@@ -66,7 +66,17 @@ typedef enum{
     
     //error
     API_EVENT_ID_MALLOC_FAILED                     ,
-    API_EVENT_ID_MAX
+
+    //ussd
+    API_EVENT_ID_USSD_IND                          , //pParam1: USSD_Type_t
+    API_EVENT_ID_USSD_SEND_SUCCESS                 , //pParam1: USSD_Type_t
+    API_EVENT_ID_USSD_SEND_FAIL                    , //param1:error code(USSD_Error_t) param2:error code2(USSD_Error_t)
+
+    //power
+    API_EVENT_ID_POWER_INFO                        , //param1: (PM_Charger_State_t<<16|charge_level(%)) , param2: (PM_Battery_State_t<<16|battery_voltage(mV))
+
+    API_EVENT_ID_MAX                          
+
 }API_Event_ID_t;
 
 typedef struct {

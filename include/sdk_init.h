@@ -22,7 +22,7 @@
 #include <api_inc_ssl.h>
 #include <api_inc_spi.h>
 #include <api_inc_fota.h>
-
+#include <api_inc_ss.h>
 
 
 
@@ -40,6 +40,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     uint16_t            (*PM_Voltage)(uint8_t* percent);
     void                (*PM_ShutDown)();
     void                (*PM_Restart)();
+    void                (*PM_SetSysMinFreq)(PM_Sys_Freq_t freq);
 
     /*api_os*/
     void                (*OS_SetUserMainHandle)(HANDLE* UserHandle);
@@ -140,6 +141,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*LocalLanguage2Unicode)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
     bool                (*Unicode2LocalLanguageBigEndian)(uint8_t* unicodeIn, uint16_t unicodeLenIn, Charset_t localLanguage, uint8_t** localOut, uint32_t* localLenOut);
     bool                (*LocalLanguage2UnicodeBigEndian)(uint8_t* localIn, uint16_t localLenIn, Charset_t localLanguage, uint8_t** unicodeOut, uint32_t* unicodeLenOut);
+    int32_t             (*GSM_8BitTo7Bit)(const uint8_t* pSrc, uint8_t* pDest, uint16_t nSrcSize );
+    int32_t             (*GSM_7BitTo8Bit)(const uint8_t* pSrc, uint8_t* pDest, uint16_t nSrcSize );
 
     /*fs*/
     void                (*API_FS_SetUseOldVersion)(bool useOldVersion);
@@ -266,6 +269,9 @@ typedef struct T_INTERFACE_VTBL_TAG
     uint32_t            (*SYS_EnterCriticalSection)(void);
     void                (*SYS_ExitCriticalSection)(uint32_t status);
 
+    //ussd
+    uint32_t            (*SS_SendUSSD)(USSD_Type_t );
+    
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)
