@@ -250,3 +250,6 @@ __unpack_f
 __truncdfsf2
 __pack_f
 __mulsf3
+__fpcmp_parts_f
+__ltsf2
+
