@@ -107,7 +107,7 @@ void EventDispatch(API_Event_t* pEvent)
             uint8_t buffer[50];
             Trace(1,"ussd recieved");
             USSD_Type_t* result = (USSD_Type_t*)pEvent->pParam1;
-            int len = GSM_8BitTo7Bit(result->usdString,buffer,result->usdStringSize);
+            int len = GSM_7BitTo8Bit(result->usdString,buffer,result->usdStringSize);
             Trace(1,"string:%s,size:%d,option:%d,dcs:%d",buffer,len,result->dcs,result->option);
             break;
         }
