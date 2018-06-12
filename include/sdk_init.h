@@ -112,6 +112,41 @@ typedef struct T_INTERFACE_VTBL_TAG
     DNS_Status_t        (*DNS_GetHostByName)(const char* domain, char* ip);
     DNS_Status_t        (*DNS_GetHostByNameEX)(const char *hostname, char* ip, DNS_CALLBACK_FUNC_T func, void* param);
     int32_t             (*DNS_GetHostByName2)(const uint8_t* domain, uint8_t* ip);
+    int                 (*lwip_accept)(int s, struct sockaddr *addr, socklen_t *addrlen);
+    int                 (*lwip_bind)(int s, const struct sockaddr *name, socklen_t namelen);
+    int                 (*lwip_shutdown)(int s, int how);
+    int                 (*lwip_getpeername) (int s, struct sockaddr *name, socklen_t *namelen);
+    int                 (*lwip_getsockname) (int s, struct sockaddr *name, socklen_t *namelen);
+    int                 (*lwip_getsockopt) (int s, int level, int optname, void *optval, socklen_t *optlen);
+    int                 (*lwip_setsockopt) (int s, int level, int optname, const void *optval, socklen_t optlen);
+    int                 (*lwip_close)(int s);
+    int                 (*lwip_connect)(int s, const struct sockaddr *name, socklen_t namelen);
+    int                 (*lwip_listen)(int s, int backlog);
+    ssize_t             (*lwip_recv)(int s, void *mem, size_t len, int flags);
+    ssize_t             (*lwip_read)(int s, void *mem, size_t len);
+    ssize_t             (*lwip_recvfrom)(int s, void *mem, size_t len, int flags, struct sockaddr *from, socklen_t *fromlen);
+    ssize_t             (*lwip_recvmsg)(int s, struct msghdr *message, int flags);
+    ssize_t             (*lwip_send)(int s, const void *dataptr, size_t size, int flags);
+    ssize_t             (*lwip_sendmsg)(int s, const struct msghdr *message, int flags);
+    ssize_t             (*lwip_sendto)(int s, const void *dataptr, size_t size, int flags, const struct sockaddr *to, socklen_t tolen);
+    int                 (*lwip_socket)(int domain, int type, int protocol);
+    ssize_t             (*lwip_write)(int s, const void *dataptr, size_t size);
+    ssize_t             (*lwip_writev)(int s, const struct iovec *iov, int iovcnt);
+    int                 (*lwip_select)(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,struct timeval *timeout);
+    int                 (*lwip_ioctl)(int s, long cmd, void *argp);
+    int                 (*lwip_fcntl)(int s, int cmd, int val);
+    char*               (*ip6addr_ntoa_r)(const ip6_addr_t *addr, char *buf, int buflen);
+    char*               (*ip4addr_ntoa_r)(const ip4_addr_t *addr, char *buf, int buflen);
+    char*               (*ip6addr_ntoa)(const ip6_addr_t *addr);
+    char*               (*ip4addr_ntoa)(const ip4_addr_t *addr);
+    int                 (*ip6addr_aton)(const char *cp, ip6_addr_t *addr);
+    int                 (*ip4addr_aton)(const char *cp, ip4_addr_t *addr);
+    u16_t               (*lwip_htons)(u16_t x);
+    u32_t               (*lwip_htonl)(u32_t x);
+    const char*         (*lwip_strerr)(err_t err);
+    int                 (*err_to_errno)(err_t err);
+    
+
     
     /*time*/
     int                 (*gettimeofday)(timeval_t *tv, timezone_t *tz);
@@ -271,7 +306,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //ussd
     uint32_t            (*SS_SendUSSD)(USSD_Type_t );
-    
+
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
 #define CSDK_FUNC(name) (g_InterfaceVtbl->name)

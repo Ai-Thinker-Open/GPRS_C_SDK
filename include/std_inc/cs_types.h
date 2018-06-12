@@ -237,11 +237,6 @@ typedef int         int32_t;
 #define __INT32_T__
 #endif
 
-#ifndef __U8_T__
-typedef unsigned char u8_t;
-#define __U8_T__
-#endif
-
 #ifndef __UINT8_T__
 typedef unsigned char   uint8_t;
 #define __UINT8_T__
@@ -252,19 +247,46 @@ typedef unsigned short  uint16_t;
 #define __UINT16_T__
 #endif
 
-#ifndef __U16_T__
-typedef unsigned short u16_t;
-#define __U16_T__
-#endif
-
-
 #ifndef __UINT32_T__
 typedef unsigned int    uint32_t;
 #define __UINT32_T__
 #endif
 
-typedef unsigned long long  uint64_t;
+
+#ifndef __U8_T__
+typedef unsigned char u8_t;
+#define __U8_T__
+#endif
+
+#ifndef __U16_T__
+typedef unsigned short u16_t;
+#define __U16_T__
+#endif
+
+#ifndef __U32_T__
+typedef unsigned short u32_t;
+#define __U32_T__
+#endif
+
+#ifndef __US_T__
+typedef unsigned char s8_t;
+#define __S8_T__
+#endif
+
+#ifndef __S16_T__
+typedef unsigned short s16_t;
+#define __S16_T__
+#endif
+
+#ifndef __S32_T__
+typedef unsigned short s32_t;
+#define __S32_T__
+#endif
+
 typedef long long   int64_t;
+typedef unsigned long long  uint64_t;
+typedef int64_t   s64_t;
+typedef uint64_t  u64_t;
 #endif
 
 #if (!defined(WIN32) || defined(_USERGEN))
