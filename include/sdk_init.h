@@ -145,6 +145,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     u32_t               (*lwip_htonl)(u32_t x);
     const char*         (*lwip_strerr)(err_t err);
     int                 (*err_to_errno)(err_t err);
+    int                 (*Socket_GetLastError)(void);
     
 
     

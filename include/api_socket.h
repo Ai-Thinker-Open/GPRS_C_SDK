@@ -137,8 +137,8 @@ int                 (*err_to_errno)(err_t err);
 #define fcntl                CSDK_FUNC(lwip_fcntl)
 #define ip6addr_ntoa_r       CSDK_FUNC(ip6addr_ntoa_r)
 #define ip4addr_ntoa_r       CSDK_FUNC(ip4addr_ntoa_r)
-#define ip6addr_ntoa       CSDK_FUNC(ip6addr_ntoa_r)
-#define ip4addr_ntoa       CSDK_FUNC(ip4addr_ntoa_r)
+#define ip6addr_ntoa         CSDK_FUNC(ip6addr_ntoa_r)
+#define ip4addr_ntoa         CSDK_FUNC(ip4addr_ntoa_r)
 #define ip6addr_aton         CSDK_FUNC(ip6addr_aton)
 #define ip4addr_aton         CSDK_FUNC(ip4addr_aton)
 #define htons                CSDK_FUNC(lwip_htons)
@@ -156,6 +156,14 @@ int                 (*err_to_errno)(err_t err);
 #define inet6_aton(cp, addr)            ip6addr_aton(cp, (ip6_addr_t*)addr)
 #define inet6_ntoa(addr)                ip6addr_ntoa((const ip6_addr_t*)&(addr))
 #define inet6_ntoa_r(addr, buf, buflen) ip6addr_ntoa_r((const ip6_addr_t*)&(addr), buf, buflen)
+
+#define inet_ntop(af,src,dst,size) \
+    (((af) == AF_INET6) ? ip6addr_ntoa_r((const ip6_addr_t*)(src),(dst),(size)) \
+     : (((af) == AF_INET) ? ip4addr_ntoa_r((const ip4_addr_t*)(src),(dst),(size)) : NULL))
+#define inet_pton(af,src,dst) \
+    (((af) == AF_INET6) ? ip6addr_aton((src),(ip6_addr_t*)(dst)) \
+     : (((af) == AF_INET) ? ip4addr_aton((src),(ip4_addr_t*)(dst)) : 0))
+
 
 
 /*******************************************************************************************/

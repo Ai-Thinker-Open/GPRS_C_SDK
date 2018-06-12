@@ -7,6 +7,14 @@
 extern "C" {
 #endif
 
+
+#ifndef __UINTPTR_T__
+typedef unsigned int        uintptr_t;
+#define __UINTPTR_T__
+#endif
+typedef uintptr_t mem_ptr_t;
+
+
 //////////////////////////def.h/////////////////////////
 
 /** Create u32_t value from bytes */

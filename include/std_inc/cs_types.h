@@ -264,22 +264,22 @@ typedef unsigned short u16_t;
 #endif
 
 #ifndef __U32_T__
-typedef unsigned short u32_t;
+typedef unsigned int u32_t;
 #define __U32_T__
 #endif
 
 #ifndef __US_T__
-typedef unsigned char s8_t;
+typedef signed char s8_t;
 #define __S8_T__
 #endif
 
 #ifndef __S16_T__
-typedef unsigned short s16_t;
+typedef signed short s16_t;
 #define __S16_T__
 #endif
 
 #ifndef __S32_T__
-typedef unsigned short s32_t;
+typedef signed int s32_t;
 #define __S32_T__
 #endif
 
