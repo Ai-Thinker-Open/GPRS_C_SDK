@@ -164,6 +164,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 
 ## (五) 参与开发
 
-fork -> 修改 -> 提交PR
+**bug修复、优化、功能模块增加**： fork -> 修改 -> 提交PR
+**贴开源项目链接**：如果有用CSDK开发的开源项目，可以添加issue，审核后可将链接贴在README页面
 
 
