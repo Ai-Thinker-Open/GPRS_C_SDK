@@ -37,7 +37,7 @@ void EventDispatch(API_Event_t* pEvent)
     switch(pEvent->id)
     {
         case API_EVENT_ID_NO_SIMCARD:
-            Trace(10,"!!NO SIM CARD%!!!!",pEvent->param1);
+            Trace(10,"!!NO SIM CARD%d!!!!",pEvent->param1);
             break;
 
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
