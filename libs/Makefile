@@ -9,7 +9,7 @@ LOCAL_NAME := libs
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
 LOCAL_MODULE_DEPENDS := libs/gps \
-						libs/utils \
+                        libs/utils \
 
 
 # Add includes from other modules we do not wish to link to

@@ -18,8 +18,8 @@ LOCAL_API_DEPENDS := libs/gps \
 
 # include folder
 LOCAL_ADD_INCLUDE := include \
-					 include/std_inc \
-					 include/api_inc \
+                     include/std_inc \
+                     include/api_inc \
 
                     
 # `yes` if have submodule or left empty  or `no`
