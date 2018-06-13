@@ -773,9 +773,62 @@ else
 endif
 endif
 
+# The local library is different in a module that depends on submodules, 
+# since we need to depend on the submodules, and add them to the archive...
+# No lib is generated for ENTRY_POINT dirs
+ifneq "${IS_ENTRY_POINT}" "yes"
+ifeq "${IS_TOP_LEVEL}" "yes"
+# We are building a module with submodules
+# This module depends on:
+# 	The directories which save the built objects or files
+# 	The submodules that need to be compiled (listed in LOCAL_MODULE_DEPENDS, target "dependencies")
+# 	The local sources that go in the library
+# 	The binary library files
+# 	The local library files
+# We need to explode the binary sub library into objects
+# We need to copy the all objects from the submodules in the obj directory of this module
+$(LOCAL_SRCLIBRARY): dependencies ${BINARY_LIBRARY_FILES} ${LOCAL_ADD_LIBRARY_FILES} | makedirs
+ifneq "$(FULL_SRC_OBJECTS)" ""
+# headergen might change some header files. If the local source objects are listed
+# as prerequisites, make has checked the timestamp of the header files before they
+# are modified, and the objects will not be rebuilt in this make.
+	${MAKE} $(FULL_SRC_OBJECTS)
+
+endif
+	@${ECHO} "PREPARING         ${notdir ${LOCAL_SRCLIBRARY}}"
+ifneq "${COMBINE_LIB}" "yes"
+	echo "/* ${LOCAL_SRCLIBRARY} */" > ${LOCAL_SRCLIBRARY}
+	for libfile in $(FULL_LIBRARY_FILES); do \
+		if head -1 $$libfile | grep '!<arch>' &> /dev/null; then \
+			echo "INPUT($$libfile)" >> ${LOCAL_SRCLIBRARY}; \
+		else \
+			cat $$libfile >> ${LOCAL_SRCLIBRARY}; \
+		fi; \
+	done
+ifneq "$(FULL_SRC_OBJECTS)" ""
+	$(AR) cru  ${LOCAL_SRCLIBRARY}l $(FULL_SRC_OBJECTS)
+	echo "INPUT(${LOCAL_SRCLIBRARY}l)" >> ${LOCAL_SRCLIBRARY}
+endif
+else
+	${LOCAL_SUBMODULE_LIBRARY_EXPLODE} ${ECHO} "        (All submodules objects added)"
+	@${ECHO} "AR                ${notdir ${LOCAL_SRCLIBRARY}}"
+	if find ${OBJ_REL_PATH} -name "*.o" | sort >${LOCAL_SRCLIBRARY}.l 2>/dev/null; \
+		then $(AR) cru 	${LOCAL_SRCLIBRARY} @${LOCAL_SRCLIBRARY}.l; \
+		else $(AR) cq 	${LOCAL_SRCLIBRARY}; \
+	fi;
+endif # COMBINE_LIB
+ifneq "$(DEPS_NOT_IN_SUBDIR)" ""
+	@${ECHO} "--- DEPS_NOT_IN_SUBDIR ---"
+	@${ECHO} " $(DEPS_NOT_IN_SUBDIR)"
+endif # DEPS_NOT_IN_SUBDIR
+
+else # !IS_TOP_LEVEL
+
 $(LOCAL_SRCLIBRARY): ${FULL_SRC_OBJECTS} | makedirs ccflagoutput
 	@${ECHO} "AR                ${notdir ${LOCAL_SRCLIBRARY}}"
 	$(AR) cru ${LOCAL_SRCLIBRARY} ${FULL_SRC_OBJECTS} ${STDERR_NULL} || ${ECHO} "	Error in AR"
+endif # IS_TOP_LEVEL
+endif # IS_ENTRY_POINT
 
 ccflagoutput: force
 	if [ ! -d ${OBJ_REL_PATH} ]; then mkdir -p ${OBJ_REL_PATH}; fi;
