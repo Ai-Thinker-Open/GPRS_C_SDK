@@ -35,6 +35,8 @@ MYCFLAGS +=
 S_SRC := ${notdir ${wildcard src/*.s}}
 C_SRC := ${notdir ${wildcard src/*.c}}
 
+C_SRC += src/minmea/minmea.c
+
 
 ## ------------------------------------------------------------------- ##
 ##  Do Not touch below this line unless you know what you're doing.    ##
