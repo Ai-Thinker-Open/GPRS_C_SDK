@@ -3,7 +3,7 @@
 
 
 # Name of the this module
-LOCAL_NAME := demo/gps
+LOCAL_NAME := libs/gps
 
 
 # Space-separated list of modules (libraries) your module depends upon.
@@ -12,8 +12,7 @@ LOCAL_MODULE_DEPENDS :=  \
 
 
 # Add includes from other modules we do not wish to link to
-LOCAL_API_DEPENDS := libs/gps \
-                     libs/utils \
+LOCAL_API_DEPENDS := libs/utils \
 
 
 # include folder

@@ -70,6 +70,16 @@ void EventDispatch(API_Event_t* pEvent)
                 data[pEvent->param2] = 0;
                 memcpy(data,pEvent->pParam1,pEvent->param2);
                 Trace(1,"uart received data,length:%d,data:%s",pEvent->param2,data);
+                if(strcmp(data,"close") == 0)
+                {
+                    Trace(1,"close gps");
+                    GPS_Close();
+                }
+                else if(strcmp(data,"open") == 0)
+                {
+                    Trace(1,"open gps");
+                    GPS_Open(NULL);
+                }
             }
             break;
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:

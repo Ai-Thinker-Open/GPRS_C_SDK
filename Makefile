@@ -3,6 +3,7 @@
 
 
 LOCAL_MODULE_DEPENDS += init
+LOCAL_MODULE_DEPENDS += libs
 
 
 
@@ -11,8 +12,7 @@ LOCAL_MODULE_DEPENDS += init
 #LOCAL_MODULE_DEPENDS += demo/gpio please keep this
 ##################################################################################
 
-
-LOCAL_MODULE_DEPENDS += demo/fota
+LOCAL_MODULE_DEPENDS += demo/gps
 
 
 
@@ -31,7 +31,7 @@ include module_list.mk
 # If left null, only a library will be generated.
 IS_ENTRY_POINT := yes
 
-# Assembly / C code
+# Assembly / C source code
 S_SRC := 
 C_SRC := 
 
