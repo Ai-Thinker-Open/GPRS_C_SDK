@@ -213,7 +213,8 @@ FULL_LIBRARY_FILES := ${SRC_LIBRARY_FILES} ${BINARY_LIBRARY_FILES} ${LOCAL_ADD_L
 FULL_LIBRARY_EXT := ${foreach MODULE_PATH, ${FULL_LIBRARY_FILES}, -l${patsubst lib%,%,${basename ${notdir ${MODULE_PATH}}}}}
 
 # Used when building a toplevel with submodules only : all object files from submodules that go into the lib
-ifeq "$(IS_TOP_LEVEL)" "yes"
+IS_TOP_LEVEL_ = $(strip $(IS_TOP_LEVEL))
+ifeq "$(IS_TOP_LEVEL_)" "yes"
 FULL_LIBRARY_OBJECTS := ${foreach lib, ${LOCAL_MODULE_DEPENDS}, ${BUILD_ROOT}/${lib}/${OBJ_DIR}/${CT_RELEASE}/*.o} 
 endif
 
@@ -777,7 +778,7 @@ endif
 # since we need to depend on the submodules, and add them to the archive...
 # No lib is generated for ENTRY_POINT dirs
 ifneq "${IS_ENTRY_POINT}" "yes"
-ifeq "${IS_TOP_LEVEL}" "yes"
+ifeq "${IS_TOP_LEVEL_}" "yes"
 # We are building a module with submodules
 # This module depends on:
 # 	The directories which save the built objects or files
@@ -822,12 +823,12 @@ ifneq "$(DEPS_NOT_IN_SUBDIR)" ""
 	@${ECHO} " $(DEPS_NOT_IN_SUBDIR)"
 endif # DEPS_NOT_IN_SUBDIR
 
-else # !IS_TOP_LEVEL
+else # !IS_TOP_LEVEL_
 
 $(LOCAL_SRCLIBRARY): ${FULL_SRC_OBJECTS} | makedirs ccflagoutput
 	@${ECHO} "AR                ${notdir ${LOCAL_SRCLIBRARY}}"
 	$(AR) cru ${LOCAL_SRCLIBRARY} ${FULL_SRC_OBJECTS} ${STDERR_NULL} || ${ECHO} "	Error in AR"
-endif # IS_TOP_LEVEL
+endif # IS_TOP_LEVEL_
 endif # IS_ENTRY_POINT
 
 ccflagoutput: force
