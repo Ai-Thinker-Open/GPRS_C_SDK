@@ -252,4 +252,5 @@ __pack_f
 __mulsf3
 __fpcmp_parts_f
 __ltsf2
-
+__make_dp
+__extendsfdf2

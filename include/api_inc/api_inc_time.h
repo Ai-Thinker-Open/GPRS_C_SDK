@@ -21,12 +21,29 @@ typedef struct tm{
     int tm_wday;        /* 一周中的第几天，范围从 0 到 6    */
     int tm_yday;        /* 一年中的第几天，范围从 0 到 365    */
     int tm_isdst;       /* 夏令时                */
- }tm;
+ }tm_t;
+
+ typedef struct
+{
+    uint16_t year;
+    uint8_t  month;
+    uint8_t  dayOfWeek;
+    uint8_t  day;
+    uint8_t  hour;
+    uint8_t  minute;
+    uint8_t  second;
+    uint16_t milliseconds;
+} TIME_System_t;
 
 typedef struct timeval {
     long long    tv_sec;         /* seconds */
     long         tv_usec;        /* and microseconds!!!but millisecond instead here(实际数据是ms)!! */
 }timeval_t;
+
+struct timespec {
+    time_t tv_sec;
+    long tv_nsec;
+};
 
 typedef struct timezone {
     int tz_minuteswest;

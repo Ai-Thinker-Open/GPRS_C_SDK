@@ -8,7 +8,7 @@ LOCAL_NAME := libs/gps
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
-LOCAL_MODULE_DEPENDS :=  \
+LOCAL_MODULE_DEPENDS :=  libs/gps/minmea \
 
 
 # Add includes from other modules we do not wish to link to
@@ -19,10 +19,11 @@ LOCAL_API_DEPENDS := libs/utils \
 LOCAL_ADD_INCLUDE := include \
                      include/std_inc \
                      include/api_inc \
+                     libs/gps/minmea/src \
 
                     
 # `yes` if have submodule or left empty  or `no`
-IS_TOP_LEVEL := no
+IS_TOP_LEVEL := yes
 
 ## ------------------------------------ ##
 ## 	Add your custom flags here          ##
@@ -35,7 +36,6 @@ MYCFLAGS +=
 S_SRC := ${notdir ${wildcard src/*.s}}
 C_SRC := ${notdir ${wildcard src/*.c}}
 
-C_SRC += minmea/minmea.c
 
 
 ## ------------------------------------------------------------------- ##

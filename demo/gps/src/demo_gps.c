@@ -8,6 +8,7 @@
 #include <api_debug.h>
 #include "buffer.h"
 #include "gps_parse.h"
+#include "math.h"
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
@@ -103,6 +104,8 @@ void gps_testTask(void *pData)
 
         memset(strTmp,0,sizeof(strTmp));
         Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->latitude, gpsInfo->longitude);
+        float aa = NAN;
+        Trace(1,"isnan:%d",isnan(aa));
         OS_Sleep(5000);
     }
 }
@@ -111,7 +114,7 @@ void gps_testTask(void *pData)
 void gps_MainTask(void *pData)
 {
     API_Event_t* event=NULL;
-
+    
     GPS_Open(NULL);
     UART_Config_t config = {
         .baudRate = UART_BAUD_RATE_115200,

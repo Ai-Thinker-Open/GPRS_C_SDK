@@ -29,7 +29,7 @@
 
 typedef struct T_INTERFACE_VTBL_TAG
 {
-    //debug
+   //debug
     bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
     void                (*MEMBLOCK_Trace)(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
     void                (*__assert)(const char* fmt);
@@ -156,6 +156,18 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*TIME_SetRtcTime)(RTC_Time_t*);
     bool                (*TIME_GetRtcTIme)(RTC_Time_t*);
     long                (*clock)(void);
+    uint32_t            (*TIME_GetIime)();
+    bool                (*TIME_GetSystemTime)(TIME_System_t* sysTime);
+    bool                (*TIME_SetSystemTime)(TIME_System_t* sysTime);
+    int8_t              (*TIME_GetTimeZone)();
+    bool                (*TIME_SetTimeZone)(int8_t timeZone);
+    bool                (*TIME_GetLocalTime)(TIME_System_t* localTime);
+    bool                (*TIME_SetLocalTime)(TIME_System_t* localTime);
+    uint32_t            (*TIME_SystemTime2TimeStamp)(TIME_System_t* sysTime);
+    bool                (*TIME_TimeStamp2SystemTime)(uint32_t stamp, TIME_System_t* sysTime);
+    time_t              (*time)(time_t* timer);
+    time_t              (*timelocal)(struct tm* tm);
+    time_t              (*mktime)(struct tm* timer);
     
     /*sms*/
     bool                (*SMS_SetFormat)(SMS_Format_t format, SIM_ID_t simID);

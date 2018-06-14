@@ -1,6 +1,8 @@
 [submodule "platform/csdk"]
 	path = platform/csdk
 	url = https://github.com/Ai-Thinker-Open/GPRS-C-SDK-LIB.git
-[submodule "libs/gps/minmea"]
-	path = libs/gps/minmea
+
+
+[submodule "libs/gps/minmea/src"]
+	path = libs/gps/minmea/src
 	url = https://github.com/kosma/minmea.git

@@ -20,6 +20,7 @@ LOCAL_API_DEPENDS := libs/gps \
 LOCAL_ADD_INCLUDE := include \
                      include/std_inc \
                      include/api_inc \
+                     libs/gps/minmea/src \
 
                     
 # `yes` if have submodule or left empty  or `no`

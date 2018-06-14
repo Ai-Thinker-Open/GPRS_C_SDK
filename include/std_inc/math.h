@@ -133,6 +133,41 @@ struct exception
 #define TLOSS       5
 #define PLOSS       6
 
+
+
+#ifndef _HUGE_ENUF
+    #define _HUGE_ENUF  1e+300  // _HUGE_ENUF*_HUGE_ENUF must overflow
+#endif
+#ifdef INFINITY
+#error "INFINITY defined"
+#endif 
+#define INFINITY   ((float)(_HUGE_ENUF * _HUGE_ENUF))
+#define HUGE_VAL   ((double)INFINITY)
+#define HUGE_VALF  ((float)INFINITY)
+#define HUGE_VALL  ((long double)INFINITY)
+#define NAN        ((float)(INFINITY * 0.0F))
+
+/* */
+/* Define some useful macros */
+/* */
+
+#undef  ABS
+#define ABS(a)          (((a) < 0) ? (-(a)) : (a))
+
+#undef  MAX
+#define MAX(a, b)       (((a) > (b)) ? (a) : (b))
+
+#undef  MIN
+#define MIN(a, b)       (((a) < (b)) ? (a) : (b))
+
+#undef  SIGN
+#define SIGN(a)         ((a) < 0 ? (-1) : (1))
+
+#ifndef SHEEN_VC_DEBUG
+#define abs ABS
+#endif
+
+
 /* These typedefs are true for the targets running Java. */
 
 #define _IEEE_LIBM
