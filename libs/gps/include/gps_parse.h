@@ -17,48 +17,49 @@ extern "C"{
 
 #include "stdint.h"
 #include "stdbool.h"
+#include "minmea.h"
 
-typedef enum{
-    GPS_FIX_NO = 1  ,  //no fix
-    GPS_FIX_2D      ,
-    GPS_FIX_3D      ,
-    GPS_FIX_MAX
-}GPS_Fix_t;
+///////////////////////////////////////////////////////////////
+///////////////////////configuration///////////////////////////
+#define GPS_PARSE_MAX_GSA_NUMBER 2
+#define GPS_PARSE_MAX_GSV_NUMBER 20
+////////////////////configuration end//////////////////////////
 
-
-//TODO: optimize, not elegent
-typedef struct _GPS_Information{
-	unsigned char Real_Locate;  	    //Real Locate Valid
-	unsigned char Located_Status;       //Locate Valid 有效定位，无效定位
-	unsigned char fixModeGPS;           //Locate Mode A=自动手动2D/3D，M=手动2D/3D
-    unsigned char fixModeBDS;           //Locate Mode A=自动手动2D/3D，M=手动2D/3D
-	GPS_Fix_t fixGPS;	          	    //1=未定位，2=2D定位，3=3D定位
-    GPS_Fix_t fixBDS;                   //BDS fix status
-	char UTC_Time[7];                   //UTC TIme  hhmmss.sss(时分秒.毫秒)格式
-	char UTC_Date[7];                   //UTC Date
-	char latitude[10];                  //Latitude  ddmm.mmmm(度分)格式(前面的0也将被传输)
-	char NS_Indicator;                  //NS
-	char longitude[11];                 //Longtitude
-	char EW_Indicator;                  //EW
-	double Knot_Speed;                  //Knot_Speed 地面速率(000.0~999.9节，前面的0也将被传输)、
-	double Speed;						//地面速率  (0000.0~1851.8公里/小时，前面的0也将被传输)
-	double Course;                      //Course  以真北为参考基准，沿顺时针方向至航向的角度。
-	double Magnetic_Course;				//Magnetic Course 以磁北为参考基准，沿顺时针方向至航向的角度。
-	
-	double PDOP;                        //PDOP综合位置精度因子（0.5 - 99.9）
-	double HDOP;                        //HDOP水平精度因子（0.5 - 99.9）
-	double VDOP;                        //VDOP垂直精度因子（0.5 - 99.9）
-	
-	double MSL_Altitude;                //High 海平面高度
-	double Geoid_Separation;            //Geoid Separation大地水准面分离
-	unsigned char Use_EPH_Sum;       	//Use_EPH_Sum
-	unsigned char User_EPH[12];         //User_EPH   contain:Satellite Used1
-	unsigned short EPH_State[12][4]; 	//EPH_State  contain:Satellite ID , Elevation , Azimuth , SNR (C/No)
-}GPS_Information_t;
+typedef struct{
+	struct minmea_sentence_rmc rmc;
+	struct minmea_sentence_gsa gsa[GPS_PARSE_MAX_GSA_NUMBER];
+	struct minmea_sentence_gga gga;
+	struct minmea_sentence_gll gll;
+	struct minmea_sentence_gst gst;
+	struct minmea_sentence_gsv gsv[GPS_PARSE_MAX_GSV_NUMBER];
+	struct minmea_sentence_vtg vtg;
+	struct minmea_sentence_zda zda;
+}GPS_Info_t;
 
 
-bool GPS_ParseOneNMEA(uint8_t* oneNmeaData);
-GPS_Information_t* Gps_GetInfo();
+/**
+ * Get address of global gps infomatioin variable 
+ * @return GPS_Info_t*: Address of global gps infomatioin variable 
+ */
+GPS_Info_t* Gps_GetInfo();
+
+/**
+ * Parse a full frame gps NMEA message.
+ * @param nmeas: A full GPA NMEA message frame. e.g.
+ *                $GNGGA,084257.000,2234.7758,N,11354.9654,E,2,12,1.00,59.4,M,-2.8,M,,*56
+ *                $GPGSA,A,3,19,28,09,03,23,193,,,,,,,1.28,1.00,0.80*32
+ *                $BDGSA,A,3,04,01,07,03,06,09,,,,,,,1.28,1.00,0.80*1F
+ *                $GPGSV,4,1,14,193,60,100,40,17,54,020,14,28,53,165,42,06,52,308,*43
+ *                $GPGSV,4,2,14,19,46,346,13,42,46,122,33,02,23,268,,03,21,041,18*75
+ *                $GPGSV,4,3,14,09,17,125,32,23,13,088,35,30,04,180,34,05,02,211,23*7B
+ *                $GPGSV,4,4,14,24,01,292,,12,01,325,*74
+ *                $BDGSV,3,1,12,03,65,189,37,10,55,226,,01,51,128,35,08,49,000,*67
+ *                $BDGSV,3,2,12,13,49,322,,02,48,238,,17,44,136,,07,40,185,40*68
+ *                $BDGSV,3,3,12,04,33,110,33,06,27,160,36,05,24,256,,09,12,183,34*6B
+ *                $GNRMC,084257.000,A,2234.7758,N,11354.9654,E,0.032,306.43,140618,,,D*46
+ *                $GNVTG,306.43,T,,M,0.032,N,0.059,K,D*29
+ * @return bool: Parse success of not
+ */
 bool GPS_Parse(uint8_t* nmeas);
 
 #ifdef __cplusplus

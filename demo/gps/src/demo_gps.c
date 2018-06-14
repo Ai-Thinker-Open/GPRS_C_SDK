@@ -18,10 +18,11 @@ static HANDLE gpsTaskHandle = NULL;
 
 
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
+#define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 
 Buffer_t gpsNmeaBuffer;
 uint8_t  gpsDataBuffer[GPS_DATA_BUFFER_MAX_LENGTH];
-uint8_t tmp[1024];
+uint8_t tmp[GPS_NMEA_FRAME_BUFFER_LENGTH+1];
 
 
 void GpsUpdate()
@@ -38,7 +39,7 @@ void GpsUpdate()
             memset(tmp,0,sizeof(tmp));
             uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index)+1;
             Trace(1,"frame len:%d",len);
-            if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len))
+            if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
             {
                 Trace(1,"get data from buffer fail");
                 return;
@@ -53,16 +54,12 @@ void GpsUpdate()
 
 void EventDispatch(API_Event_t* pEvent)
 {
-    static uint8_t flag = 0;
     switch(pEvent->id)
     {
         case API_EVENT_ID_GPS_UART_RECEIVED:
             // Trace(1,"received GPS data,length:%d, data:%s,flag:%d",pEvent->param1,pEvent->pParam1,flag);
-            if(flag)
-            {
-                Buffer_Puts(&gpsNmeaBuffer,pEvent->pParam1,pEvent->param1);
-                GpsUpdate();
-            }
+            Buffer_Puts(&gpsNmeaBuffer,pEvent->pParam1,pEvent->param1);
+            GpsUpdate();
             break;
         case API_EVENT_ID_UART_RECEIVED:
             if(pEvent->param1 == UART1)
@@ -86,7 +83,6 @@ void EventDispatch(API_Event_t* pEvent)
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
             Trace(1,"register success");
-            flag = 1;
             break;
         default:
             break;
@@ -95,17 +91,26 @@ void EventDispatch(API_Event_t* pEvent)
 
 void gps_testTask(void *pData)
 {
-    GPS_Information_t* gpsInfo = Gps_GetInfo();
-    uint8_t strTmp[100];
+    GPS_Info_t* gpsInfo = Gps_GetInfo();
 
     while(1)
     {
+        //send NMEA raw message to UART1 every 5 seconds
         UART_Write(UART1,tmp,strlen(tmp));
 
-        memset(strTmp,0,sizeof(strTmp));
-        Trace(1,"GPS fix:%d, BDS fix:%d, Latitude:%s, Longitude:%s",gpsInfo->fixGPS, gpsInfo->fixBDS, gpsInfo->latitude, gpsInfo->longitude);
-        float aa = NAN;
-        Trace(1,"isnan:%d",isnan(aa));
+        //show fix info
+        uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;
+        char* isFixedStr;            
+        if(isFixed == 2)
+            isFixedStr = "2D fix";
+        else if(isFixed == 3)
+            isFixedStr = "3D fix";
+        else
+            isFixedStr = "no fix";
+        Trace(1,"GPS fix mode:%d, BDS fix:%d, is fixed:%s, Latitude:%d/%d, Longitude:%d/%d",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
+                                                 isFixedStr,gpsInfo->rmc.latitude.value,gpsInfo->rmc.latitude.scale, 
+                                                            gpsInfo->rmc.longitude.value,gpsInfo->rmc.longitude.scale);
+
         OS_Sleep(5000);
     }
 }
@@ -115,7 +120,10 @@ void gps_MainTask(void *pData)
 {
     API_Event_t* event=NULL;
     
+    //open GPS hardware(UART2 open either)
     GPS_Open(NULL);
+
+    //open UART1 to print NMEA infomation
     UART_Config_t config = {
         .baudRate = UART_BAUD_RATE_115200,
         .dataBits = UART_DATA_BITS_8,
@@ -125,10 +133,15 @@ void gps_MainTask(void *pData)
         .useEvent   = true
     };
     UART_Init(UART1,config);
+
+    //Initialize buffer to cache nmea message
     Buffer_Init(&gpsNmeaBuffer,gpsDataBuffer,GPS_DATA_BUFFER_MAX_LENGTH);
 
+    //Create UART1 send task and location print task
     OS_CreateTask(gps_testTask,
             NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
+
+    //Wait event
     while(1)
     {
         if(OS_WaitEvent(gpsTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
