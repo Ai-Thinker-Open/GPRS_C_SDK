@@ -5,7 +5,7 @@
  * @Author: Neucrack 
  * @Date: 2017-10-26 10:45:00 
  * @Last Modified by: Neucrack
- * @Last Modified time: 2017-11-02 12:50:48
+ * @Last Modified time: 2018-06-14 19:51:56
  */
 
 
@@ -118,6 +118,9 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \param  HANDLE UserHandle  , 
 /// \return void , 
 #define OS_SetUserMainHandle                          CSDK_FUNC(OS_SetUserMainHandle)
+
+#define OS_GetUserMainHandle                          CSDK_FUNC(OS_GetUserMainHandle)
+
 
 /// \brief  void                OS_CreateTask)(PTASK_FUNC_T pTaskEntry,PVOID pParameter,PVOID pStackAddr,UINT16 nStackSize
 //                                         ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);

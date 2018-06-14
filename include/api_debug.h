@@ -16,4 +16,7 @@
 #define Trace                                   CSDK_FUNC(Trace)
 #define MEMBLOCK_Trace                          CSDK_FUNC(MEMBLOCK_Trace)
 
+#define LIBS_DEBUG_I       15
+#define LIBS_DEBUG_E       16
+
 #endif

@@ -44,6 +44,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     /*api_os*/
     void                (*OS_SetUserMainHandle)(HANDLE* UserHandle);
+    HANDLE              (*OS_GetUserMainHandle)();
     HANDLE              (*OS_CreateTask)(PTASK_FUNC_T pTaskEntry,PVOID pParameter,PVOID pStackAddr,UINT16 nStackSize
                                             ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);
     void                (*OS_StartTask)(HANDLE hTask,PVOID pParameter);
@@ -92,6 +93,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     /*api_gps*/     
     bool                (*GPS_Open)(UART_Callback_t);
     bool                (*GPS_Close)(void);
+    bool                (*GPS_IsOpen)();
     
     /*api_network*/
     void                (*Network_SetStatusChangedCallback)(Network_Callback_Func_t callback);

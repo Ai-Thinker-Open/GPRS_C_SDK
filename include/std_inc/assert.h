@@ -10,4 +10,6 @@
 #define assert(boolcondition) { if(!(boolcondition)) __assert( \
     "ASSERTION FAILED"); }
 
+void Assert(bool valid,const char* fmt);
+
 #endif
