@@ -92,11 +92,13 @@ void EventDispatch(API_Event_t* pEvent)
 void gps_testTask(void *pData)
 {
     GPS_Info_t* gpsInfo = Gps_GetInfo();
+    uint8_t buffer[150];
 
     while(1)
     {
         //send NMEA raw message to UART1 every 5 seconds
         UART_Write(UART1,tmp,strlen(tmp));
+        UART_Write(UART1,"\r\n\r\n",4);
 
         //show fix info
         uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;
@@ -107,9 +109,14 @@ void gps_testTask(void *pData)
             isFixedStr = "3D fix";
         else
             isFixedStr = "no fix";
-        Trace(1,"GPS fix mode:%d, BDS fix:%d, is fixed:%s, Latitude:%d/%d, Longitude:%d/%d",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
+        snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, is fixed:%s, Latitude:%d/%d, Longitude:%d/%d",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
                                                  isFixedStr,gpsInfo->rmc.latitude.value,gpsInfo->rmc.latitude.scale, 
                                                             gpsInfo->rmc.longitude.value,gpsInfo->rmc.longitude.scale);
+        //show in tracer
+        Trace(2,buffer);
+        //send to UART1
+        UART_Write(UART1,buffer,strlen(buffer));
+        UART_Write(UART1,"\r\n\r\n",4);
 
         OS_Sleep(5000);
     }
