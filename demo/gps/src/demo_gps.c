@@ -62,6 +62,12 @@ void gps_testTask(void *pData)
     GPS_Info_t* gpsInfo = Gps_GetInfo();
     uint8_t buffer[150];
 
+    //wait for gps start up
+    OS_Sleep(6000);
+    //set gps nmea output interval
+    bool ret = GPS_SetOutputInterval(1000);
+    Trace(1,"set gps ret:%d",ret);
+
     while(1)
     {
         //show fix info
@@ -81,9 +87,6 @@ void gps_testTask(void *pData)
         //send to UART1
         UART_Write(UART1,buffer,strlen(buffer));
         UART_Write(UART1,"\r\n\r\n",4);
-        
-        bool ret = GPS_SetOutputInterval(5000);
-        Trace(1,"set gps ret:%d",ret);
 
         OS_Sleep(5000);
     }
