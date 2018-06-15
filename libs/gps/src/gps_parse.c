@@ -5,7 +5,7 @@
  * @Author: Neucrack 
  * @Date: 2017-12-13 11:00:11 
  * @Last Modified by: Neucrack
- * @Last Modified time: 2018-06-13 18:54:36
+ * @Last Modified time: 2018-06-15 17:34:35
  */
 
 #include "gps_parse.h"
@@ -16,7 +16,7 @@
 #include "minmea.h"
 #include "stdint.h"
 #include "stdbool.h"
-
+#include "gps.h"
 
 GPS_Info_t g_gps_info;
 
@@ -45,7 +45,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_rmc(&g_gps_info.rmc, line)) {
             }
             else {
-                Trace(9,"$xxRMC sentence is not parsed\n");
+                GPS_DEBUG_I("$xxRMC sentence is not parsed\n");
             }
         } break;
 
@@ -53,7 +53,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_gga(&g_gps_info.gga, line)) {
             }
             else {
-                Trace(9,"$xxGGA sentence is not parsed\n");
+                GPS_DEBUG_I("$xxGGA sentence is not parsed\n");
             }
         } break;
 
@@ -61,7 +61,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_gst(&g_gps_info.gst, line)) {
             }
             else {
-                Trace(9,"$xxGST sentence is not parsed\n");
+                GPS_DEBUG_I("$xxGST sentence is not parsed\n");
             }
         } break;
 
@@ -70,7 +70,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
                 if (minmea_parse_gsv(&g_gps_info.gsv[gsv_count++], line)) {
                 }
                 else {
-                    Trace(9,"$xxGSV sentence is not parsed\n");
+                    GPS_DEBUG_I("$xxGSV sentence is not parsed\n");
                 }
             }
         } break;
@@ -79,7 +79,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_vtg(&g_gps_info.vtg, line)) {
             }
             else {
-                Trace(9,"$xxVTG sentence is not parsed\n");
+                GPS_DEBUG_I("$xxVTG sentence is not parsed\n");
             }
         } break;
 
@@ -87,7 +87,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_zda(&g_gps_info.zda, line)) {
             }
             else {
-                Trace(9,"$xxZDA sentence is not parsed\n");
+                GPS_DEBUG_I("$xxZDA sentence is not parsed\n");
             }
         } break;
         case MINMEA_SENTENCE_GSA:{
@@ -95,7 +95,7 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
                 if (minmea_parse_gsa(&g_gps_info.gsa[gsa_count++], line)) {
                 }
                 else {
-                    Trace(9,"$xxGSA sentence is not parsed\n");
+                    GPS_DEBUG_I("$xxGSA sentence is not parsed\n");
                 }
             }
         } break;
@@ -103,12 +103,12 @@ bool ParseOneNmea(uint8_t* nmea, uint8_t flag)
             if (minmea_parse_gll(&g_gps_info.gll, line)) {
             }
             else {
-                Trace(9,"$xxGLL sentence is not parsed\n");
+                GPS_DEBUG_I("$xxGLL sentence is not parsed\n");
             }
         } break;
         case MINMEA_INVALID:
         default:
-            Trace(9,"$xxxxx sentence is not parsed:%s\n",line);
+            GPS_DEBUG_I("$xxxxx sentence is not parsed:%s\n",line);
             return false;
     }
     return true;

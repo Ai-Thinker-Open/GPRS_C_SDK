@@ -5,7 +5,7 @@
  * @Author: Neucrack 
  * @Date: 2018-06-14 18:04:49 
  * @Last Modified by: Neucrack
- * @Last Modified time: 2018-06-15 16:16:57
+ * @Last Modified time: 2018-06-15 17:37:26
  */
 
 
@@ -25,7 +25,7 @@ extern "C"{
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
 
-#define GPS_DEBUG 1
+#define GPS_DEBUG 0
 
 /////////////////////////////////////////
 

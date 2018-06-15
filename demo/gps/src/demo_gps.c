@@ -61,12 +61,19 @@ void gps_testTask(void *pData)
 {
     GPS_Info_t* gpsInfo = Gps_GetInfo();
     uint8_t buffer[150];
+    char buff1[15],buff2[15];
 
     //wait for gps start up
-    OS_Sleep(6000);
+    OS_Sleep(5000);
     //set gps nmea output interval
-    bool ret = GPS_SetOutputInterval(1000);
-    Trace(1,"set gps ret:%d",ret);
+    for(uint8_t i = 0;i<3;++i)
+    {
+        bool ret = GPS_SetOutputInterval(1000);
+        Trace(1,"set gps ret:%d",ret);
+        if(ret)
+            break;
+        OS_Sleep(1000);
+    }
 
     while(1)
     {
@@ -79,9 +86,20 @@ void gps_testTask(void *pData)
             isFixedStr = "3D fix";
         else
             isFixedStr = "no fix";
-        snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, is fixed:%s, Latitude:%d/%d, Longitude:%d/%d",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
-                                                 isFixedStr,gpsInfo->rmc.latitude.value,gpsInfo->rmc.latitude.scale, 
-                                                            gpsInfo->rmc.longitude.value,gpsInfo->rmc.longitude.scale);
+
+        //convert unit ddmm.mmmm to degree(°) 
+        int temp = (int)(gpsInfo->rmc.latitude.value/gpsInfo->rmc.latitude.scale/100);
+        double latitude = temp+(double)(gpsInfo->rmc.latitude.value - temp*gpsInfo->rmc.latitude.scale*100)/gpsInfo->rmc.latitude.scale/60.0;
+        temp = (int)(gpsInfo->rmc.longitude.value/gpsInfo->rmc.longitude.scale/100);
+        double longitude = temp+(double)(gpsInfo->rmc.longitude.value - temp*gpsInfo->rmc.longitude.scale*100)/gpsInfo->rmc.longitude.scale/60.0;
+
+        gcvt(latitude,6,buff1);
+        gcvt(longitude,6,buff2);
+        
+        //you can copy ` buff1,buff2 ` to http://www.gpsspg.com/maps.htm check location on map
+
+        snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, is fixed:%s, coordinate:WGS84, Latitude:%s, Longitude:%s",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
+                                                            isFixedStr, buff1,buff2);
         //show in tracer
         Trace(2,buffer);
         //send to UART1

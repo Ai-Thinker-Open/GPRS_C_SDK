@@ -5,7 +5,7 @@
  * @Author: Neucrack 
  * @Date: 2018-06-14 18:13:36 
  * @Last Modified by: Neucrack
- * @Last Modified time: 2018-06-15 17:02:33
+ * @Last Modified time: 2018-06-15 17:30:49
  */
 
 #include "gps.h"
@@ -45,26 +45,27 @@ void GPS_Update(uint8_t* data,uint32_t length)
     int32_t index2;
     
     Buffer_Puts(&gpsNmeaBuffer,data,length);
-    
+    GPS_DEBUG_I("semCmdSending0:%d",semCmdSending);
     if(semCmdSending == NULL)
     {
         index = Buffer_Query(&gpsNmeaBuffer,"$GNVTG",strlen("$GNVTG"),Buffer_StartPostion(&gpsNmeaBuffer));
         if(index >= 0)
         {
-            // Trace(1,"find $GNVTG");
+            // GPS_DEBUG_I("find $GNVTG");
             index = Buffer_Query(&gpsNmeaBuffer,"\r\n",strlen("\r\n"),index);
             if(index >= 0)
             {
-                // Trace(1,"find complete GPS frame");
+                // GPS_DEBUG_I("find complete GPS frame");
                 
                 memset(tmp,0,sizeof(tmp));
                 uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index)+1;
-                // Trace(1,"frame len:%d",len);
+                // GPS_DEBUG_I("frame len:%d",len);
                 if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
                 {
-                    Trace(1,"get data from buffer fail");
+                    GPS_DEBUG_I("get data from buffer fail");
                     return;
                 }
+                GPS_DEBUG_I("parse nmea frame");
                 GPS_Parse(tmp);
             }
         }
@@ -82,12 +83,13 @@ void GPS_Update(uint8_t* data,uint32_t length)
                 uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index2)+1;
                 if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
                 {
-                    Trace(1,"get data from buffer fail");
+                    GPS_DEBUG_I("get data from buffer fail");
                     return;
                 }
-                GPS_DEBUG_I("release");
                 if(semCmdSending)
+                {
                     OS_ReleaseSemaphore(semCmdSending);
+                }
             }
         }
     }
@@ -174,7 +176,6 @@ void GPS_CMDSend(char* str)
 void OnCmdAckFail(void* param)
 {
     isCmdSendTimeOut = true;
-    GPS_DEBUG_I("release1");
     OS_ReleaseSemaphore(semCmdSending);    
     GPS_DEBUG_I("gps ack time out");
 }
@@ -192,6 +193,7 @@ bool GPS_SetOutputInterval(uint16_t intervalMs)
     OS_StartCallbackTimer(OS_GetUserMainHandle(),GPS_TIME_OUT_CMD,OnCmdAckFail,NULL);
     OS_WaitForSemaphore(semCmdSending,OS_TIME_OUT_WAIT_FOREVER);
     OS_DeleteSemaphore(semCmdSending);
+    semCmdSending = NULL;
     if(isCmdSendTimeOut)
     {
         GPS_DEBUG_I("GPS exec command fail");
