@@ -92,13 +92,18 @@ int32_t Buffer_Query(Buffer_t* buffer, uint8_t* data, uint16_t length, uint16_t 
 }
 
 ////////////////////////////
-///@breif get the size of queue
+///@brief get the size of queue
 ///@retval the size of queue
 ///////////////////////////
 uint32_t Buffer_Size(Buffer_t* buffer)
 {
 	return (buffer->rear - buffer->front + buffer->maxSize) % buffer->maxSize;
 }
+
+////////////////////////////
+///@brief get size sigh specific end position
+///
+////////////////////////////
 
 uint32_t Buffer_Size2(Buffer_t* buffer,uint32_t index)
 {

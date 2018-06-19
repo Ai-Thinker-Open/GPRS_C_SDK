@@ -26,6 +26,7 @@ static HANDLE semCmdSending = NULL;
 static uint8_t tmp[GPS_NMEA_FRAME_BUFFER_LENGTH+1];
 static Buffer_t gpsNmeaBuffer;
 static uint8_t  gpsDataBuffer[GPS_DATA_BUFFER_MAX_LENGTH];
+static char*  gpsAckMsg = NULL;
 
 
 void GPS_Init()
@@ -43,9 +44,11 @@ void GPS_Update(uint8_t* data,uint32_t length)
 {
     int32_t index;
     int32_t index2;
+    bool ret = false;
     
-    Buffer_Puts(&gpsNmeaBuffer,data,length);
-    GPS_DEBUG_I("semCmdSending0:%d",semCmdSending);
+    ret = Buffer_Puts(&gpsNmeaBuffer,data,length);
+    if(!ret)
+        GPS_DEBUG_I("buffer overflow");
     if(semCmdSending == NULL)
     {
         index = Buffer_Query(&gpsNmeaBuffer,"$GNVTG",strlen("$GNVTG"),Buffer_StartPostion(&gpsNmeaBuffer));
@@ -81,14 +84,25 @@ void GPS_Update(uint8_t* data,uint32_t length)
                 GPS_DEBUG_I("GPS find ack message");
                 memset(tmp,0,sizeof(tmp));
                 uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index2)+1;
-                if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
+                len = len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len;
+                if(!Buffer_Gets(&gpsNmeaBuffer,tmp,(uint16_t)len))
                 {
                     GPS_DEBUG_I("get data from buffer fail");
                     return;
                 }
+                // GPS_DEBUG_I("tmp:%s,%d,%d,%d",tmp,index,index2,len);
                 if(semCmdSending)
                 {
-                    OS_ReleaseSemaphore(semCmdSending);
+                    // Assert(gpsAckMsg == NULL,"already malloced"); //test
+                    char* index0 = strstr(tmp,GPS_CMD_HEADER);
+                    // Assert(index0 != NULL,"index null"); //test
+                    len = len - ((uint32_t)index0 - (uint32_t)tmp);
+                    gpsAckMsg = OS_Malloc(len);
+                    if(gpsAckMsg)
+                    {
+                        memcpy(gpsAckMsg,index0,len);
+                        OS_ReleaseSemaphore(semCmdSending);
+                    }
                 }
             }
         }
@@ -128,35 +142,48 @@ bool GPS_IsCMDValid(uint16_t cmd)
     return false;
 }
 
-bool GPS_GetAckParam(char* str, GPS_CMD_t* cmd, GPS_CMD_Ack_t* result)
+bool GPS_IsCMDACKValid(uint8_t ack)
 {
-    Assert(!(str == NULL || cmd == NULL ||result == NULL),"param error");
+    if( ack == GPS_CMD_ACK_FAIL || 
+        ack == GPS_CMD_ACK_EXEC_FAIL || 
+        ack == GPS_CMD_ACK_EXEC_SUCCESS
+        )
+        return true;
+    return false;
+}
+
+GPS_CMD_t GPS_GetAckCmd(char* str)
+{
+    Assert(!(str == NULL),"param error");
+
     char* index = strstr(str,GPS_CMD_HEADER);
     if(!index)
-        return false;
-    if(!GPS_CheckParity(index))
-    {
-        GPS_DEBUG_I("check parity fail");
-        return false;
-    }
+        return GPS_CMD_FAIL;
     uint16_t ackCmd0 = (index[5]-'0')*100+(index[6]-'0')*10+(index[7]-'0');
-    if(ackCmd0 == GPS_CMD_ACK)
-    {
-        uint16_t ackCmd = (index[9]-'0')*100+(index[10]-'0')*10+(index[11]-'0');
-        if(!GPS_IsCMDValid(ackCmd))
-        {
-            GPS_DEBUG_I("ack check fail,cmd:%d",ackCmd);
-            return false;
-        }
-        *cmd = ackCmd;
-        *result = (index[13]-'0');
-    }
-    else
-    {
-        //not support now
-        return false;
-    }
-    return true;
+
+    if(!GPS_IsCMDValid(ackCmd0))
+        return GPS_CMD_FAIL;
+    return (GPS_CMD_t)ackCmd0;
+}
+
+GPS_CMD_Ack_t GPS_AckCheck(char* ackStr, GPS_CMD_t cmdSend)
+{
+    Assert(!(ackStr == NULL ),"param error");
+
+    char* index = strstr(ackStr,GPS_CMD_HEADER);
+    if(!index)
+        return GPS_CMD_ACK_FAIL;
+    uint16_t ackCmd =  ((index[9]-'0')*100+(index[10]-'0')*10+(index[11]-'0'));
+    GPS_DEBUG_I("ack cmd:%d",ackCmd);
+    if(!GPS_IsCMDValid(ackCmd))
+        return GPS_CMD_ACK_FAIL;
+    if(ackCmd != cmdSend)
+        return GPS_CMD_ACK_FAIL;    
+    uint8_t result = index[13]-'0';
+    GPS_DEBUG_I("result:%d",result);
+    if(!GPS_IsCMDACKValid(result))
+        return GPS_CMD_ACK_FAIL;
+    return (GPS_CMD_Ack_t)result;
 }
 
 /**
@@ -189,8 +216,15 @@ void OnCmdAckFail(void* param)
     GPS_DEBUG_I("gps ack time out");
 }
 
-bool GPS_SendCMDWaitAck(GPS_CMD_t cmdSend, char* cmdStr, uint16_t timeout)
+/**
+ * Send command and wait for acknowledgement from gps
+ * @return GPS_CMD_t: return GPS_CMD_FAIL if wait ack fail
+ *                    return GPS_CMD_* command if get ack success, and the return value is the ack cmd
+ * 
+ */
+GPS_CMD_t GPS_SendCMDWaitAck(GPS_CMD_t cmdSend, char* cmdStr, char** ackStr, uint16_t timeout)
 {
+
     isCmdSendTimeOut = false;
     semCmdSending = OS_CreateSemaphore(0);
     GPS_CMDSend(cmdStr);
@@ -201,34 +235,51 @@ bool GPS_SendCMDWaitAck(GPS_CMD_t cmdSend, char* cmdStr, uint16_t timeout)
     if(isCmdSendTimeOut)
     {
         GPS_DEBUG_I("GPS exec command fail");
-        return false;
+        return GPS_CMD_FAIL;
     }
     else
     {
         OS_StopCallbackTimer(OS_GetUserMainHandle(),OnCmdAckFail,NULL);
-        char* ack = strstr(tmp,GPS_CMD_HEADER);
-        GPS_CMD_t cmd;
-        GPS_CMD_Ack_t result;
-
-        if(!GPS_GetAckParam(ack,&cmd,&result))
+        char* ack = strstr(gpsAckMsg,GPS_CMD_HEADER);
+        //check parity 
+        if(!GPS_CheckParity(ack))
         {
-            GPS_DEBUG_I("check ack fail");
-            GPS_DEBUG_I("GPS ack:%s",ack);
-            return false;
+            GPS_DEBUG_I("check parity fail");
+            return GPS_CMD_FAIL;
         }
-        if(cmd != cmdSend || result != GPS_CMD_ACK_EXEC_SUCCESS)
-        {
-            GPS_DEBUG_I("result error,cmd:%d,result:%d",cmdSend,result);
-            return false;
-        }
+        *ackStr = ack;
+        GPS_DEBUG_I("ack string:%s",ack);
+        return GPS_GetAckCmd(ack);
     }
-    GPS_DEBUG_I("GPS exec command:%d success",cmd);
-    return true;
 }
 
 bool GPS_SetOutputInterval(uint16_t intervalMs)
 {
+    char* ackStr = NULL;
+    GPS_CMD_t ackCmd;
+    GPS_CMD_Ack_t result;
     char temp[GPS_BUFFER_MAX_LENGTH+6];
+
     snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,GPS_CMD_NMEA_OUTPUT_INTERVAL,intervalMs);
-    return GPS_SendCMDWaitAck(GPS_CMD_NMEA_OUTPUT_INTERVAL,temp,GPS_TIME_OUT_CMD);
+    
+    ackCmd = GPS_SendCMDWaitAck(GPS_CMD_NMEA_OUTPUT_INTERVAL,temp,&ackStr,GPS_TIME_OUT_CMD);
+    if(ackCmd != GPS_CMD_ACK)
+    {
+        GPS_DEBUG_I("ack cmd check fail, wish:%d, actual:%d",GPS_CMD_ACK,ackCmd);
+        goto fail;
+    }
+    result = GPS_AckCheck(ackStr,GPS_CMD_NMEA_OUTPUT_INTERVAL);
+    if(result != GPS_CMD_ACK_EXEC_SUCCESS)
+    {
+        GPS_DEBUG_I("ack result:%d",result);
+        goto fail;
+    }
+    OS_Free(gpsAckMsg);
+    gpsAckMsg = NULL;
+    return true;
+
+fail:
+    OS_Free(gpsAckMsg);
+    gpsAckMsg = NULL;
+    return false;
 }

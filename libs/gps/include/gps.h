@@ -40,24 +40,26 @@ extern "C"{
 #endif
 
 typedef enum{
-    GPS_CMD_ACK = 001 ,
-    GPS_CMD_REBOOT = 030,
-    GPS_CMD_ERASE_FLASH = 040,
-    GPS_CMD_STANDBY_MODE = 051,
+    GPS_CMD_FAIL                 = 0  ,
+    GPS_CMD_ACK                  = 001,
+    GPS_CMD_REBOOT               = 030,
+    GPS_CMD_ERASE_FLASH          = 040,
+    GPS_CMD_STANDBY_MODE         = 051,
     GPS_CMD_NMEA_OUTPUT_INTERVAL = 101,
-    GPS_CMD_LP_MODE      = 105,
-    GPS_CMD_NMEA_OUTPUT_QZSS = 113,
-    GPS_CMD_QZSS = 114,
-    GPS_CMD_SEARCH_MODE = 115,
-    GPS_CMD_SBAS = 239,
-    GPS_CMD_NMEA_OUTPUT_FREQ = 242,
-    GPS_CMD_SET_RTC_TIME = 278,
-    GPS_CMD_SET_LOCATION_TIME = 639,
-    GPS_CMD_FIX_MODE = 786,
+    GPS_CMD_LP_MODE              = 105,
+    GPS_CMD_NMEA_OUTPUT_QZSS     = 113,
+    GPS_CMD_QZSS                 = 114,
+    GPS_CMD_SEARCH_MODE          = 115,
+    GPS_CMD_SBAS                 = 239,
+    GPS_CMD_NMEA_OUTPUT_FREQ     = 242,
+    GPS_CMD_SET_RTC_TIME         = 278,
+    GPS_CMD_SET_LOCATION_TIME    = 639,
+    GPS_CMD_FIX_MODE             = 786,
     GPS_CMD_MAX
 }GPS_CMD_t;
 
 typedef enum{
+    GPS_CMD_ACK_FAIL        = 0,
     GPS_CMD_ACK_NOT_SUPPORT = 1,
     GPS_CMD_ACK_EXEC_FAIL   = 2,
     GPS_CMD_ACK_EXEC_SUCCESS= 3,
@@ -72,9 +74,11 @@ typedef enum{
 }GPS_LP_Mode_t;            // standby(low power mode)
 
 void GPS_Init();
-// bool GPS_Open(UART_Callback_t gpsReceivedCallback);
-// bool GPS_Close(void);
-// bool GPS_IsOpen()
+/*
+bool GPS_Open(UART_Callback_t gpsReceivedCallback);
+bool GPS_Close(void);
+bool GPS_IsOpen()
+*/
 void GPS_Update(uint8_t* data,uint32_t length);
 bool GPS_SetOutputInterval(uint16_t intervalMs);
 

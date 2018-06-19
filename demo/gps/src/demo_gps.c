@@ -96,7 +96,7 @@ void gps_testTask(void *pData)
         gcvt(latitude,6,buff1);
         gcvt(longitude,6,buff2);
         
-        //you can copy ` buff1,buff2 ` to http://www.gpsspg.com/maps.htm check location on map
+        //you can copy ` buff1,buff2 `(latitude,longitude) to http://www.gpsspg.com/maps.htm check location on map
 
         snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, is fixed:%s, coordinate:WGS84, Latitude:%s, Longitude:%s",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
                                                             isFixedStr, buff1,buff2);
