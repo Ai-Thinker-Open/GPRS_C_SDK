@@ -64,16 +64,42 @@ void gps_testTask(void *pData)
     char buff1[15],buff2[15];
 
     //wait for gps start up
-    OS_Sleep(5000);
+    while(gpsInfo->rmc.latitude.value == 0)
+        OS_Sleep(1000);
     //set gps nmea output interval
     for(uint8_t i = 0;i<3;++i)
     {
-        bool ret = GPS_SetOutputInterval(1000);
+        bool ret = GPS_SetOutputInterval(10000);
         Trace(1,"set gps ret:%d",ret);
         if(ret)
             break;
         OS_Sleep(1000);
     }
+
+    // if(!GPS_ClearInfoInFlash())
+    //     Trace(1,"erase gps fail");
+    
+    // if(!GPS_SetQzssOutput(false))
+    //     Trace(1,"enable qzss nmea output fail");
+
+    // if(!GPS_SetSearchMode(true,false,true,false))
+    //     Trace(1,"set search mode fail");
+
+    // if(!GPS_SetSBASEnable(true))
+    //     Trace(1,"enable sbas fail");
+    
+    if(!GPS_GetVersion(buffer,150))
+        Trace(1,"get gps firmware version fail");
+    else
+        Trace(1,"gps firmware version:%s",buffer);
+
+    if(!GPS_SetFixMode(GPS_FIX_MODE_NORMAL))
+        Trace(1,"set fix mode fail");
+
+    if(!GPS_SetOutputInterval(1000))
+        Trace(1,"set nmea output interval fail");
+    
+    Trace(1,"init ok");
 
     while(1)
     {

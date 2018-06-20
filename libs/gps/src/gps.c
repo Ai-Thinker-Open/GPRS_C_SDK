@@ -51,7 +51,7 @@ void GPS_Update(uint8_t* data,uint32_t length)
         GPS_DEBUG_I("buffer overflow");
     if(semCmdSending == NULL)
     {
-        index = Buffer_Query(&gpsNmeaBuffer,"$GNVTG",strlen("$GNVTG"),Buffer_StartPostion(&gpsNmeaBuffer));
+        index = Buffer_Query(&gpsNmeaBuffer,"VTG",strlen("VTG"),Buffer_StartPostion(&gpsNmeaBuffer));
         if(index >= 0)
         {
             // GPS_DEBUG_I("find $GNVTG");
@@ -135,8 +135,23 @@ bool GPS_CheckParity(char* str)
 
 bool GPS_IsCMDValid(uint16_t cmd)
 {
-    if( cmd == GPS_CMD_ACK || 
-        cmd == GPS_CMD_NMEA_OUTPUT_INTERVAL 
+    if( cmd == GPS_CMD_ACK                  ||
+        cmd == GPS_CMD_REBOOT               ||
+        cmd == GPS_CMD_ERASE_INFO_IN_FLASH  ||
+        cmd == GPS_CMD_STANDBY_MODE         ||
+        cmd == GPS_CMD_NMEA_OUTPUT_INTERVAL ||
+        cmd == GPS_CMD_LP_MODE              ||
+        cmd == GPS_CMD_NMEA_OUTPUT_QZSS     ||
+        cmd == GPS_CMD_QZSS                 ||
+        cmd == GPS_CMD_SEARCH_MODE          ||
+        cmd == GPS_CMD_FORMAT               ||
+        cmd == GPS_CMD_SBAS                 ||
+        cmd == GPS_CMD_NMEA_OUTPUT_FREQ     ||
+        cmd == GPS_CMD_SET_RTC_TIME         ||
+        cmd == GPS_CMD_GET_VERSION          ||
+        cmd == GPS_CMD_ACK_VERSION          ||
+        cmd == GPS_CMD_SET_LOCATION_TIME    ||
+        cmd == GPS_CMD_FIX_MODE             
         )
         return true;
     return false;
@@ -144,8 +159,9 @@ bool GPS_IsCMDValid(uint16_t cmd)
 
 bool GPS_IsCMDACKValid(uint8_t ack)
 {
-    if( ack == GPS_CMD_ACK_FAIL || 
-        ack == GPS_CMD_ACK_EXEC_FAIL || 
+    if( ack == GPS_CMD_ACK_FAIL         || 
+        ack == GPS_CMD_ACK_NOT_SUPPORT  ||
+        ack == GPS_CMD_ACK_EXEC_FAIL    || 
         ack == GPS_CMD_ACK_EXEC_SUCCESS
         )
         return true;
@@ -168,18 +184,35 @@ GPS_CMD_t GPS_GetAckCmd(char* str)
 
 GPS_CMD_Ack_t GPS_AckCheck(char* ackStr, GPS_CMD_t cmdSend)
 {
-    Assert(!(ackStr == NULL ),"param error");
+    //$PGKC001,32,1*1E
+    //$PGKC001,101,3*2D
+    Assert(!(ackStr == NULL),"param error");
 
+    uint16_t ackCmd = 0;
+
+    //sscanf();
     char* index = strstr(ackStr,GPS_CMD_HEADER);
     if(!index)
-        return GPS_CMD_ACK_FAIL;
-    uint16_t ackCmd =  ((index[9]-'0')*100+(index[10]-'0')*10+(index[11]-'0'));
+        return GPS_CMD_FAIL;
+    index = strstr(index+strlen(GPS_CMD_HEADER),",");
+    if(!index)
+        return GPS_CMD_FAIL;
+    char* index2 = strstr(index+1,",");
+    if(!index2)
+        return GPS_CMD_FAIL;
+    index2 -= 1;
+    while(index != index2)
+    {
+        index++;
+        ackCmd = ackCmd*10 + (*index-'0');
+    }
+
     GPS_DEBUG_I("ack cmd:%d",ackCmd);
     if(!GPS_IsCMDValid(ackCmd))
         return GPS_CMD_ACK_FAIL;
     if(ackCmd != cmdSend)
         return GPS_CMD_ACK_FAIL;    
-    uint8_t result = index[13]-'0';
+    uint8_t result = index2[2]-'0';
     GPS_DEBUG_I("result:%d",result);
     if(!GPS_IsCMDACKValid(result))
         return GPS_CMD_ACK_FAIL;
@@ -253,22 +286,20 @@ GPS_CMD_t GPS_SendCMDWaitAck(GPS_CMD_t cmdSend, char* cmdStr, char** ackStr, uin
     }
 }
 
-bool GPS_SetOutputInterval(uint16_t intervalMs)
+
+static bool GPS_SendWaiteNormalAck(GPS_CMD_t cmdSend, char* cmdStr,uint16_t timeout)
 {
     char* ackStr = NULL;
     GPS_CMD_t ackCmd;
     GPS_CMD_Ack_t result;
-    char temp[GPS_BUFFER_MAX_LENGTH+6];
-
-    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,GPS_CMD_NMEA_OUTPUT_INTERVAL,intervalMs);
     
-    ackCmd = GPS_SendCMDWaitAck(GPS_CMD_NMEA_OUTPUT_INTERVAL,temp,&ackStr,GPS_TIME_OUT_CMD);
+    ackCmd = GPS_SendCMDWaitAck(cmdSend,cmdStr,&ackStr,timeout);
     if(ackCmd != GPS_CMD_ACK)
     {
         GPS_DEBUG_I("ack cmd check fail, wish:%d, actual:%d",GPS_CMD_ACK,ackCmd);
         goto fail;
     }
-    result = GPS_AckCheck(ackStr,GPS_CMD_NMEA_OUTPUT_INTERVAL);
+    result = GPS_AckCheck(ackStr,cmdSend);
     if(result != GPS_CMD_ACK_EXEC_SUCCESS)
     {
         GPS_DEBUG_I("ack result:%d",result);
@@ -283,3 +314,200 @@ fail:
     gpsAckMsg = NULL;
     return false;
 }
+
+bool GPS_Reboot(GPS_Reboot_Mode_t mode)
+{
+    GPS_CMD_t  cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_REBOOT;
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d,%d",GPS_CMD_HEADER,cmdSend,mode,1);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+bool GPS_ClearInfoInFlash()
+{
+    GPS_CMD_t  cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_ERASE_INFO_IN_FLASH;
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d",GPS_CMD_HEADER,cmdSend);
+    GPS_DEBUG_I("clear:%s",temp);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,5000);
+}
+
+bool GPS_SetStandbyMode(GPS_STANDBY_Mode_t mode)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_STANDBY_MODE;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,mode);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+bool GPS_SetOutputInterval(uint16_t intervalMs)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_NMEA_OUTPUT_INTERVAL;
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,intervalMs);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+bool GPS_SetLpMode(GPS_LP_Mode_t mode)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_LP_MODE;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,mode);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+bool GPS_SetQzssOutput(bool openOutput)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_NMEA_OUTPUT_QZSS;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,openOutput);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+
+
+bool GPS_SetQzssEnable(bool enable)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_QZSS;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,enable);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);
+}
+
+/**
+ * @brief Set search mode, parameters
+ * 
+ * 
+ */
+bool GPS_SetSearchMode(bool gps, bool glonass, bool beidou, bool galieo)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_SEARCH_MODE;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d,%d,%d,%d",GPS_CMD_HEADER,cmdSend,gps,glonass,beidou,galieo);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);  
+}
+bool GPS_SetFormat(GPS_Format_t format)
+{
+    return false;
+}
+bool GPS_SetSBASEnable(bool enable)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_SBAS;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,enable);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD); 
+}
+bool GPS_SetNmeaOutputFreq(GPS_NMEA_Output_Freq_t* config)
+{
+    Assert(config!=NULL,"param GPS_NMEA_Output_Freq_t error");
+
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_NMEA_OUTPUT_FREQ;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+                    GPS_CMD_HEADER,cmdSend,
+                    config->gll,config->rmc,config->vtg,config->gga,config->gsa,config->gsv,
+                    config->grs,config->gst,0,0,0,0,0,0,0,0,0,0);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD);  
+}
+bool GPS_SetRtcTime(RTC_Time_t* t)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_SET_RTC_TIME;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d,%d,%d,%d,%d,%d",GPS_CMD_HEADER,cmdSend,
+                    t->year,t->month,t->day,t->hour,t->minute,t->second);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD); 
+}
+//GOKE9501_1.3_17101100
+bool GPS_GetVersion(char* version, uint8_t len)
+{
+    char* ackStr = NULL;
+    GPS_CMD_t ackCmd;
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_GET_VERSION;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d",GPS_CMD_HEADER,cmdSend);
+
+    
+    ackCmd = GPS_SendCMDWaitAck(cmdSend,temp,&ackStr,GPS_TIME_OUT_CMD);
+    if(ackCmd != GPS_CMD_ACK_VERSION)
+    {
+        GPS_DEBUG_I("ack cmd check fail, wish:%d, actual:%d",GPS_CMD_ACK,ackCmd);
+        goto fail;
+    }
+    char* index = strstr(ackStr,",");
+    char* index2 = strstr(index,"*");
+    if(index == NULL || index2 == NULL)
+        goto fail;
+    *index2 = '\0';
+    snprintf(version,len,"%s",index);
+
+    OS_Free(gpsAckMsg);
+    gpsAckMsg = NULL;
+    return true;
+
+fail:
+    OS_Free(gpsAckMsg);
+    gpsAckMsg = NULL;
+    return false;
+}
+bool GPS_SetLocationTime(float latitude, float longitude, float altitude, RTC_Time_t* t)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+    char buff1[11],buff2[11],buff3[11];
+
+    cmdSend = GPS_CMD_SET_LOCATION_TIME;
+
+    gcvt(latitude,6,buff1);
+    gcvt(longitude,6,buff2);
+    gcvt(altitude,6,buff3);
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%s,%s,%s,%d,%d,%d,%d,%d,%d",GPS_CMD_HEADER,cmdSend,
+                    buff1,buff2,buff3,
+                    t->year,t->month,t->day,t->hour,t->minute,t->second);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD); 
+}
+
+bool GPS_SetFixMode(GPS_Fix_Mode_t mode)
+{
+    GPS_CMD_t cmdSend;
+    char temp[GPS_BUFFER_MAX_LENGTH+6];
+
+    cmdSend = GPS_CMD_FIX_MODE;
+
+    snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,mode);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD); 
+}
+

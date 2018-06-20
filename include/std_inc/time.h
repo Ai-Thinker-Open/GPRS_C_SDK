@@ -40,7 +40,6 @@
 ///////standard///
 // time_t time(time_t* timer);
 #define TIME_GetTime           CSDK_FUNC(time)
-time_t time(time_t* timer);
 
 // time_t timelocal(struct tm* tm);
 #define timelocal              CSDK_FUNC(timelocal)
