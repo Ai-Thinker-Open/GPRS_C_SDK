@@ -83,14 +83,14 @@ void gps_testTask(void *pData)
     
 
     // set gps nmea output interval
-    // for(uint8_t i = 0;i<3;++i)
-    // {
-    //     bool ret = GPS_SetOutputInterval(10000);
-    //     Trace(1,"set gps ret:%d",ret);
-    //     if(ret)
-    //         break;
-    //     OS_Sleep(1000);
-    // }
+    for(uint8_t i = 0;i<3;++i)
+    {
+        bool ret = GPS_SetOutputInterval(10000);
+        Trace(1,"set gps ret:%d",ret);
+        if(ret)
+            break;
+        OS_Sleep(1000);
+    }
 
     // if(!GPS_ClearInfoInFlash())
     //     Trace(1,"erase gps fail");
@@ -104,16 +104,16 @@ void gps_testTask(void *pData)
     // if(!GPS_SetSBASEnable(true))
     //     Trace(1,"enable sbas fail");
     
-    // if(!GPS_GetVersion(buffer,150))
-    //     Trace(1,"get gps firmware version fail");
-    // else
-    //     Trace(1,"gps firmware version:%s",buffer);
+    if(!GPS_GetVersion(buffer,150))
+        Trace(1,"get gps firmware version fail");
+    else
+        Trace(1,"gps firmware version:%s",buffer);
 
     // if(!GPS_SetFixMode(GPS_FIX_MODE_LOW_SPEED))
         // Trace(1,"set fix mode fail");
 
-    // if(!GPS_SetOutputInterval(1000))
-    //     Trace(1,"set nmea output interval fail");
+    if(!GPS_SetOutputInterval(1000))
+        Trace(1,"set nmea output interval fail");
     
     Trace(1,"init ok");
 
