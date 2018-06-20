@@ -25,7 +25,7 @@ extern "C"{
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
 
-#define GPS_DEBUG 1
+#define GPS_DEBUG 0
 
 /////////////////////////////////////////
 
