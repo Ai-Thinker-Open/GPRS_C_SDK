@@ -146,7 +146,7 @@ bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, in
     struct sockaddr_in sockaddr;
     memset(&sockaddr,0,sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
-    sockaddr.sin_port = htons(SERVER_PORT);
+    sockaddr.sin_port = htons(port);
     inet_pton(AF_INET,servInetAddr,&sockaddr.sin_addr);
 
     int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
