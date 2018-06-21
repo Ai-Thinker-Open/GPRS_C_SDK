@@ -175,6 +175,7 @@ bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, in
             break;
         case 0:
             Trace(1,"select timeout");
+            break;
         default:
             if(FD_ISSET(fd,&fds))
             {
