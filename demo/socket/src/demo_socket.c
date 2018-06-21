@@ -185,19 +185,21 @@ bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, in
                 if(ret < 0)
                 {
                     Trace(1,"recv error");
-                    return false;
+                    break;
                 }
                 else if(ret == 0)
                 {
                     Trace(1,"ret == 0");
-                    return false;
+                    beak;
                 }
                 Trace(1,"recv len:%d,data:%s",ret,retBuffer);
-
+                close(fd);
+                return true;
             }
             break;
     }
-    return true;
+    close(fd);
+    return false;
 }
 
 void Socket_BIO_Test()
