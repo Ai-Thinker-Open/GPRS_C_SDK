@@ -166,7 +166,7 @@ static void EventDispatch(API_Event_t* pEvent)
                       
             break;
 
-        case API_EVENT_ID_SINGNAL_QUALITY:
+        case API_EVENT_ID_SIGNAL_QUALITY:
             Trace(1,"CSQ:%d",pEvent->param1);
             break;
 

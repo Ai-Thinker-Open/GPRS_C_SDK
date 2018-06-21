@@ -37,7 +37,7 @@ void EventDispatch(API_Event_t* pEvent)
             Trace(2,"SIM CARD%d DROP",pEvent->param1);
             break;
         
-        case API_EVENT_ID_SINGNAL_QUALITY:
+        case API_EVENT_ID_SIGNAL_QUALITY:
             Trace(2,"signal quality:%d",pEvent->param1);
             break;
         
