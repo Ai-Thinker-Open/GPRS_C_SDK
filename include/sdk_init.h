@@ -329,7 +329,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     uint32_t            (*SS_SendUSSD)(USSD_Type_t );
 
     //lbs
-    // bool                (*LBS_GetLocation)(Network_Location_t* bsInfo, uint8_t bsNumber,int timeoutS, float* longitude, float* latitude);
+    bool                (*LBS_GetLocation)(Network_Location_t* bsInfo, uint8_t bsNumber,int timeoutS, float* longitude, float* latitude);
 
     //gizwits
     // bool                (*GIZWITS_GetConfig)(Gizwits_Config_t* config, const char* path);
