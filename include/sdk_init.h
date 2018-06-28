@@ -24,6 +24,7 @@
 #include <api_inc_fota.h>
 #include <api_inc_ss.h>
 #include <stdarg.h>
+#include <api_inc_gizwits.h>
 
 
 
@@ -332,13 +333,13 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*LBS_GetLocation)(Network_Location_t* bsInfo, uint8_t bsNumber,int timeoutS, float* longitude, float* latitude);
 
     //gizwits
-    // bool                (*GIZWITS_GetConfig)(Gizwits_Config_t* config, const char* path);
-    // int                 (*GIZWITS_Connect)(Gizwits_t* gizwits, Gizwits_Config_t* config, const char* configPath);
-    // int                 (*GIZWITS_Send)(Gizwits_t* gizwits, Gizwits_Action_t action, uint8_t* data, int len);
-    // int                 (*GIZWITS_DoReceive)(Gizwits_t* gizwits, OnReceivedOnePacket_Callback_t onOnePacket);
-    // bool                (*GIZWITS_Ping)(Gizwits_t* gizwits);
-    // int                 (*GIZWITS_GetSocket)(Gizwits_t* gizwits);
-    // bool                (*GIZWITS_Close)(Gizwits_t* gizwits);
+    bool                (*GIZWITS_GetConfig)(Gizwits_Config_t* config, const char* path);
+    int                 (*GIZWITS_Connect)(Gizwits_t* gizwits, Gizwits_Config_t* config, const char* configPath);
+    int                 (*GIZWITS_Send)(Gizwits_t* gizwits, Gizwits_Action_t action, uint8_t* data, int len);
+    int                 (*GIZWITS_DoReceive)(Gizwits_t* gizwits, OnReceivedOnePacket_Callback_t onOnePacket);
+    bool                (*GIZWITS_Ping)(Gizwits_t* gizwits);
+    int                 (*GIZWITS_GetSocket)(Gizwits_t* gizwits);
+    bool                (*GIZWITS_Close)(Gizwits_t* gizwits);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
