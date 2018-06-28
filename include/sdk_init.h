@@ -23,13 +23,14 @@
 #include <api_inc_spi.h>
 #include <api_inc_fota.h>
 #include <api_inc_ss.h>
+#include <stdarg.h>
 
 
 
 
 typedef struct T_INTERFACE_VTBL_TAG
 {
-   //debug
+    //debug
     bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
     void                (*MEMBLOCK_Trace)(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
     void                (*__assert)(const char* fmt);
@@ -273,7 +274,12 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*I2C_Close)(I2C_ID_t i2c);
 
     //std
+    int                 (*sprintf)(char * buf, const char *fmt, ...);
+    int                 (*snprintf)(char * buf, size_t len, const char *fmt, ...);
     int                 (*sscanf)(const char * buf, const char * fmt, ...);
+    int                 (*vsprintf)(char *buf, const char *fmt, va_list ap);
+    int                 (*vsnprintf)(char *buf, size_t size, const char *fmt, va_list ap);
+    int                 (*vsscanf) (const char *fp, const char *fmt0, va_list ap);
     long                (*atol)(const char *s);
     long long           (*atoll)(const char *s);
     int                 (*atox)(const char *s, int len);
@@ -321,6 +327,18 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     //ussd
     uint32_t            (*SS_SendUSSD)(USSD_Type_t );
+
+    //lbs
+    // bool                (*LBS_GetLocation)(Network_Location_t* bsInfo, uint8_t bsNumber,int timeoutS, float* longitude, float* latitude);
+
+    //gizwits
+    // bool                (*GIZWITS_GetConfig)(Gizwits_Config_t* config, const char* path);
+    // int                 (*GIZWITS_Connect)(Gizwits_t* gizwits, Gizwits_Config_t* config, const char* configPath);
+    // int                 (*GIZWITS_Send)(Gizwits_t* gizwits, Gizwits_Action_t action, uint8_t* data, int len);
+    // int                 (*GIZWITS_DoReceive)(Gizwits_t* gizwits, OnReceivedOnePacket_Callback_t onOnePacket);
+    // bool                (*GIZWITS_Ping)(Gizwits_t* gizwits);
+    // int                 (*GIZWITS_GetSocket)(Gizwits_t* gizwits);
+    // bool                (*GIZWITS_Close)(Gizwits_t* gizwits);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;

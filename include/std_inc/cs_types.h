@@ -71,9 +71,9 @@ typedef unsigned long               uintmax_t;
 typedef long                        intmax_t;
 #endif
 
-typedef unsigned long               UINT32;
+typedef unsigned int               UINT32;
 typedef unsigned short              UINT16;
-typedef long                        INT32;
+typedef int                        INT32;
 typedef short                       INT16;
 typedef unsigned char               UINT8;
 typedef signed char                        INT8;
