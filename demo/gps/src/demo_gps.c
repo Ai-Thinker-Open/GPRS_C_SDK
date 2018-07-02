@@ -64,7 +64,7 @@ void EventDispatch(API_Event_t* pEvent)
 void gps_testTask(void *pData)
 {
     GPS_Info_t* gpsInfo = Gps_GetInfo();
-    uint8_t buffer[150];
+    uint8_t buffer[300];
 
     //wait for gprs register complete
     //The process of GPRS registration network may cause the power supply voltage of GPS to drop,
