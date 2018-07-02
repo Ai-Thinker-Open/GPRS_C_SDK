@@ -17,6 +17,7 @@
 
 static HANDLE gpsTaskHandle = NULL;
 bool flag = false;
+bool isGpsOne = true;
 
 
 // const uint8_t nmea[]="$GNGGA,000021.263,2228.7216,N,11345.5625,E,0,0,,153.3,M,-3.3,M,,*4E\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$BDGSA,A,1,,,,,,,,,,,,,,,*0F\r\n$GPGSV,1,1,00*79\r\n$BDGSV,1,1,00*68\r\n$GNRMC,000021.263,V,2228.7216,N,11345.5625,E,0.000,0.00,060180,,,N*5D\r\n$GNVTG,0.00,T,,M,0.000,N,0.000,K,N*2C\r\n";
@@ -45,11 +46,13 @@ void EventDispatch(API_Event_t* pEvent)
                 {
                     Trace(1,"close gps");
                     GPS_Close();
+                    isGpsOne = false;
                 }
                 else if(strcmp(data,"open") == 0)
                 {
                     Trace(1,"open gps");
                     GPS_Open(NULL);
+                    isGpsOne = true;
                 }
             }
             break;
@@ -62,7 +65,6 @@ void gps_testTask(void *pData)
 {
     GPS_Info_t* gpsInfo = Gps_GetInfo();
     uint8_t buffer[150];
-    char buff1[15],buff2[15];
 
     //wait for gprs register complete
     //The process of GPRS registration network may cause the power supply voltage of GPS to drop,
@@ -119,39 +121,40 @@ void gps_testTask(void *pData)
 
     while(1)
     {
-        //show fix info
-        uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;
-        char* isFixedStr;            
-        if(isFixed == 2)
-            isFixedStr = "2D fix";
-        else if(isFixed == 3)
+        if(isGpsOne)
         {
-            if(gpsInfo->gga.fix_quality == 1)
-                isFixedStr = "3D fix";
-            else if(gpsInfo->gga.fix_quality == 2)
-                isFixedStr = "3D/DGPS fix";
+            //show fix info
+            uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;
+            char* isFixedStr;            
+            if(isFixed == 2)
+                isFixedStr = "2D fix";
+            else if(isFixed == 3)
+            {
+                if(gpsInfo->gga.fix_quality == 1)
+                    isFixedStr = "3D fix";
+                else if(gpsInfo->gga.fix_quality == 2)
+                    isFixedStr = "3D/DGPS fix";
+            }
+            else
+                isFixedStr = "no fix";
+
+            //convert unit ddmm.mmmm to degree(°) 
+            int temp = (int)(gpsInfo->rmc.latitude.value/gpsInfo->rmc.latitude.scale/100);
+            double latitude = temp+(double)(gpsInfo->rmc.latitude.value - temp*gpsInfo->rmc.latitude.scale*100)/gpsInfo->rmc.latitude.scale/60.0;
+            temp = (int)(gpsInfo->rmc.longitude.value/gpsInfo->rmc.longitude.scale/100);
+            double longitude = temp+(double)(gpsInfo->rmc.longitude.value - temp*gpsInfo->rmc.longitude.scale*100)/gpsInfo->rmc.longitude.scale/60.0;
+
+            
+            //you can copy ` latitude,longitude ` to http://www.gpsspg.com/maps.htm check location on map
+
+            snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, fix quality:%d, satellites tracked:%d, gps sates total:%d, is fixed:%s, coordinate:WGS84, Latitude:%f, Longitude:%f, unit:degree,altitude:%f",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
+                                                                gpsInfo->gga.fix_quality,gpsInfo->gga.satellites_tracked, gpsInfo->gsv[0].total_sats, isFixedStr, latitude,longitude,gpsInfo->gga.altitude);
+            //show in tracer
+            Trace(2,buffer);
+            //send to UART1
+            UART_Write(UART1,buffer,strlen(buffer));
+            UART_Write(UART1,"\r\n\r\n",4);
         }
-        else
-            isFixedStr = "no fix";
-
-        //convert unit ddmm.mmmm to degree(°) 
-        int temp = (int)(gpsInfo->rmc.latitude.value/gpsInfo->rmc.latitude.scale/100);
-        double latitude = temp+(double)(gpsInfo->rmc.latitude.value - temp*gpsInfo->rmc.latitude.scale*100)/gpsInfo->rmc.latitude.scale/60.0;
-        temp = (int)(gpsInfo->rmc.longitude.value/gpsInfo->rmc.longitude.scale/100);
-        double longitude = temp+(double)(gpsInfo->rmc.longitude.value - temp*gpsInfo->rmc.longitude.scale*100)/gpsInfo->rmc.longitude.scale/60.0;
-
-        gcvt(latitude,6,buff1);
-        gcvt(longitude,6,buff2);
-        
-        //you can copy ` buff1,buff2 `(latitude,longitude) to http://www.gpsspg.com/maps.htm check location on map
-
-        snprintf(buffer,sizeof(buffer),"GPS fix mode:%d, BDS fix mode:%d, fix quality:%d, is fixed:%s, coordinate:WGS84, Latitude:%s, Longitude:%s, unit:degree",gpsInfo->gsa[0].fix_type, gpsInfo->gsa[1].fix_type,
-                                                            gpsInfo->gga.fix_quality,isFixedStr, buff1,buff2);
-        //show in tracer
-        Trace(2,buffer);
-        //send to UART1
-        UART_Write(UART1,buffer,strlen(buffer));
-        UART_Write(UART1,"\r\n\r\n",4);
 
         OS_Sleep(5000);
     }
