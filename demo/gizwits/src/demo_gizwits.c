@@ -1,6 +1,6 @@
 /*
- * @File  demo_socket.c
- * @Brief socket(TCP) communication with block IO example
+ * @File  demo_gizwits.c
+ * @Brief gizwits usage
  * 
  * @Author: Neucrack 
  * @Date: 2018-06-12 18:04:08 

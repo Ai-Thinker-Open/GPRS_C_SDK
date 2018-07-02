@@ -241,7 +241,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*CALL_HangUp)();
     bool                (*CALL_Answer)();
     bool                (*CALL_DTMF)(char dtmf, CALL_DTMF_Gain_t attenuation, uint8_t duration, uint8_t speakerGain, bool send);
-    bool                (*CALL_Status)(CALL_Status_t** callStatus_, uint8_t* count);
+    bool                (*CALL_Status)(CALL_Status_t** callStatus, uint8_t* count);
 
     //adc
     void                (*ADC_Init)(ADC_Config_t adcConfig);

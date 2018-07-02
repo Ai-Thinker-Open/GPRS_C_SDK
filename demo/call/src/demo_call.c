@@ -93,6 +93,23 @@ void CallTest()
     while(!isDialSuccess)
         OS_Sleep(100);
 
+    
+    CALL_Status_t* callStatus = NULL;
+    uint8_t count;
+    bool ret = CALL_Status(&callStatus,count);
+    uint8_t i;
+    if(ret)
+    {
+        for(i=0;i<count;++i)
+        {
+            Trace(1,"index:%d,direction:%d,status:%d,mode:%d,mpty:%d,number:%s,number type:%d",
+                                                    callStatus[i].index,callStatus[i].direction,callStatus[i].status,callStatus[i].mode,
+                                                    callStatus[i].multiparty,callStatus[i].number,callStatus[i].numberType);
+        }
+        OS_Free(callStatus);
+    }
+    
+    
     uint8_t dtmf = '0';
     for(int i=0;i<10;++i,++dtmf)
     {
