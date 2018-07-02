@@ -17,6 +17,13 @@
  */
 #define CALL_DTMF            CSDK_FUNC(CALL_DTMF)
 
+/**
+ * bool                (*CALL_Status)(CALL_Status_t** callStatus_, uint8_t* count);
+ * @attention must call OS_Free() to free first param
+ * 
+ */
+#define CALL_Status          CSDK_FUNC(CALL_Status)
+
 
 #endif
 

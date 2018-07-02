@@ -26,6 +26,16 @@ typedef enum{
     CALL_ERROR_MAX
 }CALL_Error_t;
 
+typedef struct {
+    uint8_t index;
+    uint8_t direction;
+    uint8_t status;
+    uint8_t mode;
+    bool    multiparty;
+    char    number[22];
+    uint8_t numberType;
+}CALL_Status_t;
+
 
 #endif
 
