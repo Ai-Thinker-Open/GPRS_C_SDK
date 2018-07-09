@@ -252,7 +252,7 @@ void gps_testTask(void *pData)
 
     //open GPS hardware(UART2 open either)
     GPS_Init();
-    GPS_SaveLog(false);
+    GPS_SaveLog(true);
     // if(!GPS_ClearLog())
     //     Trace(1,"open file error, please check tf card");
     GPS_Open(NULL);
@@ -335,13 +335,14 @@ void gps_testTask(void *pData)
             char* requestPath = buffer2;
             uint8_t percent;
             uint16_t v = PM_Voltage(&percent);
+            Trace(1,"power:%d %d",v,percent);
             memset(buffer,0,sizeof(buffer));
             if(!INFO_GetIMEI(buffer))
                 Assert(false,"NO IMEI");
             Trace(1,"device name:%s",buffer);
-            snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%f&altitude=%f&accuracy=%f&batt=%f",
-                                                    buffer,time(NULL),latitude,longitude,0.0,0.0,gpsInfo->gga.altitude,0.0,percent);
-            if(!Http_Post("ss.neucrack.com",8082,requestPath,NULL,0,buffer,sizeof(buffer)))
+            snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%.1f&altitude=%f&accuracy=%.1f&batt=%.1f&valid=%d",
+                                                    buffer,time(NULL),latitude,longitude,0.0,0.0,gpsInfo->gga.altitude,0.0,percent*1.0,(isFixed>1?1:0));
+            if(!Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)))
                 Trace(1,"send location to server fail");
             else
                 Trace(1,"send location to server success");
