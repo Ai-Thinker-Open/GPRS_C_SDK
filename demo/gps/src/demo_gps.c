@@ -85,7 +85,7 @@ void gps_testTask(void *pData)
     
 
     // set gps nmea output interval
-    for(uint8_t i = 0;i<3;++i)
+    for(uint8_t i = 0;i<5;++i)
     {
         bool ret = GPS_SetOutputInterval(10000);
         Trace(1,"set gps ret:%d",ret);
