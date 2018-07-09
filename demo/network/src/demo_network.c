@@ -6,6 +6,7 @@
 #include <api_event.h>
 #include <api_network.h>
 #include <api_debug.h>
+#include <api_socket.h>
 
 
 #define DOMAIN_NUMBER 8
