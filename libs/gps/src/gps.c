@@ -14,6 +14,7 @@
 #include "buffer.h"
 #include "api_debug.h"
 #include "gps_parse.h"
+#include "api_fs.h"
 
 
 
@@ -27,6 +28,7 @@ static uint8_t tmp[GPS_NMEA_FRAME_BUFFER_LENGTH+1];
 static Buffer_t gpsNmeaBuffer;
 static uint8_t  gpsDataBuffer[GPS_DATA_BUFFER_MAX_LENGTH];
 static char*  gpsAckMsg = NULL;
+static bool isSaveLog = false;
 
 
 void GPS_Init()
@@ -35,9 +37,53 @@ void GPS_Init()
     Buffer_Init(&gpsNmeaBuffer,gpsDataBuffer,GPS_DATA_BUFFER_MAX_LENGTH);
 }
 
+void GPS_SaveLog(bool save)
+{
+    isSaveLog = save;
+}
+
+bool GPS_IsSaveLog()
+{
+    return isSaveLog;
+}
+
+bool GPS_ClearLog()
+{
+    int32_t fd;
+    
+    uint8_t *path = GPS_NMEA_LOG_FILE_PATH;
+    fd = API_FS_Open(path, FS_O_RDWR | FS_O_CREAT, 0);
+	if ( fd < 0)
+	{
+        GPS_DEBUG_I("Open file failed:%d",fd);
+		return false;
+	}
+    API_FS_Close(fd);
+    return true;
+}
+
 void GPS_Send(char* cmd,uint8_t len)
 {
     UART_Write(UART2,cmd,len);
+}
+
+bool SaveToTFCard(char* str)
+{
+    int32_t fd;
+    int32_t ret;
+    uint8_t *path = GPS_NMEA_LOG_FILE_PATH;
+
+    fd = API_FS_Open(path, FS_O_RDWR|FS_O_APPEND | FS_O_CREAT, 0);
+	if ( fd < 0)
+	{
+        GPS_DEBUG_I("Open file failed:%d",fd);
+		return false;
+	}
+    ret = API_FS_Write(fd, (uint8_t*)str, strlen(str));
+    API_FS_Close(fd);
+    if(ret <= 0)
+        return false;
+	return true;
 }
 
 void GPS_Update(uint8_t* data,uint32_t length)
@@ -69,6 +115,8 @@ void GPS_Update(uint8_t* data,uint32_t length)
                     return;
                 }
                 GPS_DEBUG_I("parse nmea frame");
+                if(isSaveLog)
+                    SaveToTFCard((char*)tmp);
                 GPS_Parse(tmp);
             }
         }
