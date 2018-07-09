@@ -195,8 +195,10 @@ extern double tanh __P((double));
 extern double exp __P((double));
 extern double frexp __P((double, int *));
 extern double ldexp __P((double, int));
-extern double log __P((double));
-extern double log10 __P((double));
+// extern double log __P((double));
+#define log     CSDK_FUNC(log)
+// extern double log10 __P((double));
+#define log10     CSDK_FUNC(log10)
 extern double modf __P((double, double *));
 
 extern double pow __P((double, double));
@@ -236,7 +238,8 @@ extern double cbrt __P((double));
 extern double logb __P((double));
 // extern double nextafter __P((double, double));
 // #define nextafter     CSDK_FUNC(nextafter)
-extern double remainder __P((double, double));
+// extern double remainder __P((double, double));
+#define remainder     CSDK_FUNC(remainder)
 // #ifdef _SCALB_INT
 // extern double scalb __P((double, int));
 // #else

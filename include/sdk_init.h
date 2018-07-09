@@ -293,7 +293,9 @@ typedef struct T_INTERFACE_VTBL_TAG
     double              (*atan2)(double, double);
     double              (*fmod)(double, double);
     double              (*rint)(double);
-
+    double              (*log) (double);
+    double              (*log10) (double);
+    double              (*remainder) (double, double);
 
     //ssl
     SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);

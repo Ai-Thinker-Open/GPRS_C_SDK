@@ -46,8 +46,6 @@ void STD_TestTask()
         Trace(1,"aaa:%f %f",aaa,bbb);
         Trace(1,"%p",sscanf);
         Trace(1,"%p",sprintf);
-        // Trace(1,"%p",g_InterfaceVtbl->sscanf);
-        // Trace(1,"%p",g_InterfaceVtbl->sprintf);
         // gcvt(value, 3, bufff);
         // Trace(1,"%s",bufff);
 
