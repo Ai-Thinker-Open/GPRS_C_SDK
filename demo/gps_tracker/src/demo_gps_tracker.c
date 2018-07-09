@@ -252,7 +252,7 @@ void gps_testTask(void *pData)
 
     //open GPS hardware(UART2 open either)
     GPS_Init();
-    GPS_SaveLog(true);
+    GPS_SaveLog(false);
     // if(!GPS_ClearLog())
     //     Trace(1,"open file error, please check tf card");
     GPS_Open(NULL);
