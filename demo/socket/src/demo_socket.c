@@ -109,39 +109,29 @@ void EventDispatch(API_Event_t* pEvent)
 
 
 //http get with no header
-bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, int bufferLen)
+int Http_Get(const char* domain, int port,const char* path, char* retBuffer, int* bufferLen)
 {
+    bool flag = false;
+    uint16_t recvLen = 0;
     uint8_t ip[16];
+    int retBufferLen = *bufferLen;
     //connect server
     memset(ip,0,sizeof(ip));
     if(DNS_GetHostByName2(domain,ip) != 0)
     {
         Trace(1,"get ip error");
-        return false;
+        return -1;
     }
     Trace(1,"get ip success:%s -> %s",domain,ip);
     char* servInetAddr = ip;
-    snprintf(retBuffer,bufferLen,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",path,domain);
+    snprintf(retBuffer,retBufferLen,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",path,domain);
     char* pData = retBuffer;
     int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(fd < 0){
         Trace(1,"socket fail");
-        return false;
+        return -1;
     }
     Trace(1,"fd:%d",fd);
-    // ioctl(fd, FIONBIO, &NBIO);
-    // uint8_t cid = Network_GetPdpContextId();
-    // uint8_t myIpLen = 0;
-    // uint8_t simID   = 0;
-    // uint8_t myIp[18]={0};
-    // CFW_GprsGetPdpAddr(cid,&myIpLen,myIp,simID);
-
-    // //bind local ip with socket
-    // addr.sin_len    = 0;
-    // addr.sin_family = CFW_TCPIP_AF_INET;
-    // addr.sin_port   = 0;
-    // addr.sin_addr.s_addr = htonl(myIp[0] << 24 | myIp[1] << 16 | myIp[2] << 8 | myIp[3]);
-    // int ret = bind(fd, (struct sockaddr *)pName, nNameLen);
 
     struct sockaddr_in sockaddr;
     memset(&sockaddr,0,sizeof(sockaddr));
@@ -152,14 +142,14 @@ bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, in
     int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
     if(ret < 0){
         Trace(1,"socket connect fail");
-        return false;
+        return -1;
     }
     Trace(1,"socket connect success");
     Trace(1,"send request:%s",pData);
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
         Trace(1,"socket send fail");
-        return false;
+        return -1;
     }
     Trace(1,"socket send success");
 
@@ -167,51 +157,67 @@ bool Http_Get(const char* domain, int port,const char* path, char* retBuffer, in
     struct timeval timeout={12,0};
     FD_ZERO(&fds);
     FD_SET(fd,&fds);
-    ret = select(fd+1,&fds,NULL,NULL,&timeout);
-    switch(ret)
+    while(!flag)
     {
-        case -1:
-            Trace(1,"select error");
-            break;
-        case 0:
-            Trace(1,"select timeout");
-            break;
-        default:
-            if(FD_ISSET(fd,&fds))
-            {
-                Trace(1,"select return:%d",ret);
-                memset(retBuffer,0,bufferLen);
-                ret = recv(fd,retBuffer,bufferLen,0);
-                if(ret < 0)
+        ret = select(fd+1,&fds,NULL,NULL,&timeout);
+        switch(ret)
+        {
+            case -1:
+                Trace(1,"select error");
+                flag = true;
+                break;
+            case 0:
+                Trace(1,"select timeout");
+                flag = true;
+                break;
+            default:
+                if(FD_ISSET(fd,&fds))
                 {
-                    Trace(1,"recv error");
-                    break;
+                    Trace(1,"select return:%d",ret);
+                    memset(retBuffer+recvLen,0,retBufferLen-recvLen);
+                    ret = recv(fd,retBuffer+recvLen,retBufferLen-recvLen,0);
+                    Trace(1,"ret:%d",ret);
+                    recvLen += ret;
+                    if(ret < 0)
+                    {
+                        Trace(1,"recv error");
+                        flag = true;
+                        break;
+                    }
+                    else if(ret == 0)
+                    {
+                        Trace(1,"ret == 0");
+                        flag = true;
+                        break;
+                    }
+                    else if(ret < 1352)
+                    {
+                        Trace(1,"recv len:%d,data:%s",recvLen,retBuffer);
+                        *bufferLen = recvLen;
+                        close(fd);
+                        return recvLen;
+                    }                  
+                    
                 }
-                else if(ret == 0)
-                {
-                    Trace(1,"ret == 0");
-                    break;
-                }
-                Trace(1,"recv len:%d,data:%s",ret,retBuffer);
-                close(fd);
-                return true;
-            }
-            break;
+                break;
+        }
     }
     close(fd);
-    return false;
+    return -1;
 }
+
 
 void Socket_BIO_Test()
 {
     char buffer[2048];
+    int len = sizeof(buffer);
     //wait for gprs network connection ok
     semStart = OS_CreateSemaphore(0);
     OS_WaitForSemaphore(semStart,OS_TIME_OUT_WAIT_FOREVER);
     OS_DeleteSemaphore(semStart);
 
     //perform http get
-    if(!Http_Get(SERVER_IP,SERVER_PORT,SERVER_PATH,buffer,sizeof(buffer)))
+    if(Http_Get(SERVER_IP,SERVER_PORT,SERVER_PATH,buffer,&len) < 0)
     {
         Trace(1,"http get fail");
     }
