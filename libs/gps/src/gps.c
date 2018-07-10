@@ -16,6 +16,8 @@
 #include "gps_parse.h"
 #include "api_fs.h"
 
+#include "api_socket.h"
+
 
 
 #define GPS_CMD_HEADER "$PGKC"
@@ -560,4 +562,145 @@ bool GPS_SetFixMode(GPS_Fix_Mode_t mode)
     snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,mode);
     return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_TIME_OUT_CMD); 
 }
+
+
+//http get with no header
+int Http_Get(const char* domain, int port,const char* path, char* retBuffer, int* bufferLen)
+{
+    bool flag = false;
+    uint16_t recvLen = 0;
+    uint8_t ip[16];
+    int retBufferLen = *bufferLen;
+    //connect server
+    memset(ip,0,sizeof(ip));
+    if(DNS_GetHostByName2(domain,ip) != 0)
+    {
+        Trace(1,"get ip error");
+        return -1;
+    }
+    Trace(1,"get ip success:%s -> %s",domain,ip);
+    char* servInetAddr = ip;
+    snprintf(retBuffer,retBufferLen,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",path,domain);
+    char* pData = retBuffer;
+    int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if(fd < 0){
+        Trace(1,"socket fail");
+        return -1;
+    }
+    Trace(1,"fd:%d",fd);
+
+    struct sockaddr_in sockaddr;
+    memset(&sockaddr,0,sizeof(sockaddr));
+    sockaddr.sin_family = AF_INET;
+    sockaddr.sin_port = htons(port);
+    inet_pton(AF_INET,servInetAddr,&sockaddr.sin_addr);
+
+    int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
+    if(ret < 0){
+        Trace(1,"socket connect fail");
+        return -1;
+    }
+    Trace(1,"socket connect success");
+    Trace(1,"send request:%s",pData);
+    ret = send(fd, pData, strlen(pData), 0);
+    if(ret < 0){
+        Trace(1,"socket send fail");
+        return -1;
+    }
+    Trace(1,"socket send success");
+
+    struct fd_set fds;
+    struct timeval timeout={12,0};
+    FD_ZERO(&fds);
+    FD_SET(fd,&fds);
+    while(!flag)
+    {
+        ret = select(fd+1,&fds,NULL,NULL,&timeout);
+        switch(ret)
+        {
+            case -1:
+                Trace(1,"select error");
+                flag = true;
+                break;
+            case 0:
+                Trace(1,"select timeout");
+                flag = true;
+                break;
+            default:
+                if(FD_ISSET(fd,&fds))
+                {
+                    Trace(1,"select return:%d",ret);
+                    memset(retBuffer+recvLen,0,retBufferLen-recvLen);
+                    ret = recv(fd,retBuffer+recvLen,retBufferLen-recvLen,0);
+                    Trace(1,"ret:%d",ret);
+                    recvLen += ret;
+                    if(ret < 0)
+                    {
+                        Trace(1,"recv error");
+                        flag = true;
+                        break;
+                    }
+                    else if(ret == 0)
+                    {
+                        Trace(1,"ret == 0");
+                        flag = true;
+                        break;
+                    }
+                    else if(ret < 1352)
+                    {
+                        Trace(1,"recv len:%d,data:%s",recvLen,retBuffer);
+                        *bufferLen = recvLen;
+                        close(fd);
+                        return recvLen;
+                    }                  
+                    
+                }
+                break;
+        }
+    }
+    close(fd);
+    return -1;
+}
+
+
+
+
+bool GPS_DoAGPS()
+{
+    int bufferLen = 5120;
+    char* buffer = (char*)OS_Malloc(bufferLen);
+    if(!buffer)
+    {
+        Trace(1,"malloc fail");
+        return false;
+    }
+    memset(buffer,0,bufferLen);
+    int ret = Http_Get(GPS_AGPS_GPD_FILE_SERVER,GPS_AGPS_GPD_FILE_SERVER_PORT,
+            GPS_AGPS_GPD_FILE_PATH,buffer,&bufferLen);
+    if(ret < 0)
+    {
+        Trace(1,"http get fail");
+        OS_Free(buffer);
+        return false;
+    }
+    char* indexResult = strstr(buffer,"200 OK");
+    if(!indexResult)
+    {
+        Trace(1,"http get response error:%s",buffer);
+        OS_Free(buffer);
+        return false; 
+    }
+    char* indexBody = strstr(indexResult,"\r\n\r\n");
+    if(!indexBody)
+    {
+        Trace(1,"http get response content error:%s",buffer);
+        OS_Free(buffer);
+        return false; 
+    }
+    indexBody+=4;
+    Trace_MemBlock(1,indexBody,ret-(indexBody-buffer),16);
+    OS_Free(buffer);
+    return true;
+}
+
 

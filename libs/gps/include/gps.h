@@ -27,6 +27,10 @@ extern "C"{
 
 #define GPS_DEBUG 0
 
+#define GPS_AGPS_GPD_FILE_SERVER       "www.goke-agps.com"
+#define GPS_AGPS_GPD_FILE_SERVER_PORT   7777
+#define GPS_AGPS_GPD_FILE_PATH         "/brdcGPD.dat"
+
 /////////////////////////////////////////
 
 #if (GPS_DEBUG == 1)
@@ -147,6 +151,8 @@ bool GPS_SetFixMode(GPS_Fix_Mode_t mode);
 void GPS_SaveLog(bool save, const char* logPath);
 bool GPS_IsSaveLog();
 bool GPS_ClearLog();
+
+bool GPS_DoAGPS();
 
 #ifdef __cplusplus
 }
