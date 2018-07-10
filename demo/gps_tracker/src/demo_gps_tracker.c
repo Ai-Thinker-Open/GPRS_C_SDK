@@ -31,6 +31,7 @@
 #define SERVER_IP   "ss.neucrack.com"
 #define SERVER_PORT  8082
 
+#define GPS_NMEA_LOG_FILE_PATH "/t/gps_nmea.log"
 
 
 
@@ -252,7 +253,7 @@ void gps_testTask(void *pData)
 
     //open GPS hardware(UART2 open either)
     GPS_Init();
-    GPS_SaveLog(true);
+    GPS_SaveLog(true,GPS_NMEA_LOG_FILE_PATH);
     // if(!GPS_ClearLog())
     //     Trace(1,"open file error, please check tf card");
     GPS_Open(NULL);

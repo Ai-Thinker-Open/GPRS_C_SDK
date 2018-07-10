@@ -25,8 +25,6 @@ extern "C"{
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
 
-#define GPS_NMEA_LOG_FILE_PATH "/t/gps_nmea.log"
-
 #define GPS_DEBUG 0
 
 /////////////////////////////////////////
@@ -146,7 +144,7 @@ bool GPS_SetLocationTime(float latitude, float longitude, float altitude, RTC_Ti
 bool GPS_SetFixMode(GPS_Fix_Mode_t mode);
 
 
-void GPS_SaveLog(bool save);
+void GPS_SaveLog(bool save, const char* logPath);
 bool GPS_IsSaveLog();
 bool GPS_ClearLog();
 

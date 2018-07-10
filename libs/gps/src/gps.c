@@ -29,6 +29,7 @@ static Buffer_t gpsNmeaBuffer;
 static uint8_t  gpsDataBuffer[GPS_DATA_BUFFER_MAX_LENGTH];
 static char*  gpsAckMsg = NULL;
 static bool isSaveLog = false;
+static const char* gpsLogPath = NULL;
 
 
 void GPS_Init()
@@ -37,9 +38,10 @@ void GPS_Init()
     Buffer_Init(&gpsNmeaBuffer,gpsDataBuffer,GPS_DATA_BUFFER_MAX_LENGTH);
 }
 
-void GPS_SaveLog(bool save)
+void GPS_SaveLog( bool save, const char* path)
 {
     isSaveLog = save;
+    gpsLogPath = path;
 }
 
 bool GPS_IsSaveLog()
@@ -51,7 +53,7 @@ bool GPS_ClearLog()
 {
     int32_t fd;
     
-    uint8_t *path = GPS_NMEA_LOG_FILE_PATH;
+    uint8_t *path = (uint8_t*)gpsLogPath;
     fd = API_FS_Open(path, FS_O_RDWR | FS_O_CREAT, 0);
 	if ( fd < 0)
 	{
@@ -71,7 +73,7 @@ bool SaveToTFCard(char* str)
 {
     int32_t fd;
     int32_t ret;
-    uint8_t *path = GPS_NMEA_LOG_FILE_PATH;
+    uint8_t *path = (uint8_t*)gpsLogPath;
 
     fd = API_FS_Open(path, FS_O_RDWR|FS_O_APPEND | FS_O_CREAT, 0);
 	if ( fd < 0)
