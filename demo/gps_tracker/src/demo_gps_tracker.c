@@ -340,8 +340,8 @@ void gps_testTask(void *pData)
             if(!INFO_GetIMEI(buffer))
                 Assert(false,"NO IMEI");
             Trace(1,"device name:%s",buffer);
-            snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%.1f&altitude=%f&accuracy=%.1f&batt=%.1f&valid=%d",
-                                                    buffer,time(NULL),latitude,longitude,0.0,0.0,gpsInfo->gga.altitude,0.0,percent*1.0,(isFixed>1?1:0));
+            snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%.1f&altitude=%f&accuracy=%.1f&batt=%.1f",
+                                                    buffer,time(NULL),latitude,longitude,isFixed*1.0,0.0,gpsInfo->gga.altitude,0.0,percent*1.0);
             if(!Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)))
                 Trace(1,"send location to server fail");
             else
@@ -357,7 +357,8 @@ void gps_MainTask(void *pData)
 {
     API_Event_t* event=NULL;
     
-
+    TIME_SetIsAutoUpdateRtcTime(true);
+    
     //open UART1 to print NMEA infomation
     UART_Config_t config = {
         .baudRate = UART_BAUD_RATE_115200,
