@@ -4,10 +4,7 @@ REM //set you csdtk path
 set USER_CSDTK=%GPRS_CSDTK42_PATH%
 if %USER_CSDTK%a==a (echo NO CSDTK,please install CSDTK firstly  && pause && exit)
 
-set ss=%time:~6,2%
-set mm=%time:~3,2%
-set hh=%time:~0,2%
-set /a startTime=(%hh%*60+%mm%)*60+%ss%
+set startTime=%time%
 
 
 if not defined CSDTK4INSTALLDIR (
@@ -83,6 +80,7 @@ if "%1%"x =="demo"x (
     set /a rom_use=%use_rom_size%+%use_rom_bss_size%   
     REM set /a ram_percent=%ram_use%*10000/%ram_total%
     REM set /a rom_percent=rom_use*10000/%rom_total%
+    echo -------------------------------------------------
     echo ROM    total:%rom_total% Bytes     used:%rom_use% Bytes
     echo RAM    total:%ram_total% Bytes     used:%ram_use% Bytes
     goto end_exit
@@ -133,10 +131,29 @@ if "%1%"x =="demo"x (
 
 
 :end_exit
-    set ss=%time:~6,2%
-    set mm=%time:~3,2%
-    set hh=%time:~0,2%
-    set /a endTime=(%hh%*60+%mm%)*60+%ss%
-    set /a total=%endTime%-%startTime%
-    echo === Build Time: %total%s at %date% %time% ===
-    echo _____________________________________________________
+    set endTime=0%time%
+    set startTime=%startTime:~-11%
+    set endTime=%endTime:~-11%
+
+    set /a msec1=1%startTime:~-2,2%-100
+    set /a second1=1%startTime:~-5,2%-100
+    set /a minute1=1%startTime:~-8,2%-100
+    set /a hour1=1%startTime:~-11,2%-100
+
+    set /a msec2=1%endTime:~-2,2%-100
+    set /a second2=1%endTime:~-5,2%-100
+    set /a minute2=1%endTime:~-8,2%-100
+    set /a hour2=1%endTime:~-11,2%-100
+
+    set /a time1MS=%msec1%+%second1%*1000+%minute1%*1000*60+%hour1%*1000*60*60
+    set /a time2MS=%msec2%+%second2%*1000+%minute2%*1000*60+%hour2%*1000*60*60
+    set /a timeIntervalMS=%time2MS%-%time1MS%
+
+    set /a intervalMS=1%timeIntervalMS:~-3,3%-1000
+    set /a intervalS =%timeIntervalMS%/1000
+
+    echo =================================================
+    echo Start Time : %startTime%
+    echo End   Time : %endTime%
+    echo Build Time : %intervalS%.%intervalMS%s
+    echo =================================================
