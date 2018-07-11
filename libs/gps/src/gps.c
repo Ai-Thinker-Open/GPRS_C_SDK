@@ -521,6 +521,11 @@ bool GPS_SetStandbyMode(GPS_STANDBY_Mode_t mode)
     return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_NMEA,GPS_TIME_OUT_CMD);
 }
 
+
+/**
+ * 
+ * @param intervalMs: nmea infomation output interval, 200~10000 ms
+ */
 bool GPS_SetOutputInterval(uint16_t intervalMs)
 {
     GPS_CMD_t cmdSend;
@@ -841,6 +846,16 @@ bool GPS_SendGPDPack(uint16_t index, uint8_t* pack)
     return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_BINARY,GPS_TIME_OUT_CMD);
 }
 
+
+/**
+ * do AGPS process, to accelerate GPS fix( download brdc GPD file and upload to GPS, and set location and time)
+ * @param latitude:  latitude got from lbs
+ * @param longitude: longitude got from lbs
+ * @param altitude:  altitude, you can get from internet or set to zero
+ * @param downloadGPD: the GPD file size about 3.4k, file change in every 2 hours, and file is valid in 6 hours,
+ *                     you can only update onece in 2 hours or 6 hours to save money
+ * @return execute agps proccess success or not
+ */
 bool GPS_AGPS(float latitude, float longitude, float altitude, bool downloadGPD)
 {
     char* buffer = NULL;

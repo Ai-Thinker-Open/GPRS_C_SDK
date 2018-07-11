@@ -17,7 +17,7 @@
 
 static HANDLE gpsTaskHandle = NULL;
 bool flag = false;
-bool isGpsOne = true;
+bool isGpsOn = true;
 
 
 // const uint8_t nmea[]="$GNGGA,000021.263,2228.7216,N,11345.5625,E,0,0,,153.3,M,-3.3,M,,*4E\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$BDGSA,A,1,,,,,,,,,,,,,,,*0F\r\n$GPGSV,1,1,00*79\r\n$BDGSV,1,1,00*68\r\n$GNRMC,000021.263,V,2228.7216,N,11345.5625,E,0.000,0.00,060180,,,N*5D\r\n$GNVTG,0.00,T,,M,0.000,N,0.000,K,N*2C\r\n";
@@ -46,13 +46,13 @@ void EventDispatch(API_Event_t* pEvent)
                 {
                     Trace(1,"close gps");
                     GPS_Close();
-                    isGpsOne = false;
+                    isGpsOn = false;
                 }
                 else if(strcmp(data,"open") == 0)
                 {
                     Trace(1,"open gps");
                     GPS_Open(NULL);
-                    isGpsOne = true;
+                    isGpsOn = true;
                 }
             }
             break;
@@ -121,7 +121,7 @@ void gps_testTask(void *pData)
 
     while(1)
     {
-        if(isGpsOne)
+        if(isGpsOn)
         {
             //show fix info
             uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;

@@ -40,7 +40,7 @@
 #define MAIN_TASK_NAME          "GPS Test Task"
 
 static HANDLE gpsTaskHandle = NULL;
-bool isGpsOne = true;
+bool isGpsOn = true;
 bool networkFlag = false;
 
 
@@ -121,13 +121,13 @@ void EventDispatch(API_Event_t* pEvent)
                 {
                     Trace(1,"close gps");
                     GPS_Close();
-                    isGpsOne = false;
+                    isGpsOn = false;
                 }
                 else if(strcmp(data,"open") == 0)
                 {
                     Trace(1,"open gps");
                     GPS_Open(NULL);
-                    isGpsOne = true;
+                    isGpsOn = true;
                 }
             }
             break;
@@ -164,7 +164,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"fd:%d",fd);
+    // Trace(2,"fd:%d",fd);
 
     struct sockaddr_in sockaddr;
     memset(&sockaddr,0,sizeof(sockaddr));
@@ -178,7 +178,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"socket connect success");
+    // Trace(2,"socket connect success");
     Trace(2,"send request:%s",pData);
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
@@ -192,7 +192,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"socket send success");
+    // Trace(2,"socket send success");
 
     struct fd_set fds;
     struct timeval timeout={12,0};
@@ -300,7 +300,7 @@ void gps_testTask(void *pData)
 
     while(1)
     {
-        if(isGpsOne)
+        if(isGpsOn)
         {
             //show fix info
             uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;

@@ -16,6 +16,7 @@
 #include "assert.h"
 #include "api_socket.h"
 #include "api_network.h"
+#include "api_lbs.h"
 
 
 
@@ -43,14 +44,19 @@
 #define MAIN_TASK_NAME          "GPS Test Task"
 
 static HANDLE gpsTaskHandle = NULL;
-bool isGpsOne = true;
+bool isGpsOn = true;
 bool networkFlag = false;
+HANDLE semGetCellInfo = NULL;
+
+float latitudeLbs  = 0.0;
+float longitudeLbs = 0.0;
 
 
 // const uint8_t nmea[]="$GNGGA,000021.263,2228.7216,N,11345.5625,E,0,0,,153.3,M,-3.3,M,,*4E\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$BDGSA,A,1,,,,,,,,,,,,,,,*0F\r\n$GPGSV,1,1,00*79\r\n$BDGSV,1,1,00*68\r\n$GNRMC,000021.263,V,2228.7216,N,11345.5625,E,0.000,0.00,060180,,,N*5D\r\n$GNVTG,0.00,T,,M,0.000,N,0.000,K,N*2C\r\n";
 
 void EventDispatch(API_Event_t* pEvent)
 {
+    static uint8_t lbsCount = 0;
     switch(pEvent->id)
     {
         case API_EVENT_ID_NO_SIMCARD:
@@ -124,16 +130,56 @@ void EventDispatch(API_Event_t* pEvent)
                 {
                     Trace(1,"close gps");
                     GPS_Close();
-                    isGpsOne = false;
+                    isGpsOn = false;
                 }
                 else if(strcmp(data,"open") == 0)
                 {
                     Trace(1,"open gps");
                     GPS_Open(NULL);
-                    isGpsOne = true;
+                    isGpsOn = true;
                 }
             }
             break;
+        case API_EVENT_ID_NETWORK_CELL_INFO:
+        {
+            uint8_t number = pEvent->param1;
+            Network_Location_t* location = (Network_Location_t*)pEvent->pParam1;
+            Trace(2,"network cell infomation,serving cell number:1, neighbor cell number:%d",number-1);
+            
+            for(int i=0;i<number;++i)
+            {
+                Trace(2,"cell %d info:%d%d%d,%d%d%d,%d,%d,%d,%d,%d,%d",i,
+				location[i].sMcc[0], location[i].sMcc[1], location[i].sMcc[2], 
+				location[i].sMnc[0], location[i].sMnc[1], location[i].sMnc[2],
+				location[i].sLac, location[i].sCellID, location[i].iBsic,
+                location[i].iRxLev, location[i].iRxLevSub, location[i].nArfcn);
+            }
+
+            if(!LBS_GetLocation(location,number,15,&longitudeLbs,&latitudeLbs))
+                Trace(1,"===LBS get location fail===");
+            else
+                Trace(1,"===LBS get location success, latitude:%f,longitude:%f===",latitudeLbs,longitudeLbs);
+            if((latitudeLbs == 0) &&(longitudeLbs == 0))//not get location from server, try again
+            {
+                if(++lbsCount>6)
+                {
+                    lbsCount = 0;
+                    Trace(1,"try 6 times to get location from lbs but fail!!");
+                    OS_ReleaseSemaphore(semGetCellInfo);
+                    break;
+                }
+                if(!Network_GetCellInfoRequst())
+                {
+                    Trace(1,"network get cell info fail");
+                    OS_ReleaseSemaphore(semGetCellInfo);
+                }
+                break;
+            }
+            OS_ReleaseSemaphore(semGetCellInfo);
+            lbsCount = 0;
+            break;
+        }
+
         default:
             break;
     }
@@ -154,7 +200,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         Trace(2,"get ip error");
         return false;
     }
-    Trace(2,"get ip success:%s -> %s",domain,ip);
+    // Trace(2,"get ip success:%s -> %s",domain,ip);
     char* servInetAddr = ip;
     char* temp = OS_Malloc(2048);
     if(!temp)
@@ -171,7 +217,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"fd:%d",fd);
+    // Trace(2,"fd:%d",fd);
 
     struct sockaddr_in sockaddr;
     memset(&sockaddr,0,sizeof(sockaddr));
@@ -185,7 +231,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"socket connect success");
+    // Trace(2,"socket connect success");
     Trace(2,"send request:%s",pData);
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
@@ -199,7 +245,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         OS_Free(temp);
         return false;
     }
-    Trace(2,"socket send success");
+    // Trace(2,"socket send success");
 
     struct fd_set fds;
     struct timeval timeout={12,0};
@@ -217,7 +263,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
         default:
             if(FD_ISSET(fd,&fds))
             {
-                Trace(2,"select return:%d",ret);
+                // Trace(2,"select return:%d",ret);
                 memset(retBuffer,0,bufferLen);
                 ret = recv(fd,retBuffer,bufferLen,0);
                 if(ret < 0)
@@ -270,7 +316,7 @@ void gps_testTask(void *pData)
         OS_Sleep(1000);
     
 
-    // set gps nmea output interval
+    // set gps nmea output interval as 10s
     for(uint8_t i = 0;i<5;++i)
     {
         bool ret = GPS_SetOutputInterval(10000);
@@ -279,43 +325,48 @@ void gps_testTask(void *pData)
             break;
         OS_Sleep(1000);
     }
-
-    if(!GPS_AGPS(22.0,103.0,0,true))
-    {
-        Trace(1,"agps fail");
-    }
-    // if(!GPS_ClearInfoInFlash())
-    //     Trace(1,"erase gps fail");
-    
-    // if(!GPS_SetQzssOutput(false))
-    //     Trace(1,"enable qzss nmea output fail");
-
-    // if(!GPS_SetSearchMode(true,false,true,false))
-    //     Trace(1,"set search mode fail");
-
-    // if(!GPS_SetSBASEnable(true))
-    //     Trace(1,"enable sbas fail");
-    
+    //get version of gps firmware
     if(!GPS_GetVersion(buffer,150))
         Trace(1,"get gps firmware version fail");
     else
         Trace(1,"gps firmware version:%s",buffer);
 
-    // if(!GPS_SetFixMode(GPS_FIX_MODE_LOW_SPEED))
-        // Trace(1,"set fix mode fail");
+    
+    //get location through LBS
+    semGetCellInfo = OS_CreateSemaphore(0);
+    if(!Network_GetCellInfoRequst())
+    {
+        Trace(1,"network get cell info fail");
+    }
+    OS_WaitForSemaphore(semGetCellInfo,OS_TIME_OUT_WAIT_FOREVER);
+    OS_DeleteSemaphore(semGetCellInfo);
+    semGetCellInfo = NULL;
 
+    //send location to GPS and update brdc GPD file
+    Trace(1,"do AGPS now");
+    if(!GPS_AGPS(latitudeLbs,longitudeLbs,0,true))
+    {
+        Trace(1,"agps fail");
+    }
+    else
+    {
+        Trace(1,"do AGPS success");
+    }
+
+    //set nmea output interval as 1s
     if(!GPS_SetOutputInterval(1000))
         Trace(1,"set nmea output interval fail");
     
     Trace(1,"init ok");
 
+    
     while(1)
     {
-        if(isGpsOne)
+        if(isGpsOn)
         {
             //show fix info
             uint8_t isFixed = gpsInfo->gsa[0].fix_type > gpsInfo->gsa[1].fix_type ?gpsInfo->gsa[0].fix_type:gpsInfo->gsa[1].fix_type;
-            char* isFixedStr;            
+            char* isFixedStr = NULL; 
             if(isFixed == 2)
                 isFixedStr = "2D fix";
             else if(isFixed == 3)

@@ -139,6 +139,10 @@ void GPS_Update(uint8_t* data,uint32_t length);
 bool GPS_Reboot(GPS_Reboot_Mode_t mode);
 bool GPS_ClearInfoInFlash();
 bool GPS_SetStandbyMode(GPS_STANDBY_Mode_t mode);
+/**
+ * 
+ * @param intervalMs: nmea infomation output interval, 200~10000 ms
+ */
 bool GPS_SetOutputInterval(uint16_t intervalMs);
 bool GPS_SetLpMode(GPS_LP_Mode_t mode);
 bool GPS_SetQzssOutput(bool openOutput);
@@ -165,7 +169,7 @@ bool GPS_IsSaveLog();
 bool GPS_ClearLog();
 
 /**
- * do AGPS process, to accelerate GPS fix
+ * do AGPS process, to accelerate GPS fix( download brdc GPD file and upload to GPS, and set location and time)
  * @param latitude:  latitude got from lbs
  * @param longitude: longitude got from lbs
  * @param altitude:  altitude, you can get from internet or set to zero
