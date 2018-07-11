@@ -83,6 +83,16 @@ int32_t Buffer_Query(Buffer_t* buffer, uint8_t* data, uint16_t length, uint16_t 
 		{
 			indexData = 0;
 			indexReturn = -1;
+			if (buffer->buffer[index] == data[indexData])
+			{
+				if (indexData == 0)
+					indexReturn = index;
+				++indexData;
+				if (indexData == length)//find success
+				{
+					return indexReturn;
+				}
+			}
 		}
 		index = (index + 1) % buffer->maxSize;
 		--size;
