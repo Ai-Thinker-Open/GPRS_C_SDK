@@ -15,7 +15,7 @@
   */ 
 #define Trace                                   CSDK_FUNC(Trace)
 #define MEMBLOCK_Trace                          CSDK_FUNC(MEMBLOCK_Trace)
-#define Trace_MemBlock(a,b,c,d)                          MEMBLOCK_Trace(a,b,c,d)
+void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
 
 #define LIBS_DEBUG_I       15
 #define LIBS_DEBUG_E       16
