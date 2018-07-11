@@ -277,7 +277,7 @@ void gps_testTask(void *pData)
         OS_Sleep(1000);
     }
 
-    if(!GPS_DoAGPS())
+    if(!GPS_AGPS(22.0,103.0,0))
     {
         Trace(1,"agps fail");
     }

@@ -20,12 +20,12 @@ extern "C"{
 
 /////////////////////////////////////////
 ////////////////config//////////////////
-#define GPS_BUFFER_MAX_LENGTH 50
+#define GPS_BUFFER_MAX_LENGTH 100
 #define GPS_TIME_OUT_CMD      1500
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
 
-#define GPS_DEBUG 0
+#define GPS_DEBUG 1
 
 #define GPS_AGPS_GPD_FILE_SERVER       "www.goke-agps.com"
 #define GPS_AGPS_GPD_FILE_SERVER_PORT   7777
@@ -147,12 +147,14 @@ bool GPS_GetVersion(char* version, uint8_t len);
 bool GPS_SetLocationTime(float latitude, float longitude, float altitude, RTC_Time_t* time);
 bool GPS_SetFixMode(GPS_Fix_Mode_t mode);
 
+bool GPS_SetBinaryMode();
+bool GPS_SetNMEAMode();
 
 void GPS_SaveLog(bool save, const char* logPath);
 bool GPS_IsSaveLog();
 bool GPS_ClearLog();
 
-bool GPS_DoAGPS();
+bool GPS_AGPS(float latitude, float longitude, float altitude);
 
 #ifdef __cplusplus
 }
