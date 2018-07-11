@@ -67,7 +67,7 @@ bool GPS_ClearLog()
     return true;
 }
 
-void GPS_Send(char* cmd,uint8_t len)
+void GPS_Send(char* cmd,uint16_t len)
 {
     UART_Write(UART2,cmd,len);
 }
@@ -96,7 +96,7 @@ void GPS_Update(uint8_t* data,uint32_t length)
     int32_t index;
     int32_t index2;
     bool ret = false;
-    
+    Trace_MemBlock(1,data,length,16);
     ret = Buffer_Puts(&gpsNmeaBuffer,data,length);
     if(!ret)
         GPS_DEBUG_I("buffer overflow");
@@ -244,6 +244,7 @@ bool GPS_CheckParityBinary(uint8_t* data)
 bool GPS_IsCMDValid(uint16_t cmd)
 {
     if( cmd == GPS_CMD_ACK                  ||
+        cmd == GPS_CMD_ACK_GPD              ||
         cmd == GPS_CMD_REBOOT               ||
         cmd == GPS_CMD_ERASE_INFO_IN_FLASH  ||
         cmd == GPS_CMD_STANDBY_MODE         ||
@@ -258,6 +259,7 @@ bool GPS_IsCMDValid(uint16_t cmd)
         cmd == GPS_CMD_SET_RTC_TIME         ||
         cmd == GPS_CMD_GET_VERSION          ||
         cmd == GPS_CMD_ACK_VERSION          ||
+        cmd == GPS_CMD_GPD_PACK             ||
         cmd == GPS_CMD_SET_LOCATION_TIME    ||
         cmd == GPS_CMD_FIX_MODE             
         )
@@ -368,7 +370,7 @@ void GPS_CMDSend(char* str,GPS_Format_t format)
         *(str+i++) = '\r';
         *(str+i++) = '\n';
         *(str+i) = 0;
-        GPS_DEBUG_I("gps send cmd:%s,len:%d",str,strlen(str));
+        GPS_DEBUG_I("gps send nmea cmd:%s,len:%d",str,strlen(str));
         Buffer_Clear(&gpsNmeaBuffer);
         GPS_Send(str,strlen(str));
     }
@@ -384,6 +386,7 @@ void GPS_CMDSend(char* str,GPS_Format_t format)
         data[len] = result;
         data[len+1] = 0x0D;
         data[len+2] = 0x0A;
+        GPS_DEBUG_I("gsp send binary cmd,len:%d",len+3);
         Trace_MemBlock(1,data,len+3,16);
         GPS_Send(data,len+3);
     }
@@ -455,16 +458,27 @@ static bool GPS_SendWaiteNormalAck(GPS_CMD_t cmdSend, char* cmdStr, GPS_Format_t
     GPS_CMD_Ack_t result;
     
     ackCmd = GPS_SendCMDWaitAck(cmdSend,cmdStr,format,&ackStr,timeout);
-    if(ackCmd != GPS_CMD_ACK)
+    if((ackCmd != GPS_CMD_ACK) && (ackCmd != GPS_CMD_ACK_GPD))
     {
         GPS_DEBUG_I("ack cmd check fail, wish:%d, actual:%d",GPS_CMD_ACK,ackCmd);
         goto fail;
     }
-    result = GPS_AckCheck(ackStr,cmdSend);
-    if(result != GPS_CMD_ACK_EXEC_SUCCESS)
+    if(ackCmd == GPS_CMD_ACK_GPD)
+    {//0xaa,0xf0,0x0c,0x00,0x03,0x00,0x00,0x00,0x01,0x0e,0x0d,0x0a 
+        if( (cmdStr[6]!= ackStr[6]) || (cmdStr[7]!= ackStr[7]) || (ackStr[8]!=1))
+        {
+            GPS_DEBUG_I("ack pack number error");
+            goto fail;
+        }
+    }
+    else
     {
-        GPS_DEBUG_I("ack result:%d",result);
-        goto fail;
+        result = GPS_AckCheck(ackStr,cmdSend);
+        if(result != GPS_CMD_ACK_EXEC_SUCCESS)
+        {
+            GPS_DEBUG_I("ack result:%d",result);
+            goto fail;
+        }
     }
     OS_Free(gpsAckMsg);
     gpsAckMsg = NULL;
@@ -793,8 +807,8 @@ bool GPS_SetNMEAMode()
     cmdSend = GPS_CMD_FORMAT;
     temp[0] = GPS_CMD_BINARY_HEADER[0];
     temp[1] = GPS_CMD_BINARY_HEADER[1];
-    temp[4] = (GPS_CMD_FORMAT&0xff);
-    temp[5] = (GPS_CMD_FORMAT>>8&0x00ff);
+    temp[4] = (cmdSend&0xff);
+    temp[5] = (cmdSend>>8&0x00ff);
     temp[6] = 0;//nmea mode
     memcpy(temp+7,(uint8_t*)&baudrate,4);//little edian
     temp[2] = len&0xff;
@@ -802,11 +816,37 @@ bool GPS_SetNMEAMode()
     return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_BINARY,GPS_TIME_OUT_CMD);
 }
 
+//send 512 bytes pack  data, padding 0 if less than 512 bytes
+bool GPS_SendGPDPack(uint16_t index, uint8_t* pack)
+{
+    GPS_CMD_t  cmdSend;
+    uint8_t temp[GPS_BUFFER_MAX_LENGTH+6];
+    uint16_t len = 523;//512+8+3
+
+    if(index == 0xffff)
+    {
+        len = 0x000b;
+    }
+
+    cmdSend = GPS_CMD_GPD_PACK;
+    temp[0] = GPS_CMD_BINARY_HEADER[0];
+    temp[1] = GPS_CMD_BINARY_HEADER[1];
+    temp[2] = len&0xff;
+    temp[3] = (len>>8) & 0x00ff;
+    temp[4] = (cmdSend&0xff);
+    temp[5] = (cmdSend>>8&0x00ff);
+    temp[6] = index&0xff;
+    temp[7] = (index>>8) & 0x00ff;
+    if(pack)
+        memcpy(temp+8,pack,512);
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_BINARY,GPS_TIME_OUT_CMD);
+}
+
 bool GPS_AGPS(float latitude, float longitude, float altitude)
 {
     ///////////////////////////////////////////////////////////
     //1. get GPD file from server
-    int bufferLen = 5120;
+    int bufferLen = 5120; // if(bufferLen%512 != 0) bufferLen >= gpd_file_len + (512-gpd_file_len%512)
     char* buffer = (char*)OS_Malloc(bufferLen);
     if(!buffer)
     {
@@ -837,15 +877,66 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
         return false; 
     }
     indexBody+=4;
-    Trace_MemBlock(1,indexBody,ret-(indexBody-buffer),16);
+    uint8_t* gpdData = indexBody;
+    uint16_t gpdLen  = ret-(indexBody-buffer);
+    Trace(1,"GPD file length:%d",gpdLen);
+    if(gpdLen%512)//padding 0 
+    {
+        memset(gpdData+gpdLen,0,512 - gpdLen%512);
+        gpdLen = gpdLen + (512 - gpdLen%512);
+    }
+    Trace(1,"GPD file length(with padding 0):%d",gpdLen);
+    Trace_MemBlock(1,gpdData,gpdLen,16);
     
     ///////////////////////////////////////////////////////////
-    //2. send gpd file to gps chip
+    //2. set mode to binary mode
     if(!GPS_SetBinaryMode())
     {
         Trace(1,"set binary mode fail");
         return false;
     }
+
+    ///////////////////////////////////////////////////////////
+    //3. send gpd file to gps chip
+    //512 bytes evry time transmission(padding 0 if less than 512 bytes)
+    uint16_t i=0;
+    uint8_t sendFailTimes = 0;
+
+    for(;;)
+    {
+        if(i*512 > gpdLen)
+        {
+            if(!GPS_SendGPDPack(0xffff,NULL))//end
+            {
+                if(++sendFailTimes > 3)
+                {
+                    Trace(1,"send gpd file max retry");
+                    if(!GPS_SetNMEAMode())
+                        Trace(1,"set nmea mode fail");
+                    return false;
+                }
+                continue;
+            }
+            break;
+        }
+        if(!GPS_SendGPDPack(i,gpdData+i*512))//send fail
+        {
+            if(++sendFailTimes > 3)
+            {
+                Trace(1,"send gpd file max retry");
+                if(!GPS_SetNMEAMode())
+                    Trace(1,"set nmea mode fail");
+                return false;
+            }
+            continue;   
+        }
+        sendFailTimes = 0;
+        ++i;
+    }
+    Trace(1,"send gpd file to gps success");
+    
+    ///////////////////////////////////////////////////////////
+    //4. set mode to nmea mode
     if(!GPS_SetNMEAMode())
     {
         Trace(1,"set nmea mode fail");
@@ -853,14 +944,14 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
     }
 
     ///////////////////////////////////////////////////////////
-    //3. set gps rtc time
+    //5. set gps rtc time
     RTC_Time_t time;
     TIME_GetRtcTIme(&time);
     if(!GPS_SetRtcTime(&time))
         Trace(1,"set rtc time fail");
     
     ///////////////////////////////////////////////////////////
-    //4. send location and date time to gps
+    //6. send location and date time to gps
     TIME_GetRtcTIme(&time);
     if(!GPS_SetLocationTime(latitude,longitude,altitude,&time))
         Trace(1,"set location time fail");

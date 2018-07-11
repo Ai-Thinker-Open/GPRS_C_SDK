@@ -20,7 +20,7 @@ extern "C"{
 
 /////////////////////////////////////////
 ////////////////config//////////////////
-#define GPS_BUFFER_MAX_LENGTH 100
+#define GPS_BUFFER_MAX_LENGTH 530  //max:agps gpd file pack need 512+8+3=523(Bytes)
 #define GPS_TIME_OUT_CMD      1500
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
@@ -46,6 +46,7 @@ extern "C"{
 typedef enum{
     GPS_CMD_FAIL                 = 0  ,
     GPS_CMD_ACK                  = 1,
+    GPS_CMD_ACK_GPD              = 3,
     GPS_CMD_REBOOT               = 30,
     GPS_CMD_ERASE_INFO_IN_FLASH  = 40,
     GPS_CMD_STANDBY_MODE         = 51,
@@ -60,6 +61,7 @@ typedef enum{
     GPS_CMD_SET_RTC_TIME         = 278,
     GPS_CMD_GET_VERSION          = 462,
     GPS_CMD_ACK_VERSION          = 463,
+    GPS_CMD_GPD_PACK             = 614,
     GPS_CMD_SET_LOCATION_TIME    = 639,
     GPS_CMD_FIX_MODE             = 786,
     GPS_CMD_MAX
