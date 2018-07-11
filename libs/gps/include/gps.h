@@ -25,7 +25,7 @@ extern "C"{
 #define GPS_NMEA_FRAME_BUFFER_LENGTH 1024
 #define GPS_DATA_BUFFER_MAX_LENGTH 2048
 
-#define GPS_DEBUG 1
+#define GPS_DEBUG 0
 
 #define GPS_AGPS_GPD_FILE_SERVER       "www.goke-agps.com"
 #define GPS_AGPS_GPD_FILE_SERVER_PORT   7777
@@ -39,8 +39,16 @@ extern "C"{
     { \
         Trace(LIBS_DEBUG_I,"[GPS][%s][%s][%d]>>"#fmt,__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__); \
     } while(0)
+
+#define GPS_DEBUG_MEM(a,b,c) \
+    do \
+    { \
+        Trace(LIBS_DEBUG_I,"[GPS][%s][%s][%d]>>Trace Memory",__FILE__,__FUNCTION__,__LINE__); \
+        Trace_MemBlock(LIBS_DEBUG_I,a,b,c); \
+    } while(0)
 #else
 #define GPS_DEBUG_I(fmt,...)   
+#define GPS_DEBUG_MEM(a,b,c)  
 #endif
 
 typedef enum{

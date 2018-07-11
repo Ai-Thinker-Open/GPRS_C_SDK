@@ -96,7 +96,6 @@ void GPS_Update(uint8_t* data,uint32_t length)
     int32_t index;
     int32_t index2;
     bool ret = false;
-    Trace_MemBlock(1,data,length,16);
     ret = Buffer_Puts(&gpsNmeaBuffer,data,length);
     if(!ret)
         GPS_DEBUG_I("buffer overflow");
@@ -195,7 +194,7 @@ void GPS_Update(uint8_t* data,uint32_t length)
                         if(gpsAckMsg)
                         {
                             memcpy(gpsAckMsg,index0,len);
-                            Trace_MemBlock(1,gpsAckMsg,len,16);
+                            GPS_DEBUG_MEM(gpsAckMsg,len,16);
                             OS_ReleaseSemaphore(semCmdSending);
                         }
                     }
@@ -387,7 +386,7 @@ void GPS_CMDSend(char* str,GPS_Format_t format)
         data[len+1] = 0x0D;
         data[len+2] = 0x0A;
         GPS_DEBUG_I("gsp send binary cmd,len:%d",len+3);
-        Trace_MemBlock(1,data,len+3,16);
+        GPS_DEBUG_MEM(data,len+3,16);
         GPS_Send(data,len+3);
     }
 }
@@ -683,7 +682,7 @@ bool GPS_SetFixMode(GPS_Fix_Mode_t mode)
     cmdSend = GPS_CMD_FIX_MODE;
 
     snprintf(temp,GPS_BUFFER_MAX_LENGTH,"%s%03d,%d",GPS_CMD_HEADER,cmdSend,mode);
-    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_NMEA,GPS_TIME_OUT_CMD); 
+    return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_NMEA,GPS_TIME_OUT_CMD);
 }
 
 
@@ -698,19 +697,19 @@ static int Http_Get(const char* domain, int port,const char* path, char* retBuff
     memset(ip,0,sizeof(ip));
     if(DNS_GetHostByName2(domain,ip) != 0)
     {
-        Trace(1,"get ip error");
+        GPS_DEBUG_I("get ip error");
         return -1;
     }
-    Trace(1,"get ip success:%s -> %s",domain,ip);
+    GPS_DEBUG_I("get ip success:%s -> %s",domain,ip);
     char* servInetAddr = ip;
     snprintf(retBuffer,retBufferLen,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",path,domain);
     char* pData = retBuffer;
     int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(fd < 0){
-        Trace(1,"socket fail");
+        GPS_DEBUG_I("socket fail");
         return -1;
     }
-    Trace(1,"fd:%d",fd);
+    GPS_DEBUG_I("fd:%d",fd);
 
     struct sockaddr_in sockaddr;
     memset(&sockaddr,0,sizeof(sockaddr));
@@ -720,17 +719,17 @@ static int Http_Get(const char* domain, int port,const char* path, char* retBuff
 
     int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
     if(ret < 0){
-        Trace(1,"socket connect fail");
+        GPS_DEBUG_I("socket connect fail");
         return -1;
     }
-    Trace(1,"socket connect success");
-    Trace(1,"send request:%s",pData);
+    GPS_DEBUG_I("socket connect success");
+    GPS_DEBUG_I("send request:%s",pData);
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
-        Trace(1,"socket send fail");
+        GPS_DEBUG_I("socket send fail");
         return -1;
     }
-    Trace(1,"socket send success");
+    GPS_DEBUG_I("socket send success");
 
     struct fd_set fds;
     struct timeval timeout={12,0};
@@ -742,36 +741,36 @@ static int Http_Get(const char* domain, int port,const char* path, char* retBuff
         switch(ret)
         {
             case -1:
-                Trace(1,"select error");
+                GPS_DEBUG_I("select error");
                 flag = true;
                 break;
             case 0:
-                Trace(1,"select timeout");
+                GPS_DEBUG_I("select timeout");
                 flag = true;
                 break;
             default:
                 if(FD_ISSET(fd,&fds))
                 {
-                    Trace(1,"select return:%d",ret);
+                    GPS_DEBUG_I("select return:%d",ret);
                     memset(retBuffer+recvLen,0,retBufferLen-recvLen);
                     ret = recv(fd,retBuffer+recvLen,retBufferLen-recvLen,0);
-                    Trace(1,"ret:%d",ret);
+                    GPS_DEBUG_I("ret:%d",ret);
                     recvLen += ret;
                     if(ret < 0)
                     {
-                        Trace(1,"recv error");
+                        GPS_DEBUG_I("recv error");
                         flag = true;
                         break;
                     }
                     else if(ret == 0)
                     {
-                        Trace(1,"ret == 0");
+                        GPS_DEBUG_I("ret == 0");
                         flag = true;
                         break;
                     }
                     else if(ret < 1352)
                     {
-                        Trace(1,"recv len:%d,data:%s",recvLen,retBuffer);
+                        GPS_DEBUG_I("recv len:%d,data:%s",recvLen,retBuffer);
                         *bufferLen = recvLen;
                         close(fd);
                         return recvLen;
@@ -850,7 +849,7 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
     char* buffer = (char*)OS_Malloc(bufferLen);
     if(!buffer)
     {
-        Trace(1,"malloc fail");
+        GPS_DEBUG_I("malloc fail");
         return false;
     }
     memset(buffer,0,bufferLen);
@@ -858,41 +857,41 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
             GPS_AGPS_GPD_FILE_PATH,buffer,&bufferLen);
     if(ret < 0)
     {
-        Trace(1,"http get fail");
+        GPS_DEBUG_I("http get fail");
         OS_Free(buffer);
         return false;
     }
     char* indexResult = strstr(buffer,"200 OK");
     if(!indexResult)
     {
-        Trace(1,"http get response error:%s",buffer);
+        GPS_DEBUG_I("http get response error:%s",buffer);
         OS_Free(buffer);
         return false; 
     }
     char* indexBody = strstr(indexResult,"\r\n\r\n");
     if(!indexBody)
     {
-        Trace(1,"http get response content error:%s",buffer);
+        GPS_DEBUG_I("http get response content error:%s",buffer);
         OS_Free(buffer);
         return false; 
     }
     indexBody+=4;
     uint8_t* gpdData = indexBody;
     uint16_t gpdLen  = ret-(indexBody-buffer);
-    Trace(1,"GPD file length:%d",gpdLen);
+    GPS_DEBUG_I("GPD file length:%d",gpdLen);
     if(gpdLen%512)//padding 0 
     {
         memset(gpdData+gpdLen,0,512 - gpdLen%512);
         gpdLen = gpdLen + (512 - gpdLen%512);
     }
-    Trace(1,"GPD file length(with padding 0):%d",gpdLen);
-    Trace_MemBlock(1,gpdData,gpdLen,16);
+    GPS_DEBUG_I("GPD file length(with padding 0):%d",gpdLen);
+    GPS_DEBUG_MEM(gpdData,gpdLen,16);
     
     ///////////////////////////////////////////////////////////
     //2. set mode to binary mode
     if(!GPS_SetBinaryMode())
     {
-        Trace(1,"set binary mode fail");
+        GPS_DEBUG_I("set binary mode fail");
         return false;
     }
 
@@ -910,9 +909,9 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
             {
                 if(++sendFailTimes > 3)
                 {
-                    Trace(1,"send gpd file max retry");
+                    GPS_DEBUG_I("send gpd file max retry");
                     if(!GPS_SetNMEAMode())
-                        Trace(1,"set nmea mode fail");
+                        GPS_DEBUG_I("set nmea mode fail");
                     return false;
                 }
                 continue;
@@ -923,9 +922,9 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
         {
             if(++sendFailTimes > 3)
             {
-                Trace(1,"send gpd file max retry");
+                GPS_DEBUG_I("send gpd file max retry");
                 if(!GPS_SetNMEAMode())
-                    Trace(1,"set nmea mode fail");
+                    GPS_DEBUG_I("set nmea mode fail");
                 return false;
             }
             continue;   
@@ -933,13 +932,13 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
         sendFailTimes = 0;
         ++i;
     }
-    Trace(1,"send gpd file to gps success");
+    GPS_DEBUG_I("send gpd file to gps success");
     
     ///////////////////////////////////////////////////////////
     //4. set mode to nmea mode
     if(!GPS_SetNMEAMode())
     {
-        Trace(1,"set nmea mode fail");
+        GPS_DEBUG_I("set nmea mode fail");
         return false;
     }
 
@@ -948,13 +947,13 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
     RTC_Time_t time;
     TIME_GetRtcTIme(&time);
     if(!GPS_SetRtcTime(&time))
-        Trace(1,"set rtc time fail");
+        GPS_DEBUG_I("set rtc time fail");
     
     ///////////////////////////////////////////////////////////
     //6. send location and date time to gps
     TIME_GetRtcTIme(&time);
     if(!GPS_SetLocationTime(latitude,longitude,altitude,&time))
-        Trace(1,"set location time fail");
+        GPS_DEBUG_I("set location time fail");
 
 
     OS_Free(buffer);
