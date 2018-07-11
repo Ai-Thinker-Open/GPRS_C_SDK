@@ -841,71 +841,88 @@ bool GPS_SendGPDPack(uint16_t index, uint8_t* pack)
     return GPS_SendWaiteNormalAck(cmdSend,temp,GPS_FORMAT_BINARY,GPS_TIME_OUT_CMD);
 }
 
-bool GPS_AGPS(float latitude, float longitude, float altitude)
+bool GPS_AGPS(float latitude, float longitude, float altitude, bool downloadGPD)
 {
-    ///////////////////////////////////////////////////////////
-    //1. get GPD file from server
-    int bufferLen = 5120; // if(bufferLen%512 != 0) bufferLen >= gpd_file_len + (512-gpd_file_len%512)
-    char* buffer = (char*)OS_Malloc(bufferLen);
-    if(!buffer)
-    {
-        GPS_DEBUG_I("malloc fail");
-        return false;
-    }
-    memset(buffer,0,bufferLen);
-    int ret = Http_Get(GPS_AGPS_GPD_FILE_SERVER,GPS_AGPS_GPD_FILE_SERVER_PORT,
-            GPS_AGPS_GPD_FILE_PATH,buffer,&bufferLen);
-    if(ret < 0)
-    {
-        GPS_DEBUG_I("http get fail");
-        OS_Free(buffer);
-        return false;
-    }
-    char* indexResult = strstr(buffer,"200 OK");
-    if(!indexResult)
-    {
-        GPS_DEBUG_I("http get response error:%s",buffer);
-        OS_Free(buffer);
-        return false; 
-    }
-    char* indexBody = strstr(indexResult,"\r\n\r\n");
-    if(!indexBody)
-    {
-        GPS_DEBUG_I("http get response content error:%s",buffer);
-        OS_Free(buffer);
-        return false; 
-    }
-    indexBody+=4;
-    uint8_t* gpdData = indexBody;
-    uint16_t gpdLen  = ret-(indexBody-buffer);
-    GPS_DEBUG_I("GPD file length:%d",gpdLen);
-    if(gpdLen%512)//padding 0 
-    {
-        memset(gpdData+gpdLen,0,512 - gpdLen%512);
-        gpdLen = gpdLen + (512 - gpdLen%512);
-    }
-    GPS_DEBUG_I("GPD file length(with padding 0):%d",gpdLen);
-    GPS_DEBUG_MEM(gpdData,gpdLen,16);
-    
-    ///////////////////////////////////////////////////////////
-    //2. set mode to binary mode
-    if(!GPS_SetBinaryMode())
-    {
-        GPS_DEBUG_I("set binary mode fail");
-        return false;
-    }
+    char* buffer = NULL;
 
-    ///////////////////////////////////////////////////////////
-    //3. send gpd file to gps chip
-    //512 bytes evry time transmission(padding 0 if less than 512 bytes)
-    uint16_t i=0;
-    uint8_t sendFailTimes = 0;
-
-    for(;;)
+    if(downloadGPD)
     {
-        if(i*512 > gpdLen)
+        ///////////////////////////////////////////////////////////
+        //1. get GPD file from server
+        int bufferLen = 5120; // if(bufferLen%512 != 0) bufferLen >= gpd_file_len + (512-gpd_file_len%512)
+        buffer = (char*)OS_Malloc(bufferLen);
+        if(!buffer)
         {
-            if(!GPS_SendGPDPack(0xffff,NULL))//end
+            GPS_DEBUG_I("malloc fail");
+            return false;
+        }
+        memset(buffer,0,bufferLen);
+        int ret = Http_Get(GPS_AGPS_GPD_FILE_SERVER,GPS_AGPS_GPD_FILE_SERVER_PORT,
+                GPS_AGPS_GPD_FILE_PATH,buffer,&bufferLen);
+        if(ret < 0)
+        {
+            GPS_DEBUG_I("http get fail");
+            OS_Free(buffer);
+            return false;
+        }
+        char* indexResult = strstr(buffer,"200 OK");
+        if(!indexResult)
+        {
+            GPS_DEBUG_I("http get response error:%s",buffer);
+            OS_Free(buffer);
+            return false; 
+        }
+        char* indexBody = strstr(indexResult,"\r\n\r\n");
+        if(!indexBody)
+        {
+            GPS_DEBUG_I("http get response content error:%s",buffer);
+            OS_Free(buffer);
+            return false; 
+        }
+        indexBody+=4;
+        uint8_t* gpdData = indexBody;
+        uint16_t gpdLen  = ret-(indexBody-buffer);
+        GPS_DEBUG_I("GPD file length:%d",gpdLen);
+        if(gpdLen%512)//padding 0 
+        {
+            memset(gpdData+gpdLen,0,512 - gpdLen%512);
+            gpdLen = gpdLen + (512 - gpdLen%512);
+        }
+        GPS_DEBUG_I("GPD file length(with padding 0):%d",gpdLen);
+        GPS_DEBUG_MEM(gpdData,gpdLen,16);
+        
+        ///////////////////////////////////////////////////////////
+        //2. set mode to binary mode
+        if(!GPS_SetBinaryMode())
+        {
+            GPS_DEBUG_I("set binary mode fail");
+            return false;
+        }
+
+        ///////////////////////////////////////////////////////////
+        //3. send gpd file to gps chip
+        //512 bytes evry time transmission(padding 0 if less than 512 bytes)
+        uint16_t i=0;
+        uint8_t sendFailTimes = 0;
+
+        for(;;)
+        {
+            if(i*512 > gpdLen)
+            {
+                if(!GPS_SendGPDPack(0xffff,NULL))//end
+                {
+                    if(++sendFailTimes > 3)
+                    {
+                        GPS_DEBUG_I("send gpd file max retry");
+                        if(!GPS_SetNMEAMode())
+                            GPS_DEBUG_I("set nmea mode fail");
+                        return false;
+                    }
+                    continue;
+                }
+                break;
+            }
+            if(!GPS_SendGPDPack(i,gpdData+i*512))//send fail
             {
                 if(++sendFailTimes > 3)
                 {
@@ -914,32 +931,21 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
                         GPS_DEBUG_I("set nmea mode fail");
                     return false;
                 }
-                continue;
+                continue;   
             }
-            break;
+            sendFailTimes = 0;
+            ++i;
         }
-        if(!GPS_SendGPDPack(i,gpdData+i*512))//send fail
+        GPS_DEBUG_I("send gpd file to gps success");
+        
+        ///////////////////////////////////////////////////////////
+        //4. set mode to nmea mode
+        if(!GPS_SetNMEAMode())
         {
-            if(++sendFailTimes > 3)
-            {
-                GPS_DEBUG_I("send gpd file max retry");
-                if(!GPS_SetNMEAMode())
-                    GPS_DEBUG_I("set nmea mode fail");
-                return false;
-            }
-            continue;   
+            GPS_DEBUG_I("set nmea mode fail");
+            return false;
         }
-        sendFailTimes = 0;
-        ++i;
-    }
-    GPS_DEBUG_I("send gpd file to gps success");
-    
-    ///////////////////////////////////////////////////////////
-    //4. set mode to nmea mode
-    if(!GPS_SetNMEAMode())
-    {
-        GPS_DEBUG_I("set nmea mode fail");
-        return false;
+
     }
 
     ///////////////////////////////////////////////////////////
@@ -955,8 +961,8 @@ bool GPS_AGPS(float latitude, float longitude, float altitude)
     if(!GPS_SetLocationTime(latitude,longitude,altitude,&time))
         GPS_DEBUG_I("set location time fail");
 
-
-    OS_Free(buffer);
+    if(downloadGPD)
+        OS_Free(buffer);
     return true;
 }
 

@@ -17,6 +17,9 @@
 #include "api_socket.h"
 #include "api_network.h"
 
+
+
+
 /**
  * gps tracker, use an open source tracker server traccar:https://www.traccar.org/
  * the server in the code(`#define SERVER_IP   "ss.neucrack.com"`) may invalid someday, you can download the server and deploy youself
@@ -277,7 +280,7 @@ void gps_testTask(void *pData)
         OS_Sleep(1000);
     }
 
-    if(!GPS_AGPS(22.0,103.0,0))
+    if(!GPS_AGPS(22.0,103.0,0,true))
     {
         Trace(1,"agps fail");
     }
@@ -338,9 +341,12 @@ void gps_testTask(void *pData)
                                                                 gpsInfo->gga.fix_quality,gpsInfo->gga.satellites_tracked, gpsInfo->gsv[0].total_sats, isFixedStr, latitude,longitude,gpsInfo->gga.altitude);
             //show in tracer
             Trace(1,buffer);
+            
             //send to UART1
             UART_Write(UART1,buffer,strlen(buffer));
             UART_Write(UART1,"\r\n\r\n",4);
+
+            //send to server
             char* requestPath = buffer2;
             uint8_t percent;
             uint16_t v = PM_Voltage(&percent);

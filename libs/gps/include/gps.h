@@ -164,7 +164,16 @@ void GPS_SaveLog(bool save, const char* logPath);
 bool GPS_IsSaveLog();
 bool GPS_ClearLog();
 
-bool GPS_AGPS(float latitude, float longitude, float altitude);
+/**
+ * do AGPS process, to accelerate GPS fix
+ * @param latitude:  latitude got from lbs
+ * @param longitude: longitude got from lbs
+ * @param altitude:  altitude, you can get from internet or set to zero
+ * @param downloadGPD: the GPD file size about 3.4k, file change in every 2 hours, and file is valid in 6 hours,
+ *                     you can only update onece in 2 hours or 6 hours to save money
+ * @return execute agps proccess success or not
+ */
+bool GPS_AGPS(float latitude, float longitude, float altitude, bool downloadGPD);
 
 #ifdef __cplusplus
 }
