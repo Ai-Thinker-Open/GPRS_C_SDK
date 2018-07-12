@@ -137,23 +137,26 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 //http post with no header
-bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint16_t bodyLen, char* retBuffer, int bufferLen)
+int Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint16_t bodyLen, char* retBuffer, int bufferLen)
 {
     uint8_t ip[16];
+    bool flag = false;
+    uint16_t recvLen = 0;
+
     //connect server
     memset(ip,0,sizeof(ip));
     if(DNS_GetHostByName2(domain,ip) != 0)
     {
         Trace(2,"get ip error");
-        return false;
+        return -1;
     }
-    Trace(2,"get ip success:%s -> %s",domain,ip);
+    // Trace(2,"get ip success:%s -> %s",domain,ip);
     char* servInetAddr = ip;
     char* temp = OS_Malloc(2048);
     if(!temp)
     {
         Trace(2,"malloc fail");
-        return false;
+        return -1;
     }
     snprintf(temp,2048,"POST %s HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nConnection: Keep-Alive\r\nHost: %s\r\nContent-Length: %d\r\n\r\n",
                             path,domain,bodyLen);
@@ -162,7 +165,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
     if(fd < 0){
         Trace(2,"socket fail");
         OS_Free(temp);
-        return false;
+        return -1;
     }
     // Trace(2,"fd:%d",fd);
 
@@ -176,7 +179,7 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
     if(ret < 0){
         Trace(2,"socket connect fail");
         OS_Free(temp);
-        return false;
+        return -1;
     }
     // Trace(2,"socket connect success");
     Trace(2,"send request:%s",pData);
@@ -184,13 +187,13 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
     if(ret < 0){
         Trace(2,"socket send fail");
         OS_Free(temp);
-        return false;
+        return -1;
     }
     ret = send(fd, body, bodyLen, 0);
     if(ret < 0){
         Trace(2,"socket send fail");
         OS_Free(temp);
-        return false;
+        return -1;
     }
     // Trace(2,"socket send success");
 
@@ -198,41 +201,51 @@ bool Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint
     struct timeval timeout={12,0};
     FD_ZERO(&fds);
     FD_SET(fd,&fds);
-    ret = select(fd+1,&fds,NULL,NULL,&timeout);
-    switch(ret)
+    while(!flag)
     {
-        case -1:
-            Trace(2,"select error");
-            break;
-        case 0:
-            Trace(2,"select timeout");
-            break;
-        default:
-            if(FD_ISSET(fd,&fds))
-            {
-                Trace(2,"select return:%d",ret);
-                memset(retBuffer,0,bufferLen);
-                ret = recv(fd,retBuffer,bufferLen,0);
-                if(ret < 0)
+        ret = select(fd+1,&fds,NULL,NULL,&timeout);
+        // Trace(2,"select return:%d",ret);
+        switch(ret)
+        {
+            case -1:
+                Trace(2,"select error");
+                flag = true;
+                break;
+            case 0:
+                Trace(2,"select timeout");
+                flag = true;
+                break;
+            default:
+                if(FD_ISSET(fd,&fds))
                 {
-                    Trace(2,"recv error");
-                    break;
+                    memset(retBuffer,0,bufferLen);
+                    ret = recv(fd,retBuffer,bufferLen,0);
+                    recvLen += ret;
+                    if(ret < 0)
+                    {
+                        Trace(2,"recv error");
+                        flag = true;
+                        break;
+                    }
+                    else if(ret == 0)
+                    {
+                        Trace(2,"ret == 0");
+                        break;
+                    }
+                    else if(ret < 1352)
+                    {
+                        GPS_DEBUG_I("recv len:%d,data:%s",recvLen,retBuffer);
+                        close(fd);
+                        OS_Free(temp);
+                        return recvLen;
+                    }
                 }
-                else if(ret == 0)
-                {
-                    Trace(2,"ret == 0");
-                    break;
-                }
-                Trace(2,"recv len:%d,data:%s",ret,retBuffer);
-                close(fd);
-                OS_Free(temp);
-                return true;
-            }
-            break;
+                break;
+        }
     }
     close(fd);
     OS_Free(temp);
-    return false;
+    return -1;
 }
 
 uint8_t buffer[1024],buffer2[400];
@@ -343,10 +356,13 @@ void gps_testTask(void *pData)
             Trace(1,"device name:%s",buffer);
             snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%.1f&altitude=%f&accuracy=%.1f&batt=%.1f",
                                                     buffer,time(NULL),latitude,longitude,isFixed*1.0,0.0,gpsInfo->gga.altitude,0.0,percent*1.0);
-            if(!Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)))
+            if(Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)) <0 )
                 Trace(1,"send location to server fail");
             else
+            {
                 Trace(1,"send location to server success");
+                Trace(1,"response:%s",buffer);
+            }
         }
 
         OS_Sleep(10000);
