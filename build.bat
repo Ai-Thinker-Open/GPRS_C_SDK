@@ -131,7 +131,13 @@ if "%1%"x =="demo"x (
 
 
 :end_exit
-    set endTime=0%time%
+    set endTime=%time%
+    if "a%startTime:~-11,1%"=="a " (
+    set startTime=0%startTime:~-10%
+    )
+    if "a%endTime:~-11,1%"=="a " (
+    set endTime=0%endTime:~-10%
+    )
     set startTime=%startTime:~-11%
     set endTime=%endTime:~-11%
 
