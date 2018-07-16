@@ -25,6 +25,7 @@
 #include <api_inc_ss.h>
 #include <stdarg.h>
 #include <api_inc_gizwits.h>
+#include <api_inc_audio.h>
 
 
 
@@ -232,9 +233,21 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*AUDIO_MicOpen)();
     void                (*AUDIO_MicClose)();
     bool                (*AUDIO_MicSetMute)(bool isMute);
+    void                (*AUDIO_SetMode)(AUDIO_Mode_t mode);
     void                (*AUDIO_SpeakerOpen)();
     void                (*AUDIO_SpeakerClose)();
+    bool                (*AUDIO_SpeakerSetMute)(bool isMute);
     bool                (*AUDIO_SpeakerSetVolume)(uint8_t volume);
+    AUDIO_Error_t       (*AUDIO_Play)(const char* fileName,AUDIO_Type_t type, AUDIO_PLAY_CALLBACK_t callback);
+    AUDIO_Error_t       (*AUDIO_SetEQ)(AUDIO_EQ_t eq);
+    AUDIO_Error_t       (*AUDIO_Pause)(void);
+    AUDIO_Error_t       (*AUDIO_Resume)(HANDLE fileFd);
+    AUDIO_Error_t       (*AUDIO_Stop)(void);
+    AUDIO_Error_t       (*AUDIO_GetPlayInfo)(AUDIO_Play_Info_t* playInfo);
+    bool                (*AUDIO_LoopTestStart)(AUDIO_Mode_t mode);
+    bool                (*AUDIO_LoopTestEnd)();
+    AUDIO_Error_t       (*AUDIO_RecordStart)(AUDIO_Type_t format, AUDIO_Record_Mode_t mode, int fd, AUDIO_FILE_RECORD_CALLBACK_t callback, AUDIO_BUFFER_DATA_CALLBACK_t dataCallback);
+    bool                (*AUDIO_RecordStop)(void);
 
     //call
     bool                (*CALL_Dial)(const char* number);
