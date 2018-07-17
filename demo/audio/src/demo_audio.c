@@ -12,7 +12,6 @@
 
 
 #define RECORD_FILE_NAME "/t/record0.amr"
-#define RECORD_FILE_NAME_WAV "/t/record1.wav"
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
 #define MAIN_TASK_PRIORITY      0
@@ -167,45 +166,12 @@ void RecordTest()
     Trace(1,"record end");
 }
 
-void RecordTest2()
-{
-    Trace(1,"record start format wav");
-    recordFd = API_FS_Open(RECORD_FILE_NAME_WAV,FS_O_WRONLY|FS_O_CREAT|FS_O_TRUNC,0);
-    if(recordFd < 0)
-    {
-        Trace(1,"open file %s error:%d",RECORD_FILE_NAME_WAV,recordFd);
-        return ;
-    }
-    AUDIO_SetMode(AUDIO_MODE_LOUDSPEAKER);
-    AUDIO_Error_t result =  AUDIO_RecordStart(AUDIO_TYPE_WAV_DVI_ADPCM,AUDIO_RECORD_MODE_PCM,recordFd,CallbackResult,NULL);
-    if(result != AUDIO_ERROR_NO)
-    {
-        Trace(1,"record start fail:%d",result);
-        API_FS_Close(recordFd);
-        recordFd = -1;
-        return ;
-    }
-    Trace(1,"recording now...");
-    int i = 10 ;
-    while(--i)
-    {
-        Trace(1,"recording...");
-        OS_Sleep(2000);
-    }
-    Trace(1,"record stop now");
-    AUDIO_RecordStop();
-    API_FS_Close(recordFd);
-    recordFd = -1;
-    Trace(1,"record end");
-}
-
 void SecondTask(void *pData)
 {
     
     OS_Sleep(5000);
 
     RecordTest();
-    RecordTest2();
     LoopTest();
     Music();
 
