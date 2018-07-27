@@ -24,7 +24,8 @@
 /// the idle task will not feed(call WatchDog_KeepAlive) any more, you must 
 /// call `WatchDog_KeepAlive` to prevent the reset of system
 // =============================================================================
-void WatchDog_Open(uint32_t delay);
+// void WatchDog_Open(uint32_t delay);
+#define WatchDog_Open   CSDK_FUNC(WatchDog_Open)
 
 
 // =============================================================================
@@ -40,7 +41,8 @@ void WatchDog_Open(uint32_t delay);
 /// @param delay Number of 16384 Hz clock cycles (e.g. 30*16384 means 30 seconds)
 /// the WatchDog timer counts down before reaching 0. 
 // =============================================================================
-void WatchDogSetPeriod(uint32_t delay);
+// void WatchDogSetPeriod(uint32_t delay);
+#define WatchDogSetPeriod   CSDK_FUNC(WatchDogSetPeriod)
 
 
 
@@ -53,7 +55,7 @@ void WatchDogSetPeriod(uint32_t delay);
 /// preventing the reset from occurring.
 // =============================================================================
 void WatchDog_KeepAlive(void);
-
+#define WatchDog_KeepAlive   CSDK_FUNC(WatchDog_KeepAlive)
 
 
 // =============================================================================
@@ -65,7 +67,7 @@ void WatchDog_KeepAlive(void);
 /// watchdog can be re-enabled by #WatchDog_Open.
 // =============================================================================
 void WatchDog_Close(void);
-
+#define WatchDog_Close   CSDK_FUNC(WatchDog_Close)
 
 
 #endif
