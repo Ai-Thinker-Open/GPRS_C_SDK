@@ -46,6 +46,11 @@ typedef enum{
     NETWORK_ERROR_MAX
 } Network_Error_t;
 
+typedef struct{
+    uint8_t signalLevel;
+    uint8_t bitError;
+}Network_Signal_Quality_t;
+
 typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 
 #endif

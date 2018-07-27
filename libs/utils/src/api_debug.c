@@ -9,7 +9,6 @@
 void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix)
 {
     INT32 i            = 0;
-    INT32 j            = 0;
     CHAR s[4]          = { 0 };
     CHAR line_buff[64] = { 0 }; // Temporary buffer for print trace information.
 
@@ -41,7 +40,7 @@ void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix)
            ** line_buff size and in this function max size of line_buff is 64 */
         if (i != 0 && i % radix == 0)
         {
-            Trace(nIndex, "%d| %s |", j++, line_buff);
+            Trace(nIndex, "%p| %s |", buffer+i, line_buff);
             memset(line_buff, 0, sizeof(line_buff));
         }
 
@@ -49,7 +48,7 @@ void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix)
     }
 
     if (strlen(line_buff) > 0)
-        Trace(nIndex, "%d| %s ", j, line_buff);
+        Trace(nIndex, "%p| %s ", buffer+i, line_buff);
 
     Trace(nIndex, "==================TRACE MEMORY BLOCK=====================<<");
 }

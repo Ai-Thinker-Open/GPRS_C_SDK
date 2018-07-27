@@ -30,6 +30,7 @@
 
 
 
+
 typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
@@ -108,6 +109,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_GetCellInfoRequst)();
     bool                (*Network_GetAttachStatus)(uint8_t* status);
     bool                (*Network_GetActiveStatus)(uint8_t* status);
+    bool                (*Network_GetSignalQuality)(Network_Signal_Quality_t* sq);
     
     /*api_socket*/
     int                 (*Socket_TcpipConnect)(TCP_UDP_t tcpOrUdp, const char* ip,uint16_t port);
@@ -249,6 +251,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     AUDIO_Error_t       (*AUDIO_RecordStart)(AUDIO_Type_t format, AUDIO_Record_Mode_t mode, int fd, AUDIO_FILE_RECORD_CALLBACK_t callback, AUDIO_BUFFER_DATA_CALLBACK_t dataCallback);
     bool                (*AUDIO_RecordStop)(void);
 
+
     //call
     bool                (*CALL_Dial)(const char* number);
     bool                (*CALL_HangUp)();
@@ -310,6 +313,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     double              (*log10) (double);
     double              (*remainder) (double, double);
 
+
     //ssl
     SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);
     SSL_Error_t         (*SSL_Connect)(SSL_Config_t* sslConfig, const char* server, const char* port);
@@ -356,6 +360,12 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*GIZWITS_Ping)(Gizwits_t* gizwits);
     int                 (*GIZWITS_GetSocket)(Gizwits_t* gizwits);
     bool                (*GIZWITS_Close)(Gizwits_t* gizwits);
+
+    //watchdog
+    void                (*WatchDog_Open)(uint32_t delay);
+    void                (*WatchDogSetPeriod)(uint32_t delay);
+    void                (*WatchDog_KeepAlive)(void);
+    void                (*WatchDog_Close)(void);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
