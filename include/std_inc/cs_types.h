@@ -50,7 +50,7 @@ typedef unsigned short int          uint16;
 typedef signed short int            int16;
 typedef unsigned int                uint32;
 typedef signed int                  int32;
-typedef char                        boolean;
+// typedef char                        boolean;
 
 #ifndef _USERGEN
 #ifndef size_t
