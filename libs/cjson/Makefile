@@ -3,15 +3,12 @@
 
 
 # Name of the this module
-LOCAL_NAME := libs
+LOCAL_NAME := libs/cjson
 
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
-LOCAL_MODULE_DEPENDS := libs/gps \
-                        libs/utils \
-                        libs/cjson \
-                        
+LOCAL_MODULE_DEPENDS :=  \
 
 
 # Add includes from other modules we do not wish to link to
@@ -19,12 +16,14 @@ LOCAL_API_DEPENDS := \
 
 
 # include folder
-LOCAL_ADD_INCLUDE := \
-
+LOCAL_ADD_INCLUDE := include \
+                     include/std_inc \
+                     include/api_inc \
+                     ${SOURCE_INCLUDE} \
 
                     
 # `yes` if have submodule or left empty  or `no`
-IS_TOP_LEVEL := yes
+IS_TOP_LEVEL := no
 
 ## ------------------------------------ ##
 ## 	Add your custom flags here          ##
@@ -34,8 +33,8 @@ MYCFLAGS +=
 ## ------------------------------------- ##
 ##	List all your sources here           ##
 ## ------------------------------------- ##
-S_SRC := ${notdir ${wildcard src/*.s}}
-C_SRC := ${notdir ${wildcard src/*.c}}
+include make.srcs
+C_SRC := ${SOURCE_FILES}
 
 
 ## ------------------------------------------------------------------- ##
