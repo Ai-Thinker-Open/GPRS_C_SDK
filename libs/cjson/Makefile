@@ -4,7 +4,7 @@
 
 # Name of the this module
 LOCAL_NAME := libs/cjson
-
+# cJSON 1.7.7 2018.7.28 add by neucrack from https://github.com/DaveGamble/cJSON
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
