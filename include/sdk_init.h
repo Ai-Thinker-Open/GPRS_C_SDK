@@ -49,22 +49,22 @@ typedef struct T_INTERFACE_VTBL_TAG
     /*api_os*/
     void                (*OS_SetUserMainHandle)(HANDLE* UserHandle);
     HANDLE              (*OS_GetUserMainHandle)();
-    HANDLE              (*OS_CreateTask)(PTASK_FUNC_T pTaskEntry,PVOID pParameter,PVOID pStackAddr,UINT16 nStackSize
+    HANDLE              (*OS_CreateTask)(PTASK_FUNC_T pTaskEntry,void* pParameter,void* pStackAddr,UINT16 nStackSize
                                             ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);
-    void                (*OS_StartTask)(HANDLE hTask,PVOID pParameter);
+    void                (*OS_StartTask)(HANDLE hTask,void* pParameter);
     void                (*OS_StopTask)(HANDLE hTask);
     bool                (*OS_DeleteTask)(HANDLE hTask);
     bool                (*OS_SuspendTask)(HANDLE hTask);
     bool                (*OS_ResumeTask)(HANDLE hTask);
     bool                (*OS_Sleep)(uint32_t nMillisecondes);
     void                (*OS_SleepUs)(uint32_t us);
-    bool                (*OS_WaitEvent)(HANDLE hTask,PVOID *pEvent,uint32_t nTimeOut);
-    bool                (*OS_SendEvent)(HANDLE hTask,PVOID pEvent,uint32_t nTimeOut,UINT16 nOption);
+    bool                (*OS_WaitEvent)(HANDLE hTask,void** pEvent,uint32_t nTimeOut);
+    bool                (*OS_SendEvent)(HANDLE hTask,void* pEvent,uint32_t nTimeOut,UINT16 nOption);
     bool                (*OS_ResetEventQueue)(HANDLE hTask);
     bool                (*OS_IsEventAvailable)(HANDLE hTask);
-    PVOID               (*OS_Malloc)(uint32_t nSize);
-    PVOID               (*OS_Realloc)(void* ptr,uint32_t nSize);
-    bool                (*OS_Free)(PVOID pMemBlock);
+    void*               (*OS_Malloc)(uint32_t nSize);
+    void*               (*OS_Realloc)(void* ptr,uint32_t nSize);
+    bool                (*OS_Free)(void* pMemBlock);
     bool                (*OS_GetHeapUsageStatus)(OS_Heap_Status_t *pOsHeapStatus);
     HANDLE              (*OS_CreateSemaphore)(uint32_t nInitCount);
     bool                (*OS_DeleteSemaphore)(HANDLE hSem);
