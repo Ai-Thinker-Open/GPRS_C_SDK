@@ -7,6 +7,8 @@
 #include "api_event.h"
 #include "math.h"
 #include "sdk_init.h"
+#include "limits.h"
+#include "float.h"
 
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
@@ -36,16 +38,22 @@ void STD_TestTask()
 
     while(1)
     {
-        Trace(1,"%f %f",123.456,-0.23445);
-        sprintf(bufff,"%d %f",123,12.33456);
-        Trace(1,"%s",bufff);
-        MEMBLOCK_Trace(1,bufff,50,16);
-        float aaa,bbb;
-        sscanf("-0.456","%f",&aaa);
-        sscanf("0.456","%f",&bbb);
-        Trace(1,"aaa:%f %f",aaa,bbb);
-        Trace(1,"%p",sscanf);
-        Trace(1,"%p",sprintf);
+
+        double x = 2.56;
+
+        double r = sqrt(x); //compiler error
+        Trace(1,"r:%f",r);
+        Trace(1,"float:%d,double:%d",sizeof(float),sizeof(double));
+        // Trace(1,"%f %f",123.456,-0.23445);
+        // sprintf(bufff,"%d %f",123,12.33456);
+        // Trace(1,"%s",bufff);
+        // MEMBLOCK_Trace(1,bufff,50,16);
+        // float aaa,bbb;
+        // sscanf("-0.456","%f",&aaa);
+        // sscanf("0.456","%f",&bbb);
+        // Trace(1,"aaa:%f %f",aaa,bbb);
+        // Trace(1,"%p",sscanf);
+        // Trace(1,"%p",sprintf);
         // gcvt(value, 3, bufff);
         // Trace(1,"%s",bufff);
 
