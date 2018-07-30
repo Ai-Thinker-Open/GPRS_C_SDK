@@ -27,9 +27,31 @@ my $input_elf_file_1 = undef;
 my $input_elf_file_2 = undef;
 my $output_elf_file = undef;
 
-my $objstrip = '"mips-elf-strip.exe"';#objstrip工具
-my $objdump = '"mips-elf-objdump.exe"';#objdump工具
-my $ld = '"mips-elf-ld.exe"';#ld工具
+
+
+print "$Config{osname}\n";
+print "$Config{archname}\n";
+print "$Config{osvers}\n";
+
+my $os=$Config{osname};
+
+print "Current OS is $os\n";
+
+my $objstrip;
+my $objdump;
+my $ld;
+
+if($os  eq  "linux"){
+    $objstrip = '"mips-elf-strip"';#objstrip工具
+    $objdump = '"mips-elf-objdump"';#objdump工具
+    $ld = '"mips-elf-ld"';#ld工具
+}
+else{
+    $objstrip = '"mips-elf-strip.exe"';#objstrip工具
+    $objdump = '"mips-elf-objdump.exe"';#objdump工具
+    $ld = '"mips-elf-ld.exe"';#ld工具
+}
+
 
 my $ld_parameters = "-nostdlib --no-strip-discarded --oformat=elf32-littlemips --gc-sections";
 
@@ -118,7 +140,6 @@ sub read_elf_section
     my ($str,$vma_start,$vma_end,$lma_start,$lma_end,$len);
     
     die "Cannot find input elf file: $elf_file" if( ! -f $elf_file);
-    
     open FH, '-|', "$objdump -h $elf_file" or die "Cannot run objdunp($!)";
     while( <FH> )
     {
