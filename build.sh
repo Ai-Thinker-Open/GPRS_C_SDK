@@ -138,7 +138,7 @@ elif [[ $paramNum -eq 4  ]]; then
             if [ -f "$3" ]; then
                 echo "waiting for making fota pack..."
                 echo "this will take a few minutes"
-                platform/compilation/fota/fotacreate.exe 4194304 65536 $2 $3 $4
+                platform/compilation/fota/linux/fotacreate 4194304 65536 $2 $3 $4
                 exit 0
             fi
         fi
@@ -188,7 +188,7 @@ fi
 end_time=`date +%s`
 time_distance=`expr ${end_time} - ${start_time}`
 date_time_now=$(date +%F\ \ %H:%M:%S)
-echo === Build Time: ${time_distance}s  at  ${date_time_now} === | tee -a ${LOG_FILE}
+echo ===== Build Time: ${time_distance}s  complete at  ${date_time_now} ===== | tee -a ${LOG_FILE}
 
 
 # print RAM and ROM info
