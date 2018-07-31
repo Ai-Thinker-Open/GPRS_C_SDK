@@ -15,25 +15,25 @@
 #include "api_event.h"
 #include "api_debug.h"
 
-#define AppMain_TASK_STACK_SIZE    (1024 * 2)
-#define AppMain_TASK_PRIORITY      1 
+#define AppMain_TASK_STACK_SIZE    (2048 * 2)
+#define AppMain_TASK_PRIORITY      0
+#define OTHERE_TASK_STACK_SIZE     (2048 * 2)
+#define OTHERE_TASK_PRIORITY       1
 HANDLE mainTaskHandle  = NULL;
 HANDLE otherTaskHandle = NULL;
 
 
 void LoopTask(VOID *pData)
 {
-    uint64_t count = 0;
+    int count = 0;
+    //wait for trace initilize complete
+    OS_Sleep(3000);
     while(1)
     {
-        ++count;
-        if(count == 3000)
-        {
-            count = 0;
-            Trace(1,"Test Test");
-            OS_Sleep(1000);
-            Trace(1,"Test Test2");
-        }
+        Trace(1, "Test Test%d",++count);
+
+        //Use event drive or sleep some time here
+        OS_Sleep(2000);
     }
 }
 void EventDispatch(API_Event_t* pEvent)
@@ -56,16 +56,17 @@ void EventDispatch(API_Event_t* pEvent)
 void AppMainTask(VOID *pData)
 {
     API_Event_t* event=NULL;
-    
-    otherTaskHandle = OS_CreateTask(LoopTask ,
-        NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY, 0, 0, "ohter Task");
-        
+
+    otherTaskHandle = OS_CreateTask(LoopTask,
+                                    NULL, NULL, OTHERE_TASK_STACK_SIZE, OTHERE_TASK_PRIORITY, 0, 0, "ohter Task");
+
     while(1)
     {
-        if(OS_WaitEvent(mainTaskHandle, &event, OS_TIME_OUT_WAIT_FOREVER))
+        if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
             EventDispatch(event);
             OS_Free(event->pParam1);
+            OS_Free(event->pParam2);
             OS_Free(event);
         }
     }
@@ -73,6 +74,6 @@ void AppMainTask(VOID *pData)
 void app_Main(void)
 {
     mainTaskHandle = OS_CreateTask(AppMainTask ,
-        NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY, 0, 0, "init Task");
+                                   NULL, NULL, OTHERE_TASK_PRIORITY, AppMain_TASK_PRIORITY, 0, 0, "init Task");
     OS_SetUserMainHandle(&mainTaskHandle);
 }

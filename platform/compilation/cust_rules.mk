@@ -20,12 +20,23 @@ ifeq ($(MAKELEVEL),0)
 ifeq "$(strip $(CT_RELEASE))" ""
     export CT_RELEASE := debug
 endif
+
+export tepath := ${SOFT_WORKDIR}/platform/compilation/
+
 VALID_RELEASE_LIST :=release debug
 SELECTED_RELEASE := $(filter $(VALID_RELEASE_LIST), $(CT_RELEASE))
 ifeq "$(SELECTED_RELEASE)" ""
     $(error "!!!! CT_RELEASE=${CT_RELEASE} - Not a valid release type !!!!")
 endif
 
+BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
+export BUILD_HOST_TYPE := $(shell sh -c $(BUILD_HOST_TYPE_CMD))
+
+ifeq "$(BUILD_HOST_TYPE)" "UNKNOWN"
+BUILD_HOST_UNAME := $(shell uname)
+$(error "$(BUILD_HOST_UNAME) is unsupported(LINUX, CYGWIN, WINDOWS)")
+endif
+$(info Build host is $(BUILD_HOST_TYPE))
 ##########################################
 # Define the tools to use
 ##########################################
@@ -85,7 +96,7 @@ export HEX_PATH ?= ${SOFT_WORKDIR}/hex
 # platform elf & lod file
 AM_MODEL := ${strip ${AM_MODEL}}
 ifneq "${AM_MODEL}" ""
-    AM_PLT_ELF_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}}
+    AM_PLT_ELF_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}/${CT_RELEASE}}
     AM_PLT_ELF_FILE := ${wildcard ${AM_PLT_ELF_PATH}/*.elf}
     AM_PLT_ELF_FILE_BASENAME := ${notdir ${AM_PLT_ELF_FILE}}
     ifeq "${words ${AM_PLT_ELF_FILE}}" "0"
@@ -99,7 +110,7 @@ ifneq "${AM_MODEL}" ""
         export ELFCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/elfCombine.pl
     endif
     
-    AM_PLT_LOD_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}}
+    AM_PLT_LOD_PATH := ${SOFT_WORKDIR}/platform/${strip ${AM_MODEL}/${CT_RELEASE}}
     AM_PLT_LOD_FILE := ${wildcard ${AM_PLT_ELF_PATH}/*.lod}
     ifeq "${words ${AM_PLT_LOD_FILE}}" "0"
         ${warning WARNING: No platform lod file at path: ${AM_PLT_LOD_PATH}}
@@ -114,6 +125,7 @@ ifneq "${AM_MODEL}" ""
 endif
 
 export LODCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/lodCombine.pl
+export LODPYCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/lodCombine.py
 
 ########################################################################
 # End of MAKELEVEL=0. Things to do only once.
@@ -201,7 +213,8 @@ FULL_LIBRARY_FILES := ${SRC_LIBRARY_FILES} ${BINARY_LIBRARY_FILES} ${LOCAL_ADD_L
 FULL_LIBRARY_EXT := ${foreach MODULE_PATH, ${FULL_LIBRARY_FILES}, -l${patsubst lib%,%,${basename ${notdir ${MODULE_PATH}}}}}
 
 # Used when building a toplevel with submodules only : all object files from submodules that go into the lib
-ifeq "$(IS_TOP_LEVEL)" "yes"
+IS_TOP_LEVEL_ = $(strip $(IS_TOP_LEVEL))
+ifeq "$(IS_TOP_LEVEL_)" "yes"
 FULL_LIBRARY_OBJECTS := ${foreach lib, ${LOCAL_MODULE_DEPENDS}, ${BUILD_ROOT}/${lib}/${OBJ_DIR}/${CT_RELEASE}/*.o} 
 endif
 
@@ -311,15 +324,23 @@ MAP := ${BAS}.map
 HEX := ${BAS}.srec
 BAS_FINAL := ${BINARY_PATH}/${LODBASE_NO_PATH}
 ifneq "${AM_PLT_ELF_FILE}" ""
-BIN_FINAL := ${BAS_FINAL}_BASE_${AM_MODEL}.elf
+BIN_FINAL := ${BAS_FINAL}_BASE_${AM_MODEL}_${CT_RELEASE}.elf
 else
 BIN_FINAL := ${BAS_FINAL}.elf
 endif
 MAP_FINAL := ${BAS_FINAL}.map
 HEX_FINAL := ${BAS_FINAL}.srec
 LODBASE   := ${BAS_FINAL}_
-LOD_FILE  := `cygpath -w $(LODBASE)flash.lod`
-BIN_FILE  := `cygpath -w $(LODBASE)flash.bin`
+ifeq "$(BUILD_HOST_TYPE)" "CYGWIN"
+	LOD_FILE := `cygpath -w $(LODBASE)flash.lod`
+	BIN_FILE := `cygpath -w $(LODBASE)flash.bin`
+else
+	# ifeq "$(BUILD_HOST_TYPE)" "WINDOWS"
+	LOD_FILE := $(LODBASE)flash.lod
+	BIN_FILE := $(LODBASE)flash.bin
+	# else
+	# endif
+endif
 CFG_FILE  := ${BAS_FINAL}.cfg
 
 
@@ -394,7 +415,8 @@ endif #AM_CONFIG_SUPPORT
 
 ifneq "${AM_PLT_LOD_FILE}" ""
 PLT_LOD_VERSION := $(shell echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/')
-WITH_PLT_LOD_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}.lod
+WITH_PLT_LOD_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}_${CT_RELEASE}.lod
+WITH_PLT_OTA_FILE := ${BAS_FINAL}_${PLT_LOD_VERSION}_${CT_RELEASE}_ota.lod
 CFG_Lod_File_WITH_PLT := `echo ${BAS_FINAL}_\`echo ${AM_PLT_LOD_FILE} | sed 's/.*SW_V\([0-9]*\).*\.lod$$/B\1/'\`.lod  | sed 's/.*\(SW_.*\.lod\)$$/\1/'`
 endif
 
@@ -518,7 +540,7 @@ ifeq ($(strip $(AM_SUBPROJ_SUPPORT)), TRUE)
 	${MAKE} AM_MAP_ZIP
 		
 else
-	find $(DES_CFP_FILE_DIR) -name "*.cfp" -exec rm {} \;
+	# find $(DES_CFP_FILE_DIR) -name "*.cfp" -exec rm {} \;
 	
 	@${ECHO} "CP  		  AUDIO CFP FILE......"
 	if [ $(AM_CFP_FILE_CNT) -gt 1 ]; then  \
@@ -608,16 +630,19 @@ else
 ifneq "${AM_PLT_LOD_FILE}" ""
 	@${ECHO}
 	@${ECHO} "LODTOBIN  $(LOD_FILE)"
-	$(LOD_TO_BIN) ${LOD_FILE} -0
+	# $(LOD_TO_BIN) ${LOD_FILE} -0                                                   \
+			# python $(LODPYCOMBINE_TOOL) --opt merge --bl $(AM_PLT_LOD_FILE) --lod $(LOD_FILE) --output $(WITH_PLT_LOD_FILE); \
+	# $(LODCOMBINE_TOOL) openat -l $(tepath)SW_V2000_csdk.lod -i $(tepath)uart_flash_debug.lod -o $(tepath)test.lod -u $(tepath)testota.lod; 
 	${ECHO}  "LODTOBIN          Sucessful"
-	@${ECHO} "LODCOMBINE        Combine user code with Platform lod"
+	@${ECHO} "LODCOMBINE        Combine user lod with Platform lod"
 	if [ -f $(LOD_FILE) ]; then                                                                 \
-		if [ -f $(AM_PLT_LOD_FILE) ]; then                                                       \
-			$(LODCOMBINE_TOOL) openat -l $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE); \
+		if [ -f $(AM_PLT_LOD_FILE) ]; then  \
+			$(LODCOMBINE_TOOL) openat -l  $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE) -u $(WITH_PLT_OTA_FILE);   \
 			if [ $$? -gt 0 ]; then \
 				${ECHO} "LODCOMBINE        Combine failed";   \
 				exit 1; \
 			fi;\
+			mv $(LOD_FILE) $(LODBASE)flash_${CT_RELEASE}.lod;\
 			${ECHO} "LODCOMBINE        Combine sucessful";                                     \
 		else                                                                                    \
 			${ECHO} "LODCOMBINE        Cannot find Platform lod file:$(AM_PLT_LOD_FILE)";   \
@@ -678,7 +703,7 @@ endif
 	cp -f $(AM_PLT_LOD_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(AM_PLT_ELF_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(BIN_FINAL) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
-	cp -f ${BAS_FINAL}_BASE_${AM_MODEL}.map ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
+	cp -f ${BAS_FINAL}_BASE_${AM_MODEL}_${CT_RELEASE}.map ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 	cp -f $(LOD_FILE) ${BAS_FINAL}_${PLT_LOD_VERSION}_map/
 
 	@${ECHO} "Creat map Zip..."
@@ -749,9 +774,62 @@ else
 endif
 endif
 
+# The local library is different in a module that depends on submodules, 
+# since we need to depend on the submodules, and add them to the archive...
+# No lib is generated for ENTRY_POINT dirs
+ifneq "${IS_ENTRY_POINT}" "yes"
+ifeq "${IS_TOP_LEVEL_}" "yes"
+# We are building a module with submodules
+# This module depends on:
+# 	The directories which save the built objects or files
+# 	The submodules that need to be compiled (listed in LOCAL_MODULE_DEPENDS, target "dependencies")
+# 	The local sources that go in the library
+# 	The binary library files
+# 	The local library files
+# We need to explode the binary sub library into objects
+# We need to copy the all objects from the submodules in the obj directory of this module
+$(LOCAL_SRCLIBRARY): dependencies ${BINARY_LIBRARY_FILES} ${LOCAL_ADD_LIBRARY_FILES} | makedirs
+ifneq "$(FULL_SRC_OBJECTS)" ""
+# headergen might change some header files. If the local source objects are listed
+# as prerequisites, make has checked the timestamp of the header files before they
+# are modified, and the objects will not be rebuilt in this make.
+	${MAKE} $(FULL_SRC_OBJECTS)
+
+endif
+	@${ECHO} "PREPARING         ${notdir ${LOCAL_SRCLIBRARY}}"
+ifneq "${COMBINE_LIB}" "yes"
+	echo "/* ${LOCAL_SRCLIBRARY} */" > ${LOCAL_SRCLIBRARY}
+	for libfile in $(FULL_LIBRARY_FILES); do \
+		if head -1 $$libfile | grep '!<arch>' &> /dev/null; then \
+			echo "INPUT($$libfile)" >> ${LOCAL_SRCLIBRARY}; \
+		else \
+			cat $$libfile >> ${LOCAL_SRCLIBRARY}; \
+		fi; \
+	done
+ifneq "$(FULL_SRC_OBJECTS)" ""
+	$(AR) cru  ${LOCAL_SRCLIBRARY}l $(FULL_SRC_OBJECTS)
+	echo "INPUT(${LOCAL_SRCLIBRARY}l)" >> ${LOCAL_SRCLIBRARY}
+endif
+else
+	${LOCAL_SUBMODULE_LIBRARY_EXPLODE} ${ECHO} "        (All submodules objects added)"
+	@${ECHO} "AR                ${notdir ${LOCAL_SRCLIBRARY}}"
+	if find ${OBJ_REL_PATH} -name "*.o" | sort >${LOCAL_SRCLIBRARY}.l 2>/dev/null; \
+		then $(AR) cru 	${LOCAL_SRCLIBRARY} @${LOCAL_SRCLIBRARY}.l; \
+		else $(AR) cq 	${LOCAL_SRCLIBRARY}; \
+	fi;
+endif # COMBINE_LIB
+ifneq "$(DEPS_NOT_IN_SUBDIR)" ""
+	@${ECHO} "--- DEPS_NOT_IN_SUBDIR ---"
+	@${ECHO} " $(DEPS_NOT_IN_SUBDIR)"
+endif # DEPS_NOT_IN_SUBDIR
+
+else # !IS_TOP_LEVEL_
+
 $(LOCAL_SRCLIBRARY): ${FULL_SRC_OBJECTS} | makedirs ccflagoutput
 	@${ECHO} "AR                ${notdir ${LOCAL_SRCLIBRARY}}"
 	$(AR) cru ${LOCAL_SRCLIBRARY} ${FULL_SRC_OBJECTS} ${STDERR_NULL} || ${ECHO} "	Error in AR"
+endif # IS_TOP_LEVEL_
+endif # IS_ENTRY_POINT
 
 ccflagoutput: force
 	if [ ! -d ${OBJ_REL_PATH} ]; then mkdir -p ${OBJ_REL_PATH}; fi;

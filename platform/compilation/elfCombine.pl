@@ -1,24 +1,9 @@
 #!/usr/bin/perl -w
-# --------------------------------------------------------------------------- #
-#       Copyright (C), AirM2M Comm. Co., Ltd. All rights reserved.            #
-# --------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------- #
-# This document contains proprietary information belonging to AirM2m.         #
-# Passing on and copying of this document, use and communication of its       #
-# contents is not permitted without prior written authorisation.              #
-# --------------------------------------------------------------------------- #
-#
-# when       who     what, where, why
-# YY.MM.DD   ---     ----------------
-# --------   ---     --------------------------------------------------------
-# 13.01.28   Lifei   Create
-#---------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------
-# ¹¦ÄÜ:
-#     ½«Á½¸öelfÎÄ¼şºÏ²¢£¬Éú³ÉĞÂµÄelfÎÄ¼ş
-# ½â¾öÎÊÌâ£º
+# åŠŸèƒ½:
+#     å°†ä¸¤ä¸ªelfæ–‡ä»¶åˆå¹¶ï¼Œç”Ÿæˆæ–°çš„elfæ–‡ä»¶
+# è§£å†³é—®é¢˜ï¼š
 #     1. 
 # ------------------------------------------------------------------------
 
@@ -27,6 +12,8 @@ use Config;
 use File::Find;
 use Getopt::Long;
 use File::Basename;
+use Cwd;
+use Cwd 'abs_path';
 
 my $g_dbg_level = "0";
    #0 No debug info
@@ -40,9 +27,31 @@ my $input_elf_file_1 = undef;
 my $input_elf_file_2 = undef;
 my $output_elf_file = undef;
 
-my $objstrip = '"mips-elf-strip.exe"';#objstrip¹¤¾ß
-my $objdump = '"mips-elf-objdump.exe"';#objdump¹¤¾ß
-my $ld = '"mips-elf-ld.exe"';#ld¹¤¾ß
+
+
+print "$Config{osname}\n";
+print "$Config{archname}\n";
+print "$Config{osvers}\n";
+
+my $os=$Config{osname};
+
+print "Current OS is $os\n";
+
+my $objstrip;
+my $objdump;
+my $ld;
+
+if($os  eq  "linux"){
+    $objstrip = '"mips-elf-strip"';#objstripå·¥å…·
+    $objdump = '"mips-elf-objdump"';#objdumpå·¥å…·
+    $ld = '"mips-elf-ld"';#ldå·¥å…·
+}
+else{
+    $objstrip = '"mips-elf-strip.exe"';#objstripå·¥å…·
+    $objdump = '"mips-elf-objdump.exe"';#objdumpå·¥å…·
+    $ld = '"mips-elf-ld.exe"';#ldå·¥å…·
+}
+
 
 my $ld_parameters = "-nostdlib --no-strip-discarded --oformat=elf32-littlemips --gc-sections";
 
@@ -61,19 +70,18 @@ EXTERN (_sxr_Irq_handler)
 EXTERN (boot_LoaderEnter)
 EXTERN (boot_Sector)
 EXTERN (boot_Sector_Nand)
-
 ";
 
 #/*********************************************************
 #  Function: dbg_out
-#  Description: Êä³öµ÷ÊÔĞÅÏ¢
+#  Description: è¾“å‡ºè°ƒè¯•ä¿¡æ¯
 #  Input:
-#    1. Êä³öĞÅÏ¢µÄµÈ¼¶
-#    2. ĞèÒªÊä³öµÄĞÅÏ¢
+#    1. è¾“å‡ºä¿¡æ¯çš„ç­‰çº§
+#    2. éœ€è¦è¾“å‡ºçš„ä¿¡æ¯
 #  Output:
 #  Return: 
 #  Others:
-#     ¸ù¾İµ±Ç°È«¾Ö±äÁ¿g_dbg_levelÀ´¾ö¶¨ÊÇ·ñĞèÒªÊä³öĞÅÏ¢
+#     æ ¹æ®å½“å‰å…¨å±€å˜é‡g_dbg_levelæ¥å†³å®šæ˜¯å¦éœ€è¦è¾“å‡ºä¿¡æ¯
 #*********************************************************/
 sub dbg_out
 {
@@ -88,7 +96,7 @@ sub dbg_out
 
 #/*********************************************************
 #  Function: usage
-#  Description: Êä³ö¸Ãpl½Å±¾µÄÈ«²¿¹¦ÄÜÑ¡Ïî
+#  Description: è¾“å‡ºè¯¥plè„šæœ¬çš„å…¨éƒ¨åŠŸèƒ½é€‰é¡¹
 #  Input:
 #    1. 
 #  Output:
@@ -132,7 +140,6 @@ sub read_elf_section
     my ($str,$vma_start,$vma_end,$lma_start,$lma_end,$len);
     
     die "Cannot find input elf file: $elf_file" if( ! -f $elf_file);
-    
     open FH, '-|', "$objdump -h $elf_file" or die "Cannot run objdunp($!)";
     while( <FH> )
     {
@@ -173,7 +180,7 @@ sub read_elf_section
                 {
                     if($sectionstr =~ /overlay/ && $str =~ /overlay/)
                     {
-                         #overlay section ÔÊĞíVMAµØÖ·ÖØ¸´
+                         #overlay section å…è®¸VMAåœ°å€é‡å¤
                     }
                     else
                     {
@@ -209,9 +216,9 @@ sub read_elf_section
 
 #/*********************************************************
 #  Function: elf_combine
-#  Description: prev_ld¹¦ÄÜ²ÎÊı½âÎö
+#  Description: prev_ldåŠŸèƒ½å‚æ•°è§£æ
 #  Input:
-#    1. ²ÎÊıÁĞ±íÊı×é
+#    1. å‚æ•°åˆ—è¡¨æ•°ç»„
 #  Output:
 #  Return: 
 #  Others:
@@ -226,13 +233,14 @@ sub elf_combine
     
     my $tmp_ld_file = "tmp_ld_script.ld";
     
-    #·ÖÎöelfÖĞsectionĞÅÏ¢
-    #`$objstrip -g $input_elf_file_1`;
-    `$objstrip -g $input_elf_file_2`;
+    #åˆ†æelfä¸­sectionä¿¡æ¯
+    # `$objstrip -g $input_elf_file_1`;
+    # `$objstrip -g $input_elf_file_2`;
     read_elf_section($input_elf_file_1, \%sect_table, \%addr_table);
     read_elf_section($input_elf_file_2, \%sect_table, \%addr_table);
     
-    #Éú³ÉÁ´½ÓÊ±Ê¹ÓÃµÄ ld script ÎÄ¼ş
+    
+    #ç”Ÿæˆé“¾æ¥æ—¶ä½¿ç”¨çš„ ld script æ–‡ä»¶
     open(FH, ">$tmp_ld_file") or die "Cannot open tmp ld file:$!";
     print FH "$ld_script_header";
     print FH "SECTIONS\n{\n\n";
@@ -245,7 +253,7 @@ sub elf_combine
     print FH "\n}\n";
     close(FH);
     
-    #Éú³ÉĞÂµÄelfÎÄ¼ş
+    #ç”Ÿæˆæ–°çš„elfæ–‡ä»¶
     #${LD} -nostdlib -o ${BUILD_ROOT}/1.elf --no-strip-discarded --oformat=elf32-littlemips --script ${BUILD_ROOT}/3.ld -Map ${BUILD_ROOT}/1.map --gc-sections ${BUILD_ROOT}/SW_V001_A6300V_OPENAT.elf ${BUILD_ROOT}/SW_V867_A6300_ZH.elf
     my $map_file = $output_elf_file;
     $map_file =~ s/\.elf$/\.map/;
@@ -337,7 +345,18 @@ else
     
     dbg_out("1", "parameter ok");
 
+    my $cwd = getcwd();
+    my $index1 = index($input_elf_file_1,$cwd)+length($cwd)+1;
+    my $index2 = length($input_elf_file_1);
+    $input_elf_file_1 = substr($input_elf_file_1,$index1,$index2);
+    # print "\n----$input_elf_file_1------\n";
+    $index1 = index($input_elf_file_2,$cwd)+length($cwd)+1;
+    $index2 = length($input_elf_file_2);
+    $input_elf_file_2 = substr($input_elf_file_2,$index1,$index2);
+    # print "\n----$input_elf_file_2------\n";
+
     elf_combine();
+
 }
 
 exit 0;

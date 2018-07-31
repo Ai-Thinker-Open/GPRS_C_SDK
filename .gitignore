@@ -1,4 +1,5 @@
 build
 hex
 *.vscode
-
+ftest
+platform/compilation/fota/unix

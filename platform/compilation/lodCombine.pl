@@ -1,19 +1,5 @@
 #!/usr/bin/perl -w
-# --------------------------------------------------------------------------- #
-#       Copyright (C), AirM2M Comm. Co., Ltd. All rights reserved.            #
-# --------------------------------------------------------------------------- #
 
-# --------------------------------------------------------------------------- #
-# This document contains proprietary information belonging to AirM2m.         #
-# Passing on and copying of this document, use and communication of its       #
-# contents is not permitted without prior written authorisation.              #
-# --------------------------------------------------------------------------- #
-#
-# when       who     what, where, why
-# YY.MM.DD   ---     ----------------
-# --------   ---     --------------------------------------------------------
-# 12.01.19   Lifei   Create
-#---------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------
 # ����:
@@ -47,6 +33,7 @@ my $combine_type; #amc, lua or openat
 my $platform_lod_file;
 my $combine_file;
 my $output_lod_file;
+my $output_ota_file;
 my $flash_base;
 my @sector_layout;
 
@@ -288,7 +275,8 @@ sub output_lod
         $$checksum += hex($1);
     }
     
-    print $output "$line\r\n";
+    # print $output "$line\r\n";
+    print $output "$line\n";
 }
 
 #/*********************************************************
@@ -316,10 +304,12 @@ sub lod_combine_process
     my $input_file_eof = 0;
     my $checksum = 0;
     my $OUTPUT;
+    my $OTAOUTPUT;
     
     open( INPUT, "<$platform_lod_file" ) or die "Cannot open input platform lod file: $platform_lod_file\n";
     open( COMBINE, "<$combine_file" ) or die "Cannot open $combine_type combine file: $combine_file\n";
     open( $OUTPUT, ">$output_lod_file" ) or die "Cannot open output combined lod file: $output_lod_file\n";
+    open( $OTAOUTPUT, ">$output_ota_file" ) or die "Cannot open output combined lod file: $output_ota_file\n";
     
     # step 1
     #��ȡplatform lod�ļ�ͷ����Ϣ
@@ -458,6 +448,7 @@ sub lod_combine_process
     {
         #print OUTPUT "#\$$item=$tags_hash{$item}\r\n";
         output_lod($OUTPUT, "#\$$item=$tags_hash{$item}", \$checksum);
+        output_lod($OTAOUTPUT, "#\$$item=$tags_hash{$item}", \$checksum);
     }
     
     #���combine_addr֮ǰ������
@@ -467,6 +458,10 @@ sub lod_combine_process
         my $last_addr = $addr;
         # print  "$line\r\n";
         output_lod($OUTPUT, $line, \$checksum);
+        if($addr >= 0x08010000)
+        {
+            output_lod($OTAOUTPUT, $line, \$checksum);
+        }
         while( defined( $line = <INPUT> ) )
         {
             $line =~ s/^[\s]+//g;#����ͷ�Ŀհ��ַ�ȥ��
@@ -479,9 +474,28 @@ sub lod_combine_process
             }
             # print  "$line\r\n";
             output_lod($OUTPUT, $line, \$checksum);
+            if($addr >= 0x08010000)
+            {
+                output_lod($OTAOUTPUT, $line, \$checksum);
+            }
         }
         if($addr == $last_addr)
         {
+            seek($OUTPUT, -20, 1);
+            seek($OTAOUTPUT, -20, 1);
+            while($addr < ($combine_addr - 0x10000) )
+            {
+                if($addr % 0x10000 == 0)
+                {
+                    $line = sprintf("@%08x", $addr+0x10000);
+                    output_lod($OUTPUT, $line, \$checksum);
+                    output_lod($OTAOUTPUT, $line, \$checksum);
+                }
+                $line = sprintf("ffffffff");
+                output_lod($OUTPUT, $line, \$checksum);
+                output_lod($OTAOUTPUT, $line, \$checksum);
+                $addr += 4;
+            }
             last;
         }
         $last_addr = $addr;
@@ -626,6 +640,7 @@ sub lod_combine_process
         dbg_out(5, "$line");
         #print OUTPUT "$line\r\n";
         output_lod($OUTPUT, $line, \$checksum);
+        output_lod($OTAOUTPUT, $line, \$checksum);
         while( defined( $line = <COMBINE> ) )
         {
             $line =~ s/^[\s]+//g;#����ͷ�Ŀհ��ַ�ȥ��
@@ -648,6 +663,7 @@ sub lod_combine_process
             }
             #print OUTPUT "$line\r\n";
             output_lod($OUTPUT, $line, \$checksum);
+            output_lod($OTAOUTPUT, $line, \$checksum);
         }
     }
     else
@@ -668,6 +684,7 @@ sub lod_combine_process
         $line = sprintf("@%08x", $addr);#��Ҫ��0
         #print OUTPUT "$line\r\n";
         output_lod($OUTPUT, $line, \$checksum);
+        output_lod($OTAOUTPUT, $line, \$checksum);
         while( defined( $line = <INPUT> ) )
         {
             $line =~ s/^[\s]+//g;#����ͷ�Ŀհ��ַ�ȥ��
@@ -685,6 +702,7 @@ sub lod_combine_process
             }
             #print OUTPUT "$line\r\n";
             output_lod($OUTPUT, $line, \$checksum);
+            output_lod($OTAOUTPUT, $line, \$checksum);
         }
     }
     
@@ -692,17 +710,21 @@ sub lod_combine_process
     $checksum &= 0xffffffff;
     $line = sprintf("#checksum=%08x", $checksum);
     output_lod($OUTPUT, $line, \$checksum);
+    output_lod($OTAOUTPUT, $line, \$checksum);
     
     close(INPUT);
     close(COMBINE);
     close($OUTPUT);
+    close($OTAOUTPUT);
     return;
     
 ERROR:
     close(INPUT);
     close(COMBINE);
     close($OUTPUT);
+    close($OTAOUTPUT);
     unlink($output_lod_file);
+    unlink($output_ota_file);
     
     die "$error";
 }
@@ -760,6 +782,15 @@ sub lod_combine
             # dbg_out("1", "output_lod_file=$output_lod_file");
             $i++;
         }
+
+        # -u output combined lod file
+        elsif ($key eq "-u" )
+        {
+            $i++;
+            $output_ota_file = $_[$i];
+            # dbg_out("1", "output_ota_file=$output_ota_file");
+            $i++;
+        }
         
         # not valid parameter
         else
@@ -769,7 +800,7 @@ sub lod_combine
         }
     }
     
-    if($platform_lod_file eq "" || $combine_file eq "" || $output_lod_file eq "")
+    if($platform_lod_file eq "" || $combine_file eq "" || $output_lod_file eq "" || $output_ota_file eq "")
     {
         print "Parameter error!\n\n";
         lod_combine_usage($combine_type);

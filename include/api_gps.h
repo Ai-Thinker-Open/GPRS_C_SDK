@@ -15,6 +15,8 @@
 /// \return bool
 #define GPS_Close                                       CSDK_FUNC(GPS_Close)
 
+#define GPS_IsOpen                                      CSDK_FUNC(GPS_IsOpen)
+
 
 
 #endif

@@ -17,6 +17,7 @@ SECTIONS
     ***************************************/
     /* flash start address*/
     . = USER_ROM_BASE;
+    __rom_start = .;
     
     /* RO */
     .section_init . : AT (ADDR(.section_init))
@@ -43,14 +44,15 @@ SECTIONS
         *(.roresdata)
         *(.robsdata)
         . = ALIGN(0x20);
-    }
-	
+    } 
+	__user_rw_lma = .;
+    __rom_size = __user_rw_lma - __rom_start;
     /* RAM */
     . = USER_RAM_BASE;
     /* RW */
-    .cust_data . : AT ( ADDR( .cust_data) )
+    .cust_data . : AT ( __user_rw_lma )
     {
-        /*__user_rw_start = .;*/
+        __user_rw_start = .;
         *(.data)
         *(.data.*)
         *(.gnu.linkonce.d.*)
@@ -58,11 +60,12 @@ SECTIONS
         *(.sdata2 .sdata2.* .gnu.linkonce.s2.*)
         . = ALIGN(0x10);
     }
-    /*__user_rw_end = .;
-    __user_rw_size = __user_rw_end - __user_rw_start;*/
+    __user_rw_end = .;
+    __user_rw_size = __user_rw_end - __user_rw_start;
     
+    __user_bss_start = .;
     /* ZI */
-    .cust_bss . (NOLOAD) : AT (ADDR(.cust_bss))
+    .cust_bss . : AT (ADDR(.cust_bss))
     {
         *(.sbss .sbss.* .gnu.linkonce.sb.*)
         *(.sbss2 .sbss2.* .gnu.linkonce.sb2.*)
@@ -73,5 +76,7 @@ SECTIONS
         *(.rambss)
         . = ALIGN(0x10);
     }
+    __user_bss_end = .;
+    __user_bss_size = __user_bss_end - __user_bss_start;
     #include "discard.ld"
 }

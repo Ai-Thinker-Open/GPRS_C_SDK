@@ -14,5 +14,10 @@
   * @attention not support float(%f) yet! can use `gcvt()` convert to string firstly
   */ 
 #define Trace                                   CSDK_FUNC(Trace)
+#define MEMBLOCK_Trace                          CSDK_FUNC(MEMBLOCK_Trace)
+void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
+
+#define LIBS_DEBUG_I       15
+#define LIBS_DEBUG_E       16
 
 #endif

@@ -5,7 +5,7 @@
  * @Author: Neucrack 
  * @Date: 2017-10-26 10:45:00 
  * @Last Modified by: Neucrack
- * @Last Modified time: 2017-11-02 12:50:48
+ * @Last Modified time: 2018-06-14 19:51:56
  */
 
 
@@ -14,15 +14,6 @@
 
 #include <sdk_init.h>
 
-#define OS_WAIT_FOREVER 0xFFFFFFFF
-#define OS_NO_WAIT 0x0
-
-#define OS_EVENT_PRI_NORMAL 0
-#define OS_EVENT_PRI_URGENT 1
-
-
-#define OS_TIME_OUT_WAIT_FOREVER 0xFFFFFFFF
-#define OS_TIME_OUT_NO_WAIT      0x0
 /*
 #define OS_WAIT_FOREVER 0xFFFFFFFF
 #define OS_NO_WAIT 0x0
@@ -128,6 +119,9 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \return void , 
 #define OS_SetUserMainHandle                          CSDK_FUNC(OS_SetUserMainHandle)
 
+#define OS_GetUserMainHandle                          CSDK_FUNC(OS_GetUserMainHandle)
+
+
 /// \brief  void                OS_CreateTask)(PTASK_FUNC_T pTaskEntry,PVOID pParameter,PVOID pStackAddr,UINT16 nStackSize
 //                                         ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);
 /// \param  PTASK_FUNC_T pTaskEntry , 
@@ -171,6 +165,8 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \param  UINT32 nMillisecondes  , 
 /// \return bool , 
 #define OS_Sleep                                    CSDK_FUNC(OS_Sleep)
+
+#define OS_SleepUs                                  CSDK_FUNC(OS_SleepUs)
 
 /// \brief  bool                OS_WaitEvent(HANDLE hTask,PVOID *pEvent,UINT32 nTimeOut);
 /// \param  HANDLE hTask  , the task to wait event 
@@ -259,6 +255,15 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \return void , 
 #define OS_UnlockMutex                              CSDK_FUNC(OS_UnlockMutex)
 
+
+/**
+  *
+  * @param hTask Task handle that must have OS_WaitEvent(hTask.....)
+  *
+  */
+#define OS_StartCallbackTimer                       CSDK_FUNC(OS_StartCallbackTimer)
+#define OS_StopCallbackTimer                        CSDK_FUNC(OS_StopCallbackTimer)
+#define OS_QueryCallbackTimer                       CSDK_FUNC(OS_QueryCallbackTimer)
 
 #endif
 
