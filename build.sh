@@ -73,7 +73,7 @@ start_time=`date +%s`
 export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin:$PATH;
 # echo path:$PATH
 
-export SOFT_WORKDIR=`pwd`
+export SOFT_WORKDIR=`pwd -P`
 
 echo "param number:$paramNum"
 echo "compileMode:$compileMode"
