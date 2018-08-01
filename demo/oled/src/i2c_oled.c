@@ -8,8 +8,6 @@
 #define I2C_OLED I2C2
 #define I2C_TIMEOUT         10000
 
-#define OLED_ADDR		0x3c//0x78
-
 #define OLED_TWI_SCL_PIN		16
 #define OLED_TWI_SDA_PIN		15
 
@@ -20,19 +18,19 @@ bool i2c_init()
     config.freq = I2C_FREQ_400K;
     return I2C_Init(I2C_OLED, config);
 }
-void WriteCmd(unsigned char I2C_Command)//Ð´ÃüÁî
+void WriteCmd(unsigned char I2C_Command)//Ð´ï¿½ï¿½ï¿½ï¿½
 {
     I2C_WriteMem(I2C_OLED,OLED_ADDR,0x00,1,&I2C_Command,1,I2C_TIMEOUT);
 }
 
-void WriteDat(unsigned char I2C_Data)//Ð´Êý¾Ý
+void WriteDat(unsigned char I2C_Data)//Ð´ï¿½ï¿½ï¿½ï¿½
 {
     I2C_WriteMem(I2C_OLED,OLED_ADDR,0x40,1,&I2C_Data,1,I2C_TIMEOUT);
 }
 
 void OLED_Init(void)
 {
-    OS_Sleep(100); //ÕâÀïµÄÑÓÊ±ºÜÖØÒª
+    OS_Sleep(100); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òª
     
     WriteCmd(0xAE); //display off
     WriteCmd(0x20); //Set Memory Addressing Mode    
@@ -43,7 +41,7 @@ void OLED_Init(void)
     WriteCmd(0x10); //---set high column address
     WriteCmd(0x40); //--set start line address
     WriteCmd(0x81); //--set contrast control register
-    WriteCmd(0xff); //ÁÁ¶Èµ÷½Ú 0x00~0xff
+    WriteCmd(0xff); //ï¿½ï¿½ï¿½Èµï¿½ï¿½ï¿½ 0x00~0xff
     WriteCmd(0xa1); //--set segment re-map 0 to 127
     WriteCmd(0xa6); //--set normal display
     WriteCmd(0xa8); //--set multiplex ratio(1 to 64)
@@ -64,14 +62,14 @@ void OLED_Init(void)
     WriteCmd(0xaf); //--turn on oled panel
 }
 
-void OLED_SetPos(unsigned char x, unsigned char y) //ÉèÖÃÆðÊ¼µã×ø±ê
+void OLED_SetPos(unsigned char x, unsigned char y) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 { 
     WriteCmd(0xb0+y);
     WriteCmd(((x&0xf0)>>4)|0x10);
     WriteCmd((x&0x0f)|0x01);
 }
 
-void OLED_Fill(unsigned char fill_Data)//È«ÆÁÌî³ä
+void OLED_Fill(unsigned char fill_Data)//È«ï¿½ï¿½ï¿½ï¿½ï¿½
 {
     unsigned char m,n;
     for(m=0;m<8;m++)
@@ -86,21 +84,21 @@ void OLED_Fill(unsigned char fill_Data)//È«ÆÁÌî³ä
     }
 }
 
-void OLED_CLS(void)//ÇåÆÁ
+void OLED_CLS(void)//ï¿½ï¿½ï¿½ï¿½
 {
     OLED_Fill(0x00);
 }
 void OLED_ON(void)
 {
-    WriteCmd(0X8D);  //ÉèÖÃµçºÉ±Ã
-    WriteCmd(0X14);  //¿ªÆôµçºÉ±Ã
-    WriteCmd(0XAF);  //OLED»½ÐÑ
+    WriteCmd(0X8D);  //ï¿½ï¿½ï¿½Ãµï¿½É±ï¿½
+    WriteCmd(0X14);  //ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½
+    WriteCmd(0XAF);  //OLEDï¿½ï¿½ï¿½ï¿½
 }
 void OLED_OFF(void)
 {
-    WriteCmd(0X8D);  //ÉèÖÃµçºÉ±Ã
-    WriteCmd(0X10);  //¹Ø±ÕµçºÉ±Ã
-    WriteCmd(0XAE);  //OLEDÐÝÃß
+    WriteCmd(0X8D);  //ï¿½ï¿½ï¿½Ãµï¿½É±ï¿½
+    WriteCmd(0X10);  //ï¿½Ø±Õµï¿½É±ï¿½
+    WriteCmd(0XAE);  //OLEDï¿½ï¿½ï¿½ï¿½
 }
 void OLED_ShowStr(unsigned char x, unsigned char y, unsigned char ch[], unsigned char TextSize)
 {
