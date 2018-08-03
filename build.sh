@@ -188,7 +188,7 @@ fi
 end_time=`date +%s`
 time_distance=`expr ${end_time} - ${start_time}`
 date_time_now=$(date +%F\ \ %H:%M:%S)
-echo ===== Build Time: ${time_distance}s  complete at  ${date_time_now} ===== | tee -a ${LOG_FILE}
+echo ====== Build Time: ${time_distance}s  complete at  ${date_time_now} ======= | tee -a ${LOG_FILE}
 
 
 # print RAM and ROM info
@@ -208,11 +208,13 @@ MEMD_DEF_PATH=./platform/csdk/memd.def
 
 map_file=$(ls ./build/$mapPathName|grep '.map')
 
+result=`cat ${LOG_FILE}|grep "Error"`
 
-if [[ "${map_file}aa" = "aa" ]]; then
+if [[ "${result}aa" != "aa" || "${map_file}aa" = "aa" ]]; then
     echo "!!!!!!!!!!!!!!!!!!!!"
     echo "   BUILD FAILED"
     echo "!!!!!!!!!!!!!!!!!!!!"
+    echo "============================================================="
     exit 1
 fi
 
@@ -228,14 +230,14 @@ ram_end=$(grep  -n  "__user_bss_end = ." $MAP_FILE_PATH | awk  '{print $2}')
 
 # echo $ram_start $ram_end
 ram_used=$(($ram_end-$ram_start))
-ram_used_percent=$(awk 'BEGIN{printf "%.2f%\n",('$ram_used'/'$ram_total')*100}')
+ram_used_percent=$(awk 'BEGIN{printf "%.2f%%\n",('$ram_used'/'$((${ram_total}))')*100}')
 
 rw_data_size=$(($ram_rw_data_end-$ram_start))
 rom_used=$(($rom_rw_start-$rom_start+$rw_data_size))
-rom_used_percent=$(awk 'BEGIN{printf "%.2f%\n",('$rom_used'/'$rom_total')*100}')
+rom_used_percent=$(awk 'BEGIN{printf "%.2f%%\n",('$rom_used'/'$(($rom_total))')*100}')
 
 
 echo ROM total: ${rom_total}\($((${rom_total}))\) Bytes, used: $rom_used Bytes \($rom_used_percent\)
 echo RAM total: ${ram_total}\($((${ram_total}))\) Bytes, used: $ram_used Bytes \($ram_used_percent\)
-
+echo "============================================================="
 exit
