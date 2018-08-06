@@ -79,7 +79,7 @@ A9/A9G开发板，方便开发和调试
 
 ### 锂电池
 
-用来给模块供电，或者使用5V电源也行，USB转串口模块直接供电也行，要保证有足够的电流供应
+用来给模块供电，或者使用5V电源也行，USB转串口模块直接供电也行(仅调试)，要保证有足够的电流供应(2A)
 
 
 
@@ -96,7 +96,7 @@ A9/A9G开发板，方便开发和调试
     * OS
     * FS
     * GPRS网络
-    * socket
+    * socket(TCP/UDP)
     * dns
     * SSL/TLS
     * MQTT
@@ -106,15 +106,18 @@ A9/A9G开发板，方便开发和调试
     * GPS
     * RTC、网络时间
     * FOTA
-
+    * watch dog
+    * 其它库如json、NMEA解析库等等，具体可以看`demo`目录或者`libs`目录
 
 #### 获得SDK
 
 代码托管在[github](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)上
 
-需要**注意**的是：使用**本页面右上角的绿色<kbd>Clone or download</kbd>按钮**下载会得到不包含`SDK-LIB`的压缩包，**请不要使用**这种方式获得源码！否则编译会报文件缺失的错误
+##### 1. 下载代码
 
-* 方法一：从github[发布页面下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)。
+需要**注意**的是：**请勿使用本页面右上角的绿色<kbd>Clone or download</kbd>按钮**下载的压缩包，否则编译会报文件缺失的错误
+
+* 方法一：从github[发布页面下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)（**推荐**）。
   > 这种方式获取的代码的发布的版本
 
 
@@ -125,26 +128,16 @@ A9/A9G开发板，方便开发和调试
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
 
-#### SDK目录结构：
+##### 2. 检查代码完整性
 
-|  目录  |  描述  |
-|  ---   |  ---  |
-|app     |  程序主目录，应用代码放在这里|
-|build   |  编译生成的目录、中间文件    |
-|demo    |  一些例程                   |
-|doc     | 一些SDK相关的文档，`Markdown`格式，可在[github在线阅读](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/blob/master/README.md)|
-|hex     |  最后产生的可烧录文件        |
-|include |  SDK文件目录                |
-|init    |  系统初始化的目录，可以不用理会，不建议改动 |
-|platform|  库文件存放位置，**请保证platform/csdk目录不为空**|
-
-
+下载完后请检查目录`platform/csdk`目录写是否包含`debug`、`release`目录。
+如果没有，则是下载方式错误，请仔细阅读第一步下载正确的文件
 
 
 ## (三) 开发文档及例程
 
 
-**文档地址**：[GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)
+#### 文档地址： [GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)
 
 包括[开发环境安装](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/kai-fa-huan-jing-an-zhuang.html)、[固件下载、调试](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)以及[GPRS基础知识](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/ji-chu-zhi-shi/gsmgprs.html)、API说明等
 
@@ -153,6 +146,10 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 
 
 ## (四) 反馈
+
+在[这里(issue)](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/issues?utf8=%E2%9C%93&q=)可以查看搜索正在讨论或者已经解决的问题
+
+反馈方式：
 
 * 方式一：github [添加issue](https://github.com/Ai-Thinker-Open/GPRS-C-SDK/issues/new)
 
@@ -165,6 +162,7 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ## (五) 参与开发
 
 **bug修复、优化、功能模块增加**： fork -> 修改 -> 提交PR
+
 **贴开源项目链接**：如果有用CSDK开发的开源项目，可以添加issue，审核后可将链接贴在README页面
 
 
