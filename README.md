@@ -96,6 +96,7 @@ A9/A9G开发板，方便开发和调试
     * OS
     * FS
     * GPRS网络
+    * 基站定位（LBS）
     * socket(TCP/UDP)
     * dns
     * SSL/TLS
