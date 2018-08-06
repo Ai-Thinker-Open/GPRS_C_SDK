@@ -69,7 +69,7 @@ board can be light up with 5V or 4.2V power, and ensure supply enough current
 ### SDK Features
 
 * Provide easy-to-use API, as long as you have `C` language knowledge. 
-Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS etc.
+Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS, LBS, Audio play, Gizwits cloud, libs cJson、NMEA etc.
 
 
 ### Get the SDK
@@ -107,7 +107,7 @@ Examples refer to the `demo` folder
 
 **Doumentation** here:  [GPRS C SDK DOC](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en)
 
-Include [environment installation](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/installation.html) or [burn & debug](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/burn-debug.html) docs etc.
+Including [environment installation](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/installation.html) or [burn & debug](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/burn-debug.html) docs etc.
 
 
 ## ( E ) Feedback
