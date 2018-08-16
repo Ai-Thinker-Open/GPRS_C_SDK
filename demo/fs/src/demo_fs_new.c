@@ -112,6 +112,28 @@ void FsInfoTest()
     Trace(1,"T Flash used:%d Bytes, total size:%d Bytes(%d.%03d MB)",sizeUsed,sizeTotal,(int)mb, (int)((mb-(int)mb)*1000)  );
 }
 
+void ListDirsRoot()
+{
+    char buff[30];
+    Dir_t* dir = API_FS_OpenDir("/");
+    Dirent_t* dirent = NULL;
+    while(dirent = API_FS_ReadDir(dir))
+    {
+        Trace(1,"folder:%s",dirent->d_name);
+        snprintf(buff,sizeof(buff),"/%s",dirent->d_name);
+        int32_t fd = API_FS_Open(buff,FS_O_RDONLY,0);
+        if(fd<0)
+            Trace(1,"open file %s fail",buff);
+        else
+        {
+            Trace(1,"file %s size:%d",buff,(int)API_FS_GetFileSize(fd));
+            API_FS_Close(fd);
+        }
+
+    }
+    API_FS_CloseDir(dir);
+}
+
 
 void FsTestCase()
 {
@@ -185,6 +207,7 @@ void FsTestTask(void* param)
 {
     OS_Sleep(3000);
     FsInfoTest();
+    ListDirsRoot();
     FsTestCase();
     FsTFTest();
     Trace(1,"fs test end");
