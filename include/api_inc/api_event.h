@@ -16,7 +16,7 @@ typedef enum{
     API_EVENT_ID_NO_SIMCARD                        ,   //param1: card id
     API_EVENT_ID_SIMCARD_DROP                      ,   //param1: card id
     //signal
-    API_EVENT_ID_SIGNAL_QUALITY                   ,   //param1: CSQ(0~31,99(unknown)), param2:RXQUAL(0~7,99(unknown))  (RSSI = CSQ*2-113)
+    API_EVENT_ID_SIGNAL_QUALITY                   ,   //param1: SQ(0~31,99(unknown)), param2:RXQUAL(0~7,99(unknown))  (RSSI = SQ*2-113)
     //network
     API_EVENT_ID_NETWORK_REGISTERED_HOME           ,
     API_EVENT_ID_NETWORK_REGISTERED_ROAMING        ,
