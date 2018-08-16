@@ -6,7 +6,7 @@
 
 #ifndef _TIME_T_DEFINED
 #define _TIME_T_DEFINED
-    typedef long         time_t;
+    typedef int32_t  time_t;
 #endif
 
 typedef long         clock_t;
@@ -36,8 +36,8 @@ typedef struct tm{
 } TIME_System_t;
 
 typedef struct timeval {
-    long long    tv_sec;         /* seconds */
-    long         tv_usec;        /* and microseconds!!!but millisecond instead here(实际数据是ms)!! */
+    time_t    tv_sec;            /* seconds */
+    long      tv_usec;           /* microseconds */
 }timeval_t;
 
 struct timespec {

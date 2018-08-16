@@ -966,13 +966,13 @@ bool GPS_AGPS(float latitude, float longitude, float altitude, bool downloadGPD)
     ///////////////////////////////////////////////////////////
     //5. set gps rtc time
     RTC_Time_t time;
-    TIME_GetRtcTIme(&time);
+    TIME_GetRtcTime(&time);
     if(!GPS_SetRtcTime(&time))
         GPS_DEBUG_I("set rtc time fail");
     
     ///////////////////////////////////////////////////////////
     //6. send location and date time to gps
-    TIME_GetRtcTIme(&time);
+    TIME_GetRtcTime(&time);
     if(!GPS_SetLocationTime(latitude,longitude,altitude,&time))
         GPS_DEBUG_I("set location time fail");
 

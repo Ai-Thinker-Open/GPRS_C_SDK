@@ -7,16 +7,16 @@
 #define TIME_SetIsAutoUpdateRtcTime   CSDK_FUNC(TIME_SetIsAutoUpdateRtcTime)
 #define TIME_IsAutoUpdateRtcTime      CSDK_FUNC(TIME_IsAutoUpdateRtcTime)
 #define TIME_SetRtcTime               CSDK_FUNC(TIME_SetRtcTime)
-#define TIME_GetRtcTIme               CSDK_FUNC(TIME_GetRtcTIme)
+#define TIME_GetRtcTime               CSDK_FUNC(TIME_GetRtcTime)
 #define clock                         CSDK_FUNC(clock)
 
-//return time unit:s
-// uint32_t TIME_GetIime();  
-#define TIME_GetIime                              CSDK_FUNC(TIME_GetIime)
-//the same as TIME_GetRtcTIme but no timezone
+//return time from 2000-1-1 00:00:00(UTC) unit:s
+// uint32_t TIME_GetTime();  
+#define TIME_GetTime                              CSDK_FUNC(TIME_GetTime)
+//the same as TIME_GetRtcTime but no timezone
 // bool TIME_GetSystemTime(TIME_System_t* sysTime);
 #define TIME_GetSystemTime                        CSDK_FUNC(TIME_GetSystemTime)
-//the same as TIME_GetRtcTIme but no timezone
+//the same as TIME_GetRtcTime but no timezone
 // bool TIME_SetSystemTime(TIME_System_t* sysTime);
 #define TIME_SetSystemTime                        CSDK_FUNC(TIME_SetSystemTime)
 //get time zone, unit:15minutes,e.g. if value is 2, means +30minutes
@@ -39,8 +39,8 @@
 
 ///////standard///
 // time_t time(time_t* timer);
-#define TIME_GetTime           CSDK_FUNC(time)
-#define time(x)                TIME_GetTime(x)
+#define TIME_GetTime2           CSDK_FUNC(time)
+#define time(x)                TIME_GetTime2(x)
 
 // time_t timelocal(struct tm* tm);
 #define timelocal              CSDK_FUNC(timelocal)

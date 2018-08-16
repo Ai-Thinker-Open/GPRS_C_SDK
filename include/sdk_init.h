@@ -161,9 +161,9 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*TIME_SetIsAutoUpdateRtcTime)(bool isAutoUpdate);
     bool                (*TIME_IsAutoUpdateRtcTime)();
     bool                (*TIME_SetRtcTime)(RTC_Time_t*);
-    bool                (*TIME_GetRtcTIme)(RTC_Time_t*);
+    bool                (*TIME_GetRtcTime)(RTC_Time_t*);
     long                (*clock)(void);
-    uint32_t            (*TIME_GetIime)();
+    uint32_t            (*TIME_GetTime)();
     bool                (*TIME_GetSystemTime)(TIME_System_t* sysTime);
     bool                (*TIME_SetSystemTime)(TIME_System_t* sysTime);
     int8_t              (*TIME_GetTimeZone)();
