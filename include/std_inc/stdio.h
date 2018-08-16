@@ -27,6 +27,9 @@ extern "C" {
 // int vsnprintf(char *buf, size_t size, const char *fmt, va_list ap);
 // int vsscanf (const char *fp, const char *fmt0, va_list ap);
 
+#include "api_debug.h"
+#define printf(fmt,...)   Trace(1,"[%s][%s][%d]>>"#fmt,__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+
 #ifdef __cplusplus
 }
 #endif
