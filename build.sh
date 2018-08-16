@@ -79,6 +79,13 @@ echo "param number:$paramNum"
 echo "compileMode:$compileMode"
 
 if [[ $paramNum -eq 1  ]]; then
+    if [[ "$1xx" == "cleanxx" ]]; then
+        echo "Clean all..."
+        rm -rf $SOFT_WORKDIR/build
+        rm -rf $SOFT_WORKDIR/hex
+        echo "Clean complete"
+        exit 0
+    fi
     export IS_PROJECT_DIR=$SOFT_WORKDIR/$1
     if [[ ! -d $IS_PROJECT_DIR ]]; then
         echo "project $1 error path:$IS_PROJECT_DIR";
