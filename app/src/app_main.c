@@ -14,6 +14,7 @@
 #include "api_os.h"
 #include "api_event.h"
 #include "api_debug.h"
+#include "api_hal_pm.h"
 
 #define AppMain_TASK_STACK_SIZE    (2048 * 2)
 #define AppMain_TASK_PRIORITY      0
@@ -59,15 +60,16 @@ void AppMainTask(VOID *pData)
 
     otherTaskHandle = OS_CreateTask(LoopTask,
                                     NULL, NULL, OTHERE_TASK_STACK_SIZE, OTHERE_TASK_PRIORITY, 0, 0, "ohter Task");
-
     while(1)
     {
         if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
+            PM_SetSysMinFreq(PM_SYS_FREQ_178M);
             EventDispatch(event);
             OS_Free(event->pParam1);
             OS_Free(event->pParam2);
             OS_Free(event);
+            PM_SetSysMinFreq(PM_SYS_FREQ_32K);        
         }
     }
 }
