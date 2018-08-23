@@ -44,6 +44,9 @@ static HANDLE gpsTaskHandle = NULL;
 bool isGpsOn = true;
 bool networkFlag = false;
 
+#define SYSTEM_STATUS_LED GPIO_PIN27
+#define UPLOAD_DATA_LED   GPIO_PIN28
+
 
 // const uint8_t nmea[]="$GNGGA,000021.263,2228.7216,N,11345.5625,E,0,0,,153.3,M,-3.3,M,,*4E\r\n$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n$BDGSA,A,1,,,,,,,,,,,,,,,*0F\r\n$GPGSV,1,1,00*79\r\n$BDGSV,1,1,00*68\r\n$GNRMC,000021.263,V,2228.7216,N,11345.5625,E,0.000,0.00,060180,,,N*5D\r\n$GNVTG,0.00,T,,M,0.000,N,0.000,K,N*2C\r\n";
 
@@ -370,6 +373,7 @@ void gps_testTask(void *pData)
             Network_GetActiveStatus(&status);
             if(status)
             {
+                GPIO_Set(UPLOAD_DATA_LED,GPIO_LEVEL_HIGH);
                 if(Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)) <0 )
                     Trace(1,"send location to server fail");
                 else
@@ -377,6 +381,7 @@ void gps_testTask(void *pData)
                     Trace(1,"send location to server success");
                     Trace(1,"response:%s",buffer);
                 }
+                GPIO_Set(UPLOAD_DATA_LED,GPIO_LEVEL_LOW);
             }
             else
             {
@@ -395,11 +400,11 @@ void LED_Blink(void* param)
     static int count = 0;
     if(++count == 5)
     {
-        GPIO_Set(GPIO_PIN27,GPIO_LEVEL_HIGH);
+        GPIO_Set(SYSTEM_STATUS_LED,GPIO_LEVEL_HIGH);
     }
     else if(count == 6)
     {
-        GPIO_Set(GPIO_PIN27,GPIO_LEVEL_LOW);
+        GPIO_Set(SYSTEM_STATUS_LED,GPIO_LEVEL_LOW);
         count = 0;
     }
     OS_StartCallbackTimer(gpsTaskHandle,1000,LED_Blink,NULL);
@@ -422,12 +427,19 @@ void gps_MainTask(void *pData)
     };
     GPIO_config_t gpioLedBlue = {
         .mode         = GPIO_MODE_OUTPUT,
-        .pin          = GPIO_PIN27,
+        .pin          = SYSTEM_STATUS_LED,
+        .defaultLevel = GPIO_LEVEL_LOW
+    };
+
+    GPIO_config_t gpioLedUpload = {
+        .mode         = GPIO_MODE_OUTPUT,
+        .pin          = UPLOAD_DATA_LED,
         .defaultLevel = GPIO_LEVEL_LOW
     };
 
     PM_PowerEnable(POWER_TYPE_VPAD,true);
     GPIO_Init(gpioLedBlue);
+    GPIO_Init(gpioLedUpload);
     UART_Init(UART1,config);
 
     //Create UART1 send task and location print task
