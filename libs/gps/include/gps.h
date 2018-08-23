@@ -97,9 +97,9 @@ typedef enum{
 }GPS_STANDBY_Mode_t;            // standby mode
 
 typedef enum{
-    GPS_LP_MODE_NORMAL         = 0,
-    GPS_LP_MODE_LP             = 8,
-    GPS_LP_MODE_SUPPER_LP      = 9,
+    GPS_LP_MODE_NORMAL         = 0, // normal run mode
+    GPS_LP_MODE_LP             = 8, // lowpower mode, wake up by uart
+    GPS_LP_MODE_SUPPER_LP      = 9, // super lowper track mode
     GPS_LP_MODE_MAX
 }GPS_LP_Mode_t;                 // low power mode
 

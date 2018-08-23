@@ -16,6 +16,7 @@
 #include "assert.h"
 #include "api_socket.h"
 #include "api_network.h"
+#include "api_hal_gpio.h"
 
 /**
  * gps tracker, use an open source tracker server traccar:https://www.traccar.org/
@@ -253,14 +254,18 @@ uint8_t buffer[1024],buffer2[400];
 void gps_testTask(void *pData)
 {
     GPS_Info_t* gpsInfo = Gps_GetInfo();
+
+
     
 
+    UART_Write(UART1,"Init now\r\n",strlen("Init now\r\n"));
     //wait for gprs register complete
     //The process of GPRS registration network may cause the power supply voltage of GPS to drop,
     //which resulting in GPS restart.
     while(!networkFlag)
     {
         Trace(1,"wait for gprs regiter complete");
+        UART_Write(UART1,"wait for gprs regiter complete\r\n",strlen("wait for gprs regiter complete\r\n"));
         OS_Sleep(2000);
     }
 
@@ -305,11 +310,15 @@ void gps_testTask(void *pData)
 
     // if(!GPS_SetFixMode(GPS_FIX_MODE_LOW_SPEED))
         // Trace(1,"set fix mode fail");
+    
+    if(!GPS_SetLpMode(GPS_LP_MODE_SUPPER_LP))
+        Trace(1,"set gps lp mode fail");
 
     if(!GPS_SetOutputInterval(1000))
         Trace(1,"set nmea output interval fail");
     
     Trace(1,"init ok");
+    UART_Write(UART1,"Init ok\r\n",strlen("Init ok\r\n"));
 
     while(1)
     {
@@ -354,21 +363,47 @@ void gps_testTask(void *pData)
             if(!INFO_GetIMEI(buffer))
                 Assert(false,"NO IMEI");
             Trace(1,"device name:%s",buffer);
+            UART_Write(UART1,buffer,strlen(buffer));
             snprintf(requestPath,sizeof(buffer2),"/?id=%s&timestamp=%d&lat=%f&lon=%f&speed=%f&bearing=%.1f&altitude=%f&accuracy=%.1f&batt=%.1f",
                                                     buffer,time(NULL),latitude,longitude,isFixed*1.0,0.0,gpsInfo->gga.altitude,0.0,percent*1.0);
-            if(Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)) <0 )
-                Trace(1,"send location to server fail");
+            uint8_t status;
+            Network_GetActiveStatus(&status);
+            if(status)
+            {
+                if(Http_Post(SERVER_IP,SERVER_PORT,requestPath,NULL,0,buffer,sizeof(buffer)) <0 )
+                    Trace(1,"send location to server fail");
+                else
+                {
+                    Trace(1,"send location to server success");
+                    Trace(1,"response:%s",buffer);
+                }
+            }
             else
             {
-                Trace(1,"send location to server success");
-                Trace(1,"response:%s",buffer);
+                Trace(1,"no internet");
             }
         }
-
-        OS_Sleep(10000);
+        PM_SetSysMinFreq(PM_SYS_FREQ_32K);
+        OS_Sleep(20000);
+        PM_SetSysMinFreq(PM_SYS_FREQ_178M);
     }
 }
 
+
+void LED_Blink(void* param)
+{
+    static int count = 0;
+    if(++count == 5)
+    {
+        GPIO_Set(GPIO_PIN27,GPIO_LEVEL_HIGH);
+    }
+    else if(count == 6)
+    {
+        GPIO_Set(GPIO_PIN27,GPIO_LEVEL_LOW);
+        count = 0;
+    }
+    OS_StartCallbackTimer(gpsTaskHandle,1000,LED_Blink,NULL);
+}
 
 void gps_MainTask(void *pData)
 {
@@ -385,12 +420,21 @@ void gps_MainTask(void *pData)
         .rxCallback = NULL,
         .useEvent   = true
     };
+    GPIO_config_t gpioLedBlue = {
+        .mode         = GPIO_MODE_OUTPUT,
+        .pin          = GPIO_PIN27,
+        .defaultLevel = GPIO_LEVEL_LOW
+    };
+
+    PM_PowerEnable(POWER_TYPE_VPAD,true);
+    GPIO_Init(gpioLedBlue);
     UART_Init(UART1,config);
 
     //Create UART1 send task and location print task
     OS_CreateTask(gps_testTask,
             NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
 
+    OS_StartCallbackTimer(gpsTaskHandle,1000,LED_Blink,NULL);
     //Wait event
     while(1)
     {
