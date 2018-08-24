@@ -110,6 +110,17 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_GetAttachStatus)(uint8_t* status);
     bool                (*Network_GetActiveStatus)(uint8_t* status);
     bool                (*Network_GetSignalQuality)(Network_Signal_Quality_t* sq);
+    bool                (*Network_GetStatusInfo)(Network_Status_Info_t* status);
+    bool                (*Network_SetFilghtMode)(bool enable);
+    bool                (*Network_GetFilghtMode)();
+    bool                (*Network_Register)(uint8_t* operatorID, Network_Register_Mode_t mode);
+    bool                (*Network_DeRegister)();
+    bool                (*Network_SetFrequencyBand)(uint8_t freqBand);
+    bool                (*Network_GetCurrentOperator)(uint8_t operatorId[6], Network_Register_Mode_t* mode );
+    bool                (*Network_GetOperatorInfo)(uint8_t index, uint8_t** operatorId, uint8_t** operatorName);
+    bool                (*Network_GetOperatorNameById)(uint8_t* operatorId, uint8_t** operatorName);
+    bool                (*Network_GetOperatorIdByName)(uint8_t* operatorName,uint8_t** operatorId);
+    bool                (*Network_GetAvailableOperatorReq)();
     
     /*api_socket*/
     int                 (*Socket_TcpipConnect)(TCP_UDP_t tcpOrUdp, const char* ip,uint16_t port);

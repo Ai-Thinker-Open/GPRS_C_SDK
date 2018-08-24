@@ -51,6 +51,47 @@ typedef struct{
     uint8_t bitError;
 }Network_Signal_Quality_t;
 
+typedef enum{
+    NETWORK_REGISTER_MODE_MANUAL = 0,
+    NETWORK_REGISTER_MODE_AUTO   = 1,
+    NETWORK_REGISTER_MODE_MANUAL_AUTO = 4,
+    NETWORK_REGISTER_MODE_MAX
+}Network_Register_Mode_t;
+
+/* 
+API_GSM_450, API_GSM_480, API_GSM_900R bands are not supported by STACK now, 
+MMI should not set Band to these value. These macros are reserved only for compatible.
+*/
+typedef enum{
+    // NETWORK_FREQ_BAND_GSM_450  = ( 1 << 0 ),
+    // NETWORK_FREQ_BAND_GSM_480  = ( 1 << 1 ),
+    NETWORK_FREQ_BAND_GSM_900P = ( 1 << 2 ),
+    NETWORK_FREQ_BAND_GSM_900E = ( 1 << 3 ),
+    // NETWORK_FREQ_BAND_GSM_900R = ( 1 << 4 ),
+    NETWORK_FREQ_BAND_GSM_850  = ( 1 << 5 ),
+    NETWORK_FREQ_BAND_DCS_1800 = ( 1 << 6 ),
+    NETWORK_FREQ_BAND_PCS_1900 = ( 1 << 7 ),
+    NETWORK_FREQ_BAND_MAX
+}Network_Freq_Band_t;
+
+typedef struct
+{
+    uint8_t operatorId[6];
+    uint8_t status;      //0:unkown, 1: available, 2: current, 3: disabled
+    uint8_t hasPSFlag;   //1: has PLMN PS, 0: No PLMN PS
+} Network_Operator_Info_t;
+
+typedef struct
+{
+    uint8_t status;
+    uint8_t cause;           //only use PS no service
+    uint8_t psType;          //add for diff GPRS or EDGE by wuys 2013-07-19.  1:GPRS  2:EDGE
+    uint8_t csStatusChange;  //add for if CS status have changed,we will set the TRUE.
+    uint8_t areaCode[5];
+    uint8_t cellId[2];
+    uint8_t currRat;         //reserved! 
+} Network_Status_Info_t;
+
 typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 
 #endif
