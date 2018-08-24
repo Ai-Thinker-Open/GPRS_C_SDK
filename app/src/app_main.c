@@ -64,12 +64,13 @@ void AppMainTask(VOID *pData)
     {
         if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
         {
-            PM_SetSysMinFreq(PM_SYS_FREQ_178M);
+            PM_SetSysMinFreq(PM_SYS_FREQ_178M);//set back system min frequency to 178M or higher(/lower) value
             EventDispatch(event);
             OS_Free(event->pParam1);
             OS_Free(event->pParam2);
             OS_Free(event);
-            PM_SetSysMinFreq(PM_SYS_FREQ_32K);        
+            PM_SetSysMinFreq(PM_SYS_FREQ_32K);//release system freq to enter sleep mode to save power,
+                                              //system remain runable but slower, and close eripheral not using
         }
     }
 }
