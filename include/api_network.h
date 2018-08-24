@@ -120,11 +120,11 @@ typedef void (*Network_Callback_Func_t)(Network_Status_t status);
  * e.g.
  * bool ret = ture;
  * uint8_t index = 0;
- * uint8_t** operatorId;
- * uint8_t** operatorName;
+ * uint8_t* operatorId;
+ * uint8_t* operatorName;
  * while(ret)
  * {
- *     ret= Network_GetOperatorInfo(index++,operatorId,operatorName);
+ *     ret= Network_GetOperatorInfo(index++,&operatorId,&operatorName);
  *     if(ret)
  *         printf("ID:%d%d%d%d%d%d,name:%s",operatorId[0],operatorId[1],operatorId[2],operatorId[3],operatorId[4],operatorId[5],operatorName);
  * }
