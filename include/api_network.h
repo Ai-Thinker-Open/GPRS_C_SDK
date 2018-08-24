@@ -91,7 +91,7 @@ typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 // bool Network_SetFilghtMode(bool enable);
 #define Network_SetFilghtMode         CSDK_FUNC(Network_SetFilghtMode)
 
-// bool Network_GetFilghtMode();
+// bool Network_GetFilghtMode(bool enable);
 #define Network_GetFilghtMode         CSDK_FUNC(Network_GetFilghtMode)
 
 /**
