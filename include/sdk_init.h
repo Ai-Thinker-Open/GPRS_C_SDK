@@ -112,7 +112,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*Network_GetSignalQuality)(Network_Signal_Quality_t* sq);
     bool                (*Network_GetStatusInfo)(Network_Status_Info_t* status);
     bool                (*Network_SetFilghtMode)(bool enable);
-    bool                (*Network_GetFilghtMode)(bool enable);
+    bool                (*Network_GetFilghtMode)(bool* enable);
     bool                (*Network_Register)(uint8_t* operatorID, Network_Register_Mode_t mode);
     bool                (*Network_DeRegister)();
     bool                (*Network_SetFrequencyBand)(uint8_t freqBand);
