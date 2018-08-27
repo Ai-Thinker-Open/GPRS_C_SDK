@@ -61,7 +61,8 @@
     defined(__alpha) || defined(__osf__)
 #define __LITTLE_ENDIAN
 #endif
-
+#endif
+#define __LITTLE_ENDIAN
 #ifdef __LITTLE_ENDIAN
 #define __HI(x) *(1+(int*)&x)
 #define __LO(x) *(int*)&x
@@ -73,7 +74,7 @@
 #define __HIp(x) *(int*)x
 #define __LOp(x) *(1+(int*)x)
 #endif
-#endif
+// #endif
 
 #ifdef __STDC__
 #define __P(p)  p
@@ -179,65 +180,91 @@ extern "C" {
 /*
  * ANSI/POSIX
  */
-extern double acos __P((double));
-extern double asin __P((double));
-extern double atan __P((double));
+// extern double acos __P((double));
+#define acos     CSDK_FUNC(acos)
+// extern double asin __P((double));
+#define asin     CSDK_FUNC(asin)
+// extern double atan __P((double));
+#define atan     CSDK_FUNC(atan)
 // extern double atan2 __P((double, double));
 #define atan2     CSDK_FUNC(atan2)
-extern double cos __P((double));
-extern double sin __P((double));
-extern double tan __P((double));
+// extern double cos __P((double));
+#define cos     CSDK_FUNC(cos)
+// extern double sin __P((double));
+#define sin     CSDK_FUNC(sin)
+// extern double tan __P((double));
+#define tan     CSDK_FUNC(tan)
 
-extern double cosh __P((double));
-extern double sinh __P((double));
-extern double tanh __P((double));
+// extern double cosh __P((double));
+#define cosh     CSDK_FUNC(cosh)
+// extern double sinh __P((double));
+#define sinh     CSDK_FUNC(sinh)
+// extern double tanh __P((double));
+#define tanh     CSDK_FUNC(tanh)
 
-extern double exp __P((double));
-extern double frexp __P((double, int *));
-extern double ldexp __P((double, int));
+// extern double exp __P((double));
+#define exp     CSDK_FUNC(exp)
+// extern double frexp __P((double, int *));
+#define frexp     CSDK_FUNC(frexp)
+// extern double ldexp __P((double, int));
+#define ldexp     CSDK_FUNC(ldexp)
 // extern double log __P((double));
 #define log     CSDK_FUNC(log)
 // extern double log10 __P((double));
 #define log10     CSDK_FUNC(log10)
-extern double modf __P((double, double *));
+// extern double modf __P((double, double *));
+#define modf     CSDK_FUNC(modf)
 
-extern double pow __P((double, double));
-extern double sqrt __P((double));
+// extern double pow __P((double, double));
+#define pow     CSDK_FUNC(pow)
+// extern double sqrt __P((double));
+#define sqrt     CSDK_FUNC(sqrt)
 
-extern double ceil __P((double));
-extern double fabs __P((double));
-extern double floor __P((double));
+// extern double ceil __P((double));
+#define ceil     CSDK_FUNC(ceil)
+// extern double fabs __P((double));
+#define fabs     CSDK_FUNC(fabs)
+// extern double floor __P((double));
+#define floor     CSDK_FUNC(floor)
 // extern double fmod __P((double, double));
 #define fmod     CSDK_FUNC(fmod)
 
-extern double erf __P((double));
-extern double erfc __P((double));
+// extern double erf __P((double));
+#define erf     CSDK_FUNC(erf)
+// extern double erfc __P((double));
+#define erfc     CSDK_FUNC(erfc)
 // extern double gamma __P((double));
-// #define gamma     CSDK_FUNC(gamma)
-extern double hypot __P((double, double));
+#define gamma     CSDK_FUNC(gamma)
+// extern double hypot __P((double, double));
+#define hypot     CSDK_FUNC(hypot)
 
 #if !defined(isnan)
 #define isnan(x) ((x) != (x))
 #endif
 
-extern int finite __P((double));
-extern double j0 __P((double));
-extern double j1 __P((double));
-extern double jn __P((int, double));
+// extern int finite __P((double));
+#define finite     CSDK_FUNC(finite)
+// extern double j0 __P((double));
+// extern double j1 __P((double));
+// extern double jn __P((int, double));
 // extern double lgamma __P((double));
-// #define lgamma     CSDK_FUNC(lgamma)
-extern double y0 __P((double));
-extern double y1 __P((double));
-extern double yn __P((int, double));
+#define lgamma     CSDK_FUNC(lgamma)
+// extern double y0 __P((double));
+// extern double y1 __P((double));
+// extern double yn __P((int, double));
 
-extern double acosh __P((double));
-extern double asinh __P((double));
+// extern double acosh __P((double));
+#define acosh     CSDK_FUNC(acosh)
+// extern double asinh __P((double));
+#define asinh     CSDK_FUNC(asinh)
 // extern double atanh __P((double));
-// #define atanh     CSDK_FUNC(atanh)
-extern double cbrt __P((double));
-extern double logb __P((double));
+#define atanh     CSDK_FUNC(atanh)
+// extern double cbrt __P((double));
+#define cbrt     CSDK_FUNC(cbrt)
+// extern double logb __P((double));
+#define logb     CSDK_FUNC(logb)
 // extern double nextafter __P((double, double));
-// #define nextafter     CSDK_FUNC(nextafter)
+#define nextafter     CSDK_FUNC(nextafter)
 // extern double remainder __P((double, double));
 #define remainder     CSDK_FUNC(remainder)
 // #ifdef _SCALB_INT
@@ -247,29 +274,35 @@ extern double logb __P((double));
 // #define scalb     CSDK_FUNC(scalb)
 // #endif
 
-// extern int matherr __P((struct exception *));
-// #define matherr     CSDK_FUNC(matherr)
+extern int matherr __P((struct exception *));
 
 /*
  * IEEE Test Vector
  */
-extern double significand __P((double));
+// extern double significand __P((double));
+#define significand     CSDK_FUNC(significand)
 
 /*
  * Functions callable from C, intended to support IEEE arithmetic.
  */
-extern double copysign __P((double, double));
-extern int ilogb __P((double));
+// extern double copysign __P((double, double));
+#define copysign     CSDK_FUNC(copysign)
+// extern int ilogb __P((double));
+#define ilogb     CSDK_FUNC(ilogb)
 // extern double rint __P((double));
 #define rint     CSDK_FUNC(rint)
-extern double scalbn __P((double, int));
+// extern double scalbn __P((double, int));
+#define scalbn     CSDK_FUNC(scalbn)
 
 /*
  * BSD math library entry points
  */
-extern double expm1 __P((double));
-extern double log1p __P((double));
+// extern double expm1 __P((double));
+#define expm1     CSDK_FUNC(expm1)
+// extern double log1p __P((double));
+#define log1p     CSDK_FUNC(log1p)
 
+#if 0
 /*
  * Reentrant version of gamma & lgamma; passes signgam back by reference
  * as the second argument; user must allocate space for signgam.
@@ -332,6 +365,7 @@ extern int    __kernel_rem_pio2 __P((double*,double*,int,int,int,const int*));
    time, not at run time; I don't see much benefit to selecting
    endianness at run time.  */
 
+#endif
 
 #ifndef __IEEE_BIG_ENDIAN
 #ifndef __IEEE_LITTLE_ENDIAN
