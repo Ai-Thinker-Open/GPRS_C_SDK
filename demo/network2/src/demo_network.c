@@ -39,10 +39,32 @@ void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
+        {
+            uint8_t status;
             Trace(2,"network register success");
-            Network_StartAttach();
+            bool ret = Network_GetAttachStatus(&status);
+            if(!ret)
+                Trace(1,"get attach staus fail");
+            Trace(1,"attach status:%d",status);
+            if(status == 0)
+            {
+                ret = Network_StartAttach();
+                if(!ret)
+                {
+                    Trace(1,"network attach fail");
+                }
+            }
+            else
+            {
+                Network_PDP_Context_t context = {
+                    .apn        ="cmnet",
+                    .userName   = ""    ,
+                    .userPasswd = ""
+                };
+                Network_StartActive(context);
+            }
             break;
-
+        }
         case API_EVENT_ID_NETWORK_ATTACHED:
             Trace(2,"network attach success");
             Network_PDP_Context_t context = {
