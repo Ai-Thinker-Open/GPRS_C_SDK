@@ -9,6 +9,7 @@
 #include "sdk_init.h"
 #include "limits.h"
 #include "float.h"
+#include "time.h"
 
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
@@ -39,124 +40,116 @@ void STD_TestTask()
     while(1)
     {
 
-        double x = 2.56;
+        double x = (double)time(NULL);
 
         double r = sqrt(x); //compiler error
-        Trace(1,"r:%f",r);
+        Trace(1,"sqrt(%f)=%f",x,r);
         Trace(1,"float:%d,double:%d",sizeof(float),sizeof(double));
-        // Trace(1,"%f %f",123.456,-0.23445);
-        // sprintf(bufff,"%d %f",123,12.33456);
-        // Trace(1,"%s",bufff);
-        // MEMBLOCK_Trace(1,bufff,50,16);
-        // float aaa,bbb;
-        // sscanf("-0.456","%f",&aaa);
-        // sscanf("0.456","%f",&bbb);
-        // Trace(1,"aaa:%f %f",aaa,bbb);
-        // Trace(1,"%p",sscanf);
-        // Trace(1,"%p",sprintf);
-        // gcvt(value, 3, bufff);
-        // Trace(1,"%s",bufff);
+        Trace(1,"%f %f",123.456,-0.23445);
+        sprintf(bufff,"%d %f",123,12.33456);
+        Trace(1,"%s",bufff);
+        MEMBLOCK_Trace(1,bufff,50,16);
+        float aaa,bbb;
+        sscanf("-0.456","%f",&aaa);
+        sscanf("0.456","%f",&bbb);
+        Trace(1,"aaa:%f, bbb %f",aaa,bbb);
+        Trace(1,"%p",sscanf);
+        Trace(1,"%p",sprintf);
+        gcvt(value, 3, bufff);
+        Trace(1,"%s",bufff);
 
-        // int valueInt = 12345;
-        // memset(bufff,0,sizeof(bufff));
-        // itoa(valueInt,bufff,10);
-        // Trace(1,"%s",bufff);
+        int valueInt = 12345;
+        memset(bufff,0,sizeof(bufff));
+        itoa(valueInt,bufff,10);
+        Trace(1,"%s",bufff);
 
-        // int a = atoi("12");
-        // Trace(1,"atoi:%d",a);
+        int a = atoi("12");
+        Trace(1,"atoi:%d",a);
 
-        // long b = atol("12");
-        // Trace(1,"atol:%d",(int)b);
+        long b = atol("12");
+        Trace(1,"atol:%d",(int)b);
 
-        // long c = atoll("12");
-        // Trace(1,"atoll:%d",(int)c);
+        long c = atoll("12");
+        Trace(1,"atoll:%d",(int)c);
 
-        // long d = atox("1234",4);
-        // Trace(1,"atox:%d",(int)d);
+        long d = atox("1234",4);
+        Trace(1,"atox:%d",(int)d);
 
-        // float e = atof("123.456");
-        // Trace(1,"atof:%d.%d",(int)(e),((int)(e*1000)%1000));
+        float e = atof("123.456");
+        Trace(1,"atof(%s)=%f","123.456",e);
 
-        // char* string = "-12345 stop here";
-        // char* stopString = NULL;
-        // long ret = strtol(string,&stopString,10);
-        // Trace(1,"ret:%d,string:%s,stopstring:%s",(int)ret,string,stopString);
+        char* string = "-12345 stop here";
+        char* stopString = NULL;
+        long ret = strtol(string,&stopString,10);
+        Trace(1,"ret:%d,string:%s,stopstring:%s",(int)ret,string,stopString);
 
-        // srand(123);
-        // int randValue = rand();
-        // Trace(1,"rand value:%d",randValue);
+        srand(123);
+        int randValue = rand();
+        Trace(1,"rand value:%d",randValue);
 
-        // int num[10]={2,1,4,5,8,2,4,65,34,23};
-        // qsort(num,10,sizeof(num[0]),cmp);
-        // memset(bufff,0,sizeof(bufff));
-        // for(int i=0;i<10;++i)
-        //     snprintf(bufff+strlen(bufff),50,"%d ",num[i]);
-        // Trace(1,"qsort:%s",bufff);
+        int num[10]={2,1,4,5,8,2,4,65,34,23};
+        qsort(num,10,sizeof(num[0]),cmp);
+        memset(bufff,0,sizeof(bufff));
+        for(int i=0;i<10;++i)
+            snprintf(bufff+strlen(bufff),50,"%d ",num[i]);
+        Trace(1,"qsort:%s",bufff);
 
-        // int key = 34;
-        // int* item = NULL;
-        // item = bsearch(&key,num,10,sizeof(int),cmp);
-        // Trace(1,"item:%d",*item);
+        int key = 34;
+        int* item = NULL;
+        item = bsearch(&key,num,10,sizeof(int),cmp);
+        Trace(1,"item:%d",*item);
 
-        // int read0,read1;
-        // // sscanf("123 456","%d %d",&read0,&read1);//error!!!
-        // sscanf("123","%d",&read0);
-        // sscanf("456","%d",&read1);
-        // Trace(1,"read0:%d, read1:%d",read0,read1);
+        int read0,read1;
+        // sscanf("123 456","%d %d",&read0,&read1);//error!!!
+        sscanf("123","%d",&read0);
+        sscanf("456","%d",&read1);
+        Trace(1,"read0:%d, read1:%d",read0,read1);
 
-        // double f = atan(1);
-        // gcvt(f, 3, bufff);
-        // Trace(1,"atan(1) = %s",bufff);
+        double f = atan(x);
+        gcvt(f, 3, bufff);
+        Trace(1,"atan(%f) = %s",x,bufff);
 
         // int g;
-        // double h;
-        // struct exception i;
 
-        // f = acos(1);
-        // f = asin(1);
-        // f = atan(1);
-        // f = atan2(1,1);
-        // f = cos(1);
-        // f = sin(1);
-        // f = tan(1);
-        // f = cosh(1);
-        // f = sinh(1);
-        // f = tanh(1);
-        // f = exp(1);
-        // f = frexp(1,&g);
-        // f = ldexp(1,g);
-        // f = log(1);
-        // f = log10(1);
-        // f = modf(1,&f);
-        // f = pow(2,4);
-        // f = sqrt(2);
-        // f = ceil(1);
-        // f = fabs(1);
-        // f = floor(1);
-        // f = fmod(1,1);
-        // f = erf(1);
-        // f = erfc(1);
-        // f = hypot(1,1);
-        // f = isnan(1);
-        // f = finite(1);
-        // f = j0(1);
-        // f = j1(1);
-        // f = jn(1,1);
-        // f = y0(1);
-        // f = y1(1);
-        // f = yn(1,1);
-        // f = acosh(1);
-        // f = asinh(1);
-        // f = cbrt(1);
-        // f = logb(1);
-        // f = remainder(1,1);
-        // f = significand(1);
-        // f = copysign(1,1);
-        // f = ilogb(1);
-        // f = rint(1);
-        // f = scalbn(1,1);
-        // f = expm1(1);
-        // f = log1p(1);
+        // f = acos(x);
+        // f = asin(x);
+        // f = atan(x);
+        // f = atan2(x,1);
+        // f = cos(x);
+        // f = sin(x);
+        // f = tan(x);
+        // f = cosh(x);
+        // f = sinh(x);
+        // f = tanh(x);
+        // f = exp(x);
+        // f = frexp(x,&g);
+        // f = ldexp(x,g);
+        // f = log(x);
+        // f = log10(x);
+        // f = modf(x,&f);
+        // f = pow(x,4);
+        // f = sqrt(x);
+        // f = ceil(x);
+        // f = fabs(x);
+        // f = floor(x);
+        // f = fmod(x,1);
+        // f = erf(x);
+        // f = erfc(x);
+        // f = hypot(x,1);
+        // f = isnan(x);
+        // f = finite(x);
+        // f = acosh(x);
+        // f = asinh(x);
+        // f = cbrt(x);
+        // f = logb(x);
+        // f = remainder(x,1);
+        // f = significand(x);
+        // f = copysign(x,1);
+        // f = ilogb(x);
+        // f = rint(x);
+        // f = scalbn(x,1);
+        // f = expm1(x);
+        // f = log1p(x);
 
 
         
