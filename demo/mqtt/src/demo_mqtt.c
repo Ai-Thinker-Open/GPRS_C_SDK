@@ -9,7 +9,7 @@
 #include "api_mqtt.h"
 #include "api_network.h"
 #include "api_socket.h"
-
+#include "api_info.h"
 #include "demo_mqtt.h"
 
 
@@ -21,6 +21,10 @@
 #define SECOND_TASK_STACK_SIZE    (2048 * 2)
 #define SECOND_TASK_PRIORITY      1
 #define SECOND_TASK_NAME          "MQTT Test Task"
+
+char willMsg[50] = "GPRS 123456789012345 disconnected!";
+uint8_t imei[16] = "";
+
 
 static HANDLE mainTaskHandle = NULL;
 static HANDLE secondTaskHandle = NULL;
@@ -62,10 +66,33 @@ static void EventDispatch(API_Event_t* pEvent)
 
         case API_EVENT_ID_NETWORK_REGISTERED_HOME:
         case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
-            Trace(1,"network register success");
-            Network_StartAttach();
-            break;
+        {
+            uint8_t status;
+            Trace(2,"network register success");
+            bool ret = Network_GetAttachStatus(&status);
+            if(!ret)
+                Trace(1,"get attach staus fail");
+            Trace(1,"attach status:%d",status);
+            if(status == 0)
+            {
+                ret = Network_StartAttach();
+                if(!ret)
+                {
+                    Trace(1,"network attach fail");
+                }
+            }
+            else
+            {
+                Network_PDP_Context_t context = {
+                    .apn        ="cmnet",
+                    .userName   = ""    ,
+                    .userPasswd = ""
+                };
+                Network_StartActive(context);
+            }
 
+            break;
+        }
         case API_EVENT_ID_NETWORK_ATTACHED:
             Trace(1,"network attach success");
             Network_PDP_Context_t context = {
@@ -201,6 +228,10 @@ void SecondTaskEventDispatch(MQTT_Event_t* pEvent)
 void SecondTask(void *pData)
 {
     MQTT_Event_t* event=NULL;
+
+    INFO_GetIMEI(imei);
+    Trace(1,"IMEI:%s",imei);
+
     semMqttStart = OS_CreateSemaphore(0);
     OS_WaitForSemaphore(semMqttStart,OS_WAIT_FOREVER);
     OS_DeleteSemaphore(semMqttStart);
@@ -209,12 +240,17 @@ void SecondTask(void *pData)
     MQTT_Connect_Info_t ci;
     MQTT_Error_t err;
     memset(&ci,0,sizeof(MQTT_Connect_Info_t));
-    ci.client_id = CLIENT_ID;
+    ci.client_id = imei;
     ci.client_user = CLIENT_USER;
     ci.client_pass = CLIENT_PASS;
-    ci.keep_alive = 60;
+    ci.keep_alive = 20;
     ci.clean_session = 1;
     ci.use_ssl = false;
+    ci.will_qos = 2;
+    ci.will_topic = "will";
+    ci.will_retain = 1;
+    memcpy(strstr(willMsg,"GPRS")+5,imei,15);
+    ci.will_msg = willMsg;
 
     err = MQTT_Connect(client,BROKER_IP,BROKER_PORT,OnMqttConnection,NULL,&ci);
     if(err != MQTT_ERROR_NONE)

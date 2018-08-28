@@ -4,7 +4,6 @@
 
 #define BROKER_IP  "mqtt.neucrack.com"
 #define BROKER_PORT 1883
-#define CLIENT_ID  "Neucrack"
 #define CLIENT_USER "mqtt"
 #define CLIENT_PASS "mqtt"
 #define SUBSCRIBE_TOPIC "$neucrack/app"
