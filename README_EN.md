@@ -1,7 +1,7 @@
 [Ai-Thinker GPRS C SDK](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)
 =====
 
-Ai-Thinker GPRS onchip development SDK written by C.
+Ai-Thinker GPRS SoC development SDK written by C.
 
 [中文版本](./README.md)
 
@@ -9,7 +9,8 @@ Ai-Thinker GPRS onchip development SDK written by C.
 
 ## ( A ) Hardware
 
-* **A9 GPRS Module** </br>
+### 1. A9: GPRS Module
+
 ![](./doc/assets/A9.png) </br>
 **Features**:
   * RDA 32 bit RISC core, frequency up to 312MHz, with 4k instruction cache, 4k data cache
@@ -31,13 +32,15 @@ Ai-Thinker GPRS onchip development SDK written by C.
   * calls
   * SMS service
 
-* **A9G GPRS + GPS + BDS Module**</br>
+### 2. A9G: GPRS + GPS + BDS Module
+
 ![](./doc/assets/A9G.png) </br>
 **Features**:
   * All the features of A9 above
   * Integrated GPS+BDS (connected to UART2 internal of module)
 
-* **A9/A9G GPRS (+GPS+BDS) Development Board( pudding)** </br>
+### 3. A9/A9G GPRS (+GPS+BDS) Development Board( pudding)
+
 ![](./doc/assets/A9G_dev.png) </br>
 A9/A9G development board for easy development and debugging
 **Features**:
@@ -49,27 +52,31 @@ A9/A9G development board for easy development and debugging
   * 1 GPS interface with IPEX 1 generation package
   * 1 micro USB interface
   * 5v-4.2V DC-DC, it can be 5v power supply or 3.8 ~ 4.2V power supply
-  * ~~1 accelerometer chip(LIS3DHx)~~
+  * ~~1 accelerometer chip(LIS3DHx)~~(not soldered by default)
   * 1 power key, and a reset button
   * 2 LED
   * 1 microphone </br>
 ![](./doc/assets/pudding_pin.png) </br>
 
+> Or you can use other RDA8955 chip related module or board
 
-* **USB to Serial Module** </br>
+### 4. USB to Serial Module
+
 ![](./doc/assets/USB-UART.png) </br>
 It should be noted that the USB interface on the development board is not a USB serial port function, but USB1.1 function,
 Therefore, in order to download or debug, you need at least one USB to serial port module to connect board's `HST_TX` and` HST_RX` pin
 
-* **Lithium Battery** </br>
-board can be light up with 5V or 4.2V power, and ensure supply enough current
+### 5. Power Supply
+* board can be light up with 5V(with DC-DC on dev-board) or 4.2V(`VBAT`) power, and ensure supply enough current(Peak current 2A)
+* if use lithium battery connected to `VBAT`, you must press <kbd>power-key</kbd> for a while to power up the module, or just pull down the `power-key` pin.
+* if `VUSB` connected with 5V(`VBAT` must supply with power ), the module will automaticly power up no matter `power-key` poll down or not.
 
 ## ( B ) SDK
 
 ### SDK Features
 
 * Provide easy-to-use API, as long as you have `C` language knowledge. 
-Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS, LBS, Audio play, Gizwits cloud, libs cJson、NMEA etc.
+Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, RTC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS, LBS, Audio play, Gizwits cloud, libs cJson、NMEA etc.
 
 
 ### Get the SDK
@@ -86,28 +93,13 @@ there's two way to download SDK:
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
 
-### SDK directory structure:
-
-| Contents | Description |
-| --- | --- |
-|app|  application code here|
-build | build files |
-demo | examples |
-| doc | SDK-related documentation, in `Markdown` format, available online at [github](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/blob/master/README.md)|
-| hex | last generated burnable file(burn files) |
-| include | SDK api include directory |
-| init | system initialization directory, you can ignore, do not recommend edit |
-
-
-
-
 ### Develop applications using the SDK
 
-Examples refer to the `demo` folder
+Examples refer to the [demo](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/tree/master/demo) folder
 
 **Doumentation** here:  [GPRS C SDK DOC](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en)
 
-Including [environment installation](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/installation.html) or [burn & debug](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/en/c-sdk/burn-debug.html) docs etc.
+Including environment installation, burn & debug, api docs etc.
 
 
 ## ( E ) Feedback

@@ -1,17 +1,20 @@
 [Ai-Thinker GPRS C SDK](https://github.com/Ai-Thinker-Open/GPRS-C-SDK)
 =====
 
-Ai-Thinker GPRS development SDK written by C
+Ai-Thinker GPRS SoC development SDK written by C
 
-安信可GPRS模组二次开发SDK C语言版
+安信可GPRS模组片上(SoC)开发SDK C语言版
 
-[English Version](./README_EN.md)
+> This SDK can be also applied to RDA8955 raw chip
+> 也可直接在RDA8955芯片上运行
+
+[English Readme](./README_EN.md)
 
 
 
 ## (一) 硬件
 
-### A9 GPRS 模块
+### 1. A9: GPRS 模块
 
 ![](./doc/assets/A9.png)</br>
 
@@ -36,16 +39,16 @@ Ai-Thinker GPRS development SDK written by C
   * 语音通话
   * 短信服务
 
-### A9G GPRS+GPS+BDS模块
+### 2. A9G: GPRS+GPS+BDS模块
  
 ![](./doc/assets/A9G.png)</br>
 
 ##### 特征
 
   * A9所有特征
-  * 集成GPS+BDS(和串口2连接)
+  * 集成GPS+BDS(内部和GPRS串口2连接)
 
-### A9/A9G GPRS(+GPS+BDS) 开发板
+### 3. A9/A9G GPRS(+GPS+BDS) 开发板
 
 ![](./doc/assets/A9G_dev.png)</br>
 
@@ -61,7 +64,7 @@ A9/A9G开发板，方便开发和调试
   * 1个GPS  IPEX1代座子
   * 一个USB接口
   * 5v-4.2V DC-DC，故可以5v供电或者3.8~4.2V供电
-  * 1个加速度计LIS3DHx芯片（购买时请咨询客服开发板有无加速度计）
+  * 1个加速度计LIS3DHx芯片（购买时请咨询客服开发板有无加速度计,默认没有）
   * 1个开机按键，1个复位按键
   * 2个连接到GPIO的LED灯
   * 1个麦克风
@@ -70,32 +73,36 @@ A9/A9G开发板，方便开发和调试
 
 ![](./doc/assets/pudding_pin.png)</br>
 
-### USB转串口模块
+>  RDA8955芯片或者其相关模块理论上也可使用本SDK
+
+### 4. USB转串口模块
 
 ![](./doc/assets/USB-UART.png)
 
 需要注意的是，开发板上的USB接口不是USB转串口功能，而是USB1.1功能， 
 所以，为了下载和调试，需要一个USB转串口模块接板子上的`HST_TX`和`HST_RX`引脚
 
-### 锂电池
+### 5. 电源
 
-用来给模块供电，或者使用5V电源也行，USB转串口模块直接供电也行(仅调试)，要保证有足够的电流供应(2A)
+* 可以用锂电池来给模块供电，接VBAT(3.4~4.2V),VBAT供电需要长按(拉低)<kbd>power-key</kbd>开机;
+* 开发板也可使用5V接VUSB经过开发板的DC-DC降压后供电，USB转串口模块直接供电也行(仅调试)，要保证有足够的电流供应(峰值2A),
+因为VUSB接了电所以模块上电会自动开机
 
 
 
 ## (二) SDK特征
 
-1. 提供易用的API，只要有C语言开发基础就可以快速使用，并提供详细的例程和文档
+1. 提供易用的API，只要有C语言开发基础就可以快速使用，并提供详细的[例程](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/tree/master/demo)和[文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)
 2. 集成大量功能，包括：
     * GPIO
     * UART
-    * 基础信息获取如ICCID、IMEI等
+    * 基础信息获取如ICCID、IMEI、IMSI等
     * SPI
     * I2C
     * ADC
     * OS
     * FS
-    * GPRS网络
+    * GPRS网络(包括基站信息查询)
     * 基站定位（LBS）
     * socket(TCP/UDP)
     * dns
@@ -105,9 +112,11 @@ A9/A9G开发板，方便开发和调试
     * 通话
     * 低功耗
     * GPS
-    * RTC、网络时间
+    * RTC、基站时间同步
     * FOTA
-    * watch dog
+    * 看门狗
+    * 音频播放(如播放MP3)
+    * 机智云平台快速接入
     * 其它库如json、NMEA解析库等等，具体可以看`demo`目录或者`libs`目录
 
 #### 获得SDK
@@ -118,17 +127,19 @@ A9/A9G开发板，方便开发和调试
 
 需要**注意**的是：**请勿使用本页面右上角的绿色<kbd>Clone or download</kbd>按钮**下载的压缩包，否则编译会报文件缺失的错误
 
+---
+
 * 方法一：从github[发布页面下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)（**推荐**）。
   > 这种方式获取的代码的发布的版本
 
 
-
+---
 * 方法二：使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
-  > 这种方式可以保证是最新的代码
+  > 这种方式可以得到最新的还未发布的代码
 ```
 git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ```
-
+---
 ##### 2. 检查代码完整性
 
 下载完后请检查目录`platform/csdk`目录写是否包含`debug`、`release`目录。
@@ -138,9 +149,9 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ## (三) 开发文档及例程
 
 
-#### 文档地址： [GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)
+**文档地址： [GPRS C SDK 在线文档](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/)**
 
-包括[开发环境安装](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/kai-fa-huan-jing-an-zhuang.html)、[固件下载、调试](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/c-sdk/xia-zai-bian-yi-hao-de-gu-jian-dao-mo-zu.html)以及[GPRS基础知识](https://ai-thinker-open.github.io/GPRS_C_SDK_DOC/zh/ji-chu-zhi-shi/gsmgprs.html)、API说明等
+包括开发环境安装、固件下载、调试以及GPRS基础知识、API说明等
 
 例程在本项目的[demo](./demo)目录下
 
@@ -163,7 +174,5 @@ git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
 ## (五) 参与开发
 
 **bug修复、优化、功能模块增加**： fork -> 修改 -> 提交PR
-
-**贴开源项目链接**：如果有用CSDK开发的开源项目，可以添加issue，审核后可将链接贴在README页面
 
 
