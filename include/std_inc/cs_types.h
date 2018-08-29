@@ -40,10 +40,10 @@ typedef short                       s16;
 typedef long                        s32;
 
 
-typedef char                        ascii;
-typedef unsigned char               byte;           /*  unsigned 8-bit data     */
-typedef unsigned short              word;           /*  unsigned 16-bit data    */
-typedef unsigned long               dword;          /*  unsigned 32-bit data    */
+// typedef char                        ascii;
+// typedef unsigned char               byte;           /*  unsigned 8-bit data     */
+// typedef unsigned short              word;           /*  unsigned 16-bit data    */
+// typedef unsigned long               dword;          /*  unsigned 32-bit data    */
 typedef unsigned char               uint8;
 typedef signed char                 int8;
 typedef unsigned short int          uint16;
