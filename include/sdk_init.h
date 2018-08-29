@@ -26,6 +26,7 @@
 #include <stdarg.h>
 #include <api_inc_gizwits.h>
 #include <api_inc_audio.h>
+#include <setjmp_inc.h>
 
 
 
@@ -359,6 +360,10 @@ typedef struct T_INTERFACE_VTBL_TAG
     double              (*scalbn)(double, int);
     double              (*expm1)(double);
     double              (*log1p)(double);
+
+    //setjmp
+    volatile void       (*longjmp)(jmp_buf env,  int value);
+    int                 (*setjmp)(jmp_buf env);
 
     //ssl
     SSL_Error_t         (*SSL_Init)(SSL_Config_t* sslConfig);

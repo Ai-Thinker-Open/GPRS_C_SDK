@@ -6,17 +6,13 @@
 extern "C" {
 #endif
 
+#include "sdk_init.h"
 
-#ifdef FPU
-typedef unsigned long jmp_buf[22];
+// int           setjmp (jmp_buf env);
+#define setjmp     CSDK_FUNC(setjmp)
 
-#else
-typedef unsigned long jmp_buf[12];
-#endif
-
-int           setjmp (jmp_buf env);
-
-volatile void longjmp (jmp_buf env,  int value);
+// volatile void longjmp (jmp_buf env,  int value);
+#define longjmp     CSDK_FUNC(longjmp)
 
 #ifdef __cplusplus
 }
