@@ -774,6 +774,11 @@ else
 endif
 endif
 
+# Whether to extract object files from sub libraries and archive into local library
+COMBINE_LIB ?= yes
+# Explode sub-modules libraries
+LOCAL_SUBMODULE_LIBRARY_EXPLODE_CMD = cd ${OBJ_REL_PATH} && $(AR) x ${libfile} && ${ECHO} "        (added ${notdir $(libfile)} objects)"
+LOCAL_SUBMODULE_LIBRARY_EXPLODE := ${foreach libfile, $(FULL_LIBRARY_FILES) , $(LOCAL_SUBMODULE_LIBRARY_EXPLODE_CMD) &&}
 # The local library is different in a module that depends on submodules, 
 # since we need to depend on the submodules, and add them to the archive...
 # No lib is generated for ENTRY_POINT dirs
@@ -796,7 +801,7 @@ ifneq "$(FULL_SRC_OBJECTS)" ""
 	${MAKE} $(FULL_SRC_OBJECTS)
 
 endif
-	@${ECHO} "PREPARING         ${notdir ${LOCAL_SRCLIBRARY}}"
+	@${ECHO} "PREPARING==         ${notdir ${LOCAL_SRCLIBRARY}}"
 ifneq "${COMBINE_LIB}" "yes"
 	echo "/* ${LOCAL_SRCLIBRARY} */" > ${LOCAL_SRCLIBRARY}
 	for libfile in $(FULL_LIBRARY_FILES); do \
