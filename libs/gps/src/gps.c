@@ -17,6 +17,7 @@
 #include "api_fs.h"
 
 #include "api_socket.h"
+#include "api_os.h"
 
 
 

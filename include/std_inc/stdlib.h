@@ -39,10 +39,11 @@ bsearch (const void *key, const void *base, size_t nmemb, size_t size,
 
 
 
-#include "api_os.h"
-#define malloc  OS_Malloc
-#define free    OS_Free
-#define realloc OS_Realloc
+
+void* malloc(uint32_t size);
+void free(void* p);
+void* realloc(void* p, uint32_t size);
+
 
 #ifdef __cplusplus
 }

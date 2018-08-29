@@ -143,19 +143,13 @@ static void *internal_realloc(void *pointer, size_t size)
     return realloc(pointer, size);
 }
 #elif defined(GPRS_CSDK)
-#undef malloc
-#undef free
-#undef realloc
-#define malloc  (void* (*)(size_t))OS_Malloc
-#define free    (void(*)(void*))OS_Free
-#define realloc (void*(*)(void*,size_t))OS_Realloc
 static void *internal_malloc(size_t size)
 {
     return malloc(size);
 }
 static void internal_free(void *pointer)
 {
-    if(free(pointer));
+    free(pointer);
 }
 static void *internal_realloc(void *pointer, size_t size)
 {

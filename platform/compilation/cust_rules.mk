@@ -801,7 +801,7 @@ ifneq "$(FULL_SRC_OBJECTS)" ""
 	${MAKE} $(FULL_SRC_OBJECTS)
 
 endif
-	@${ECHO} "PREPARING==         ${notdir ${LOCAL_SRCLIBRARY}}"
+	@${ECHO} "PREPARING         ${notdir ${LOCAL_SRCLIBRARY}}"
 ifneq "${COMBINE_LIB}" "yes"
 	echo "/* ${LOCAL_SRCLIBRARY} */" > ${LOCAL_SRCLIBRARY}
 	for libfile in $(FULL_LIBRARY_FILES); do \
