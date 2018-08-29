@@ -1,5 +1,9 @@
 
 
+# Name of the module
+LOCAL_NAME := csdk
+
+# Depends module
 LOCAL_MODULE_DEPENDS += init
 LOCAL_MODULE_DEPENDS += libs
 
