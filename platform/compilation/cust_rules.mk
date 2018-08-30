@@ -45,7 +45,8 @@ export CROSS ?= mips-elf-
 export AS := $(CROSS)as
 export CC := $(CROSS)gcc
 export CPP := ${CC} -E
-export C++ := $(CROSS)g++ 
+export CPP_ := $(CROSS)g++
+export ABCD := $(CROSS)g++
 export AR := $(CROSS)ar
 export OBJCOPY := $(CROSS)objcopy
 export OBJDUMP := $(CROSS)objdump
@@ -965,7 +966,7 @@ ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.c
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.cpp
 	@${ECHO} "C++               $*.cpp"
-	$(C++) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C++_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
+	$(CPP_) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C++_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
 
 # The libraries are always generated before. This rule respond allways true.
 %.a:
