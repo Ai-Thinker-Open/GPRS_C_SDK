@@ -16,11 +16,13 @@ fi
 export SOFT_WORKDIR=`pwd -P`
 
 echo "==Clean...=="
-./build.sh clean
+rm -rf build
 echo "==Clean Complete=="
 MAKE_J_NUMBER=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 echo "==core number:$MAKE_J_NUMBER=="
 make -j${MAKE_J_NUMBER} CT_RELEASE=$compileMode 2>&1
+mkdir -p hex/libcsdk
+cp -f build/csdk/lib/libcsdk_${compileMode}.a hex/libcsdk/libcsdk_${compileMode}.a
 echo "Generate lib OK"
 
 ###############################
