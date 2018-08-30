@@ -1,6 +1,22 @@
 #!/bin/bash
 
 
+TOOL_GENLIB_PATH=`pwd`
+
+function cancel()
+{
+    cd ${TOOL_GENLIB_PATH} # genlib
+    cd ../../../ # GPRS_C_SDK
+    if [[ -f "Makefile.bak" ]]; then
+        mv -f Makefile.bak Makefile
+    fi
+    if [[ -f "libMakefile" ]]; then
+        rm -f libMakefile
+    fi
+}
+
+trap cancel SIGINT SIGTERM SIGQUIT
+
 ###############################
 cp ./Makefile ../../../libMakefile
 cd ../../../ && mv Makefile Makefile.bak
@@ -12,11 +28,15 @@ compileMode=debug
 
 if [[ "$1xx" == "releasexx" ]]; then
     compileMode=release
+elif [[ "$1xx" == "cleanxx" ]]; then
+    echo "==Clean...=="
+    rm -rf build
+    echo "==Clean OK=="
+    cancel
+    exit 0
 fi
 export SOFT_WORKDIR=`pwd -P`
 
-echo "==Clean...=="
-rm -rf build
 echo "==Clean Complete=="
 MAKE_J_NUMBER=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 echo "==core number:$MAKE_J_NUMBER=="
