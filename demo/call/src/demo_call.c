@@ -96,7 +96,7 @@ void CallTest()
     
     CALL_Status_t* callStatus = NULL;
     uint8_t count;
-    bool ret = CALL_Status(&callStatus,count);
+    bool ret = CALL_Status(&callStatus,&count);
     uint8_t i;
     if(ret)
     {
