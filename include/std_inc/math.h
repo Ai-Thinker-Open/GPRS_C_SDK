@@ -118,6 +118,88 @@ struct exception
     double retval;
 };
 
+enum
+  {
+    FP_NAN =
+# define FP_NAN 0
+      FP_NAN,
+    FP_INFINITE =
+# define FP_INFINITE 1
+      FP_INFINITE,
+    FP_ZERO =
+# define FP_ZERO 2
+      FP_ZERO,
+    FP_SUBNORMAL =
+# define FP_SUBNORMAL 3
+      FP_SUBNORMAL,
+    FP_NORMAL =
+# define FP_NORMAL 4
+      FP_NORMAL
+  };
+
+int __fpclassify(double);
+int __fpclassifyf(float);
+
+static __inline unsigned __FLOAT_BITS(float __f)
+{
+	union {float __f; unsigned __i;} __u;
+	__u.__f = __f;
+	return __u.__i;
+}
+static __inline unsigned long long __DOUBLE_BITS(double __f)
+{
+	union {double __f; unsigned long long __i;} __u;
+	__u.__f = __f;
+	return __u.__i;
+}
+
+#define fpclassify(x) ( \
+	sizeof(x) == sizeof(float) ? __fpclassifyf(x) : \
+	                             __fpclassify(x) )
+
+#define isinf(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) == 0x7f800000 : \
+	                             (__DOUBLE_BITS(x) & -1ULL>>1) == 0x7ffULL<<52 )
+/*
+#define isnan(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) > 0x7f800000 : \
+	sizeof(x) == sizeof(double) ? (__DOUBLE_BITS(x) & -1ULL>>1) > 0x7ffULL<<52 : \
+	__fpclassifyl(x) == FP_NAN)
+*/
+
+#if !defined(isnan)
+#define isnan(x) ((x) != (x))
+#endif
+
+#define isnormal(x) ( \
+	sizeof(x) == sizeof(float) ? ((__FLOAT_BITS(x)+0x00800000) & 0x7fffffff) >= 0x01000000 : \
+	                             ((__DOUBLE_BITS(x)+(1ULL<<52)) & -1ULL>>1) >= 1ULL<<53 )
+
+#define isfinite(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) < 0x7f800000 : \
+	                             (__DOUBLE_BITS(x) & -1ULL>>1) < 0x7ffULL<<52 )
+
+  
+int __signbit(double);
+int __signbitf(float);
+
+#define signbit(x) ( \
+	sizeof(x) == sizeof(float) ? (int)(__FLOAT_BITS(x)>>31) : \
+	                             (int)(__DOUBLE_BITS(x)>>63) )
+
+double      nan(const char *);
+float       nanf(const char *);
+
+double      nearbyint(double);
+float       nearbyintf(float);
+
+double      log2(double);
+float       log2f(float);
+
+double      trunc(double);
+float       truncf(float);
+
+
 #define HUGE        MAXFLOAT
 
 /*
@@ -146,7 +228,7 @@ struct exception
 #define HUGE_VAL   ((double)INFINITY)
 #define HUGE_VALF  ((float)INFINITY)
 #define HUGE_VALL  ((long double)INFINITY)
-#define NAN        ((float)(INFINITY * 0.0F))
+#define NAN        ((float)(INFINITY * 0.0F))   // (0.0f/0.0f)
 
 /* */
 /* Define some useful macros */
@@ -177,130 +259,170 @@ struct exception
 extern "C" {
 #endif
 
-/*
- * ANSI/POSIX
- */
-// extern double acos __P((double));
-#define acos     CSDK_FUNC(acos)
-// extern double asin __P((double));
-#define asin     CSDK_FUNC(asin)
-// extern double atan __P((double));
-#define atan     CSDK_FUNC(atan)
-// extern double atan2 __P((double, double));
-#define atan2     CSDK_FUNC(atan2)
-// extern double cos __P((double));
-#define cos     CSDK_FUNC(cos)
-// extern double sin __P((double));
-#define sin     CSDK_FUNC(sin)
-// extern double tan __P((double));
-#define tan     CSDK_FUNC(tan)
+// /*
+//  * ANSI/POSIX
+//  */
+extern double acos __P((double));
+// inline double acos(double x){return CSDK_FUNC(acos)(x);}
+extern double asin __P((double));
+// // #define asin     CSDK_FUNC(asin)
+// inline double asin(double x){return CSDK_FUNC(asin)(x);}
+extern double atan __P((double));
+// // #define atan     CSDK_FUNC(atan)
+// inline double atan(double x){return CSDK_FUNC(atan)(x);}
+extern double atan2 __P((double, double));
+// // #define atan2     CSDK_FUNC(atan2)
+// inline double atan2(double x, double y){return CSDK_FUNC(atan2)(x,y);}
+extern double cos __P((double));
+// // #define cos     CSDK_FUNC(cos)
+// inline double cos(double x){return CSDK_FUNC(cos)(x);}
+extern double sin __P((double));
+// // #define sin     CSDK_FUNC(sin)
+// inline double sin(double x){return CSDK_FUNC(sin)(x);}
+extern double tan __P((double));
+// // #define tan     CSDK_FUNC(tan)
+// inline double tan(double x){return CSDK_FUNC(tan)(x);}
 
-// extern double cosh __P((double));
-#define cosh     CSDK_FUNC(cosh)
-// extern double sinh __P((double));
-#define sinh     CSDK_FUNC(sinh)
-// extern double tanh __P((double));
-#define tanh     CSDK_FUNC(tanh)
+extern double cosh __P((double));
+// // #define cosh     CSDK_FUNC(cosh)
+// inline double cosh(double x){return CSDK_FUNC(cosh)(x);}
+extern double sinh __P((double));
+// // #define sinh     CSDK_FUNC(sinh)
+// inline double sinh(double x){return CSDK_FUNC(sinh)(x);}
+extern double tanh __P((double));
+// // #define tanh     CSDK_FUNC(tanh)
+// inline double tanh(double x){return CSDK_FUNC(tanh)(x);}
 
-// extern double exp __P((double));
-#define exp     CSDK_FUNC(exp)
-// extern double frexp __P((double, int *));
-#define frexp     CSDK_FUNC(frexp)
-// extern double ldexp __P((double, int));
-#define ldexp     CSDK_FUNC(ldexp)
-// extern double log __P((double));
-#define log     CSDK_FUNC(log)
-// extern double log10 __P((double));
-#define log10     CSDK_FUNC(log10)
-// extern double modf __P((double, double *));
-#define modf     CSDK_FUNC(modf)
+extern double exp __P((double));
+// // #define exp     CSDK_FUNC(exp)
+// inline double exp(double x){return CSDK_FUNC(exp)(x);}
+extern double frexp __P((double, int *));
+// // #define frexp     CSDK_FUNC(frexp)
+// inline double frexp(double x, int* y){return CSDK_FUNC(frexp)(x,y);}
+extern double ldexp __P((double, int));
+// // #define ldexp     CSDK_FUNC(ldexp)
+// inline double ldexp(double x, int y){return CSDK_FUNC(ldexp)(x,y);}
+extern double log __P((double));
+// // #define log     CSDK_FUNC(log)
+// inline double log(double x){return CSDK_FUNC(log)(x);}
+extern double log10 __P((double));
+// // #define log10     CSDK_FUNC(log10)
+// inline double log10(double x){return CSDK_FUNC(log10)(x);}
+extern double modf __P((double, double *));
+// // #define modf     CSDK_FUNC(modf)
+// inline double modf(double x, double* y){return CSDK_FUNC(modf)(x,y);}
 
-// extern double pow __P((double, double));
-#define pow     CSDK_FUNC(pow)
-// extern double sqrt __P((double));
-#define sqrt     CSDK_FUNC(sqrt)
+extern double pow __P((double, double));
+// // #define pow     CSDK_FUNC(pow)
+// static inline double pow(double x, double y){return CSDK_FUNC(pow)(x,y);}
+extern double sqrt __P((double));
+// // #define sqrt     CSDK_FUNC(sqrt)
+// inline double sqrt(double x){return CSDK_FUNC(sqrt)(x);}
 
-// extern double ceil __P((double));
-#define ceil     CSDK_FUNC(ceil)
-// extern double fabs __P((double));
-#define fabs     CSDK_FUNC(fabs)
-// extern double floor __P((double));
-#define floor     CSDK_FUNC(floor)
-// extern double fmod __P((double, double));
-#define fmod     CSDK_FUNC(fmod)
+extern double ceil __P((double));
+// // #define ceil     CSDK_FUNC(ceil)
+// inline double ceil(double x){return CSDK_FUNC(ceil)(x);}
+extern double fabs __P((double));
+// // #define fabs     CSDK_FUNC(fabs)
+// inline double fabs(double x){return CSDK_FUNC(fabs)(x);}
+extern double floor __P((double));
+// // #define floor     CSDK_FUNC(floor)
+// inline double floor(double x){return CSDK_FUNC(floor)(x);}
+extern double fmod __P((double, double));
+// // #define fmod     CSDK_FUNC(fmod)
+// inline double fmod(double x, double y){return CSDK_FUNC(fmod)(x,y);}
 
-// extern double erf __P((double));
-#define erf     CSDK_FUNC(erf)
-// extern double erfc __P((double));
-#define erfc     CSDK_FUNC(erfc)
-// extern double gamma __P((double));
-#define gamma     CSDK_FUNC(gamma)
-// extern double hypot __P((double, double));
-#define hypot     CSDK_FUNC(hypot)
+extern double erf __P((double));
+// // #define erf     CSDK_FUNC(erf)
+// inline double erf (double x){return CSDK_FUNC(erf)(x);}
+extern double erfc __P((double));
+// // #define erfc     CSDK_FUNC(erfc)
+// inline double erfc(double x){return CSDK_FUNC(erfc)(x);}
+extern double gamma __P((double));
+// // #define gamma     CSDK_FUNC(gamma)
+// inline double gamma(double x){return CSDK_FUNC(gamma)(x);}
+// inline double tgamma(double x){return CSDK_FUNC(gamma)(x);}
+extern double tgamma(double x);
+extern double hypot __P((double, double));
+// // #define hypot     CSDK_FUNC(hypot)
+// inline double hypot(double x, double y){return CSDK_FUNC(hypot)(x,y);}
 
-#if !defined(isnan)
-#define isnan(x) ((x) != (x))
-#endif
 
-// extern int finite __P((double));
-#define finite     CSDK_FUNC(finite)
-// extern double j0 __P((double));
-// extern double j1 __P((double));
-// extern double jn __P((int, double));
-// extern double lgamma __P((double));
-#define lgamma     CSDK_FUNC(lgamma)
-// extern double y0 __P((double));
-// extern double y1 __P((double));
-// extern double yn __P((int, double));
+extern int finite __P((double));
+// // #define finite     CSDK_FUNC(finite)
+// inline int finite(double x){return CSDK_FUNC(finite)(x);}
+extern double j0 __P((double));
+extern double j1 __P((double));
+extern double jn __P((int, double));
+extern double lgamma __P((double));
+// // #define lgamma     CSDK_FUNC(lgamma)
+// inline double lgamma(double x){return CSDK_FUNC(lgamma)(x);}
+// // extern double y0 __P((double));
+// // extern double y1 __P((double));
+// // extern double yn __P((int, double));
 
-// extern double acosh __P((double));
-#define acosh     CSDK_FUNC(acosh)
-// extern double asinh __P((double));
-#define asinh     CSDK_FUNC(asinh)
-// extern double atanh __P((double));
-#define atanh     CSDK_FUNC(atanh)
-// extern double cbrt __P((double));
-#define cbrt     CSDK_FUNC(cbrt)
-// extern double logb __P((double));
-#define logb     CSDK_FUNC(logb)
-// extern double nextafter __P((double, double));
-#define nextafter     CSDK_FUNC(nextafter)
-// extern double remainder __P((double, double));
-#define remainder     CSDK_FUNC(remainder)
-// #ifdef _SCALB_INT
+extern double acosh __P((double));
+// // #define acosh     CSDK_FUNC(acosh)
+// inline double acosh(double x){return CSDK_FUNC(acosh)(x);}
+extern double asinh __P((double));
+// // #define asinh     CSDK_FUNC(asinh)
+// inline double asinh(double x){return CSDK_FUNC(asinh)(x);}
+extern double atanh __P((double));
+// // #define atanh     CSDK_FUNC(atanh)
+// inline double atanh(double x){return CSDK_FUNC(atanh)(x);}
+extern double cbrt __P((double));
+// // #define cbrt     CSDK_FUNC(cbrt)
+// inline double cbrt(double x){return CSDK_FUNC(cbrt)(x);}
+extern double logb __P((double));
+// // #define logb     CSDK_FUNC(logb)
+// inline double logb(double x){return CSDK_FUNC(logb)(x);}
+extern double nextafter __P((double, double));
+// // #define nextafter     CSDK_FUNC(nextafter)
+// inline double nextafter(double x,double y){return CSDK_FUNC(nextafter)(x,y);}
+extern double remainder __P((double, double));
+// // #define remainder     CSDK_FUNC(remainder)
+// inline double remainder(double x, double y){return CSDK_FUNC(remainder)(x,y);}
+// // #ifdef _SCALB_INT
 // extern double scalb __P((double, int));
-// #else
-// // extern double scalb __P((double, double));
-// #define scalb     CSDK_FUNC(scalb)
-// #endif
+// // #else
+extern double scalb __P((double, double));
+// // #define scalb     CSDK_FUNC(scalb)
+// // #endif
 
 extern int matherr __P((struct exception *));
 
-/*
- * IEEE Test Vector
- */
-// extern double significand __P((double));
-#define significand     CSDK_FUNC(significand)
+// /*
+//  * IEEE Test Vector
+//  */
+extern double significand __P((double));
+// // #define significand     CSDK_FUNC(significand)
+// inline double significand(double x){return CSDK_FUNC(significand)(x);}
 
-/*
- * Functions callable from C, intended to support IEEE arithmetic.
- */
-// extern double copysign __P((double, double));
-#define copysign     CSDK_FUNC(copysign)
-// extern int ilogb __P((double));
-#define ilogb     CSDK_FUNC(ilogb)
-// extern double rint __P((double));
-#define rint     CSDK_FUNC(rint)
-// extern double scalbn __P((double, int));
-#define scalbn     CSDK_FUNC(scalbn)
+// /*
+//  * Functions callable from C, intended to support IEEE arithmetic.
+//  */
+extern double copysign __P((double, double));
+// // #define copysign     CSDK_FUNC(copysign)
+// inline double copysign(double x, double y){return CSDK_FUNC(copysign)(x,y);}
+extern int ilogb __P((double));
+// // #define ilogb     CSDK_FUNC(ilogb)
+// inline int ilogb(double x){return CSDK_FUNC(ilogb)(x);}
+extern double rint __P((double));
+// // #define rint     CSDK_FUNC(rint)
+// inline double rint(double x){return CSDK_FUNC(rint)(x);}
+extern double scalbn __P((double, int));
+// // #define scalbn     CSDK_FUNC(scalbn)
+// inline double scalbn(double x, int y){return CSDK_FUNC(scalbn)(x,y);}
 
-/*
- * BSD math library entry points
- */
-// extern double expm1 __P((double));
-#define expm1     CSDK_FUNC(expm1)
-// extern double log1p __P((double));
-#define log1p     CSDK_FUNC(log1p)
+// /*
+//  * BSD math library entry points
+//  */
+extern double expm1 __P((double));
+// // #define expm1     CSDK_FUNC(expm1)
+// inline double expm1(double x){return CSDK_FUNC(expm1)(x);}
+extern double log1p __P((double));
+// // #define log1p     CSDK_FUNC(log1p)
+// inline double log1p(double x){return CSDK_FUNC(log1p)(x);}
 
 #if 0
 /*
@@ -488,6 +610,24 @@ do {                                \
   sf_u.word = (i);                      \
   (d) = sf_u.value;                     \
 } while (0)
+
+#define FLT_EVAL_METHOD 0
+
+#define FORCE_EVAL(x) do {                        \
+	if (sizeof(x) == sizeof(float)) {         \
+		volatile float __x;               \
+		__x = (x);                        \
+                (void)__x;                        \
+	} else if (sizeof(x) == sizeof(double)) { \
+		volatile double __x;              \
+		__x = (x);                        \
+                (void)__x;                        \
+	} else {                                  \
+		volatile long double __x;         \
+		__x = (x);                        \
+                (void)__x;                        \
+	}                                         \
+} while(0)
 
 #ifdef __cplusplus
 }
