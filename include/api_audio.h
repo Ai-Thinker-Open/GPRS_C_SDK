@@ -10,6 +10,10 @@
 #define AUDIO_SetMode          CSDK_FUNC(AUDIO_SetMode)
 #define AUDIO_SpeakerOpen      CSDK_FUNC(AUDIO_SpeakerOpen)
 #define AUDIO_SpeakerClose     CSDK_FUNC(AUDIO_SpeakerClose)
+/**
+  * bool AUDIO_SpeakerSetVolume(uint8_t volume);
+  * @param volume: 0~15, see AUDIO_Volume_t
+  */
 #define AUDIO_SpeakerSetVolume CSDK_FUNC(AUDIO_SpeakerSetVolume)
 #define AUDIO_SpeakerSetMute   CSDK_FUNC(AUDIO_SpeakerSetMute)
 #define AUDIO_Play             CSDK_FUNC(AUDIO_Play)
