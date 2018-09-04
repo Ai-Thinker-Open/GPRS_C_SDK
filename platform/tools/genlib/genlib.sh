@@ -23,18 +23,18 @@ cd ../../../ && mv Makefile Makefile.bak
 mv libMakefile Makefile
 
 ###############################
-echo "==Now generate lib=="
 compileMode=debug
 
 if [[ "$1xx" == "releasexx" ]]; then
     compileMode=release
 elif [[ "$1xx" == "cleanxx" ]]; then
-    echo "==Clean...=="
+    echo "==Clean CSDK lib...=="
     rm -rf build
-    echo "==Clean OK=="
+    echo "==Clean CSDK lib OK=="
     cancel
     exit 0
 fi
+echo "==Now generate lib=="
 export SOFT_WORKDIR=`pwd -P`
 
 echo "==Clean Complete=="
