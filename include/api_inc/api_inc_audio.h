@@ -115,6 +115,26 @@ typedef enum
     AUDIO_RECORD_MODE_QTY
 } AUDIO_Record_Mode_t;
 
+typedef enum{
+    AUDIO_VOLUME_MUTE = 0,
+    AUDIO_VOLUME_m36dB ,
+    AUDIO_VOLUME_m33dB ,
+    AUDIO_VOLUME_m30dB ,
+    AUDIO_VOLUME_m27dB ,
+    AUDIO_VOLUME_m24dB ,
+    AUDIO_VOLUME_m21dB ,
+    AUDIO_VOLUME_m18dB ,
+    AUDIO_VOLUME_m15dB ,
+    AUDIO_VOLUME_m12dB ,
+    AUDIO_VOLUME_m9dB  ,
+    AUDIO_VOLUME_m6dB  ,
+    AUDIO_VOLUME_m3dB  ,
+    AUDIO_VOLUME_0dB   ,
+    AUDIO_VOLUME_3dB   ,
+    AUDIO_VOLUME_6dB   ,
+    AUDIO_VOLUME_MAX
+}AUDIO_Volume_t;
+
 typedef void (*AUDIO_PLAY_CALLBACK_t)(AUDIO_Error_t);
 typedef void (*AUDIO_FILE_RECORD_CALLBACK_t)(AUDIO_Error_t result);
 /**
