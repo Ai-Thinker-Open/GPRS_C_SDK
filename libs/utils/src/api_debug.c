@@ -6,11 +6,11 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-void Trace_MemBlock(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix)
+void Trace_MemBlock(uint16_t nIndex, uint8_t *buffer, uint16_t len, uint8_t radix)
 {
-    INT32 i            = 0;
-    CHAR s[4]          = { 0 };
-    CHAR line_buff[64] = { 0 }; // Temporary buffer for print trace information.
+    int32_t i            = 0;
+    char s[4]          = { 0 };
+    char line_buff[64] = { 0 }; // Temporary buffer for print trace information.
 
     Trace(nIndex, "==================TRACE MEMORY BLOCK=====================>>");
     Trace(nIndex, "   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15");

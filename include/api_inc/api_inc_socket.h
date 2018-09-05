@@ -1,7 +1,8 @@
 #ifndef __API_INC_SOCKET_H__
 #define __API_INC_SOCKET_H__
 
-#include <cs_types.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -775,7 +776,7 @@ typedef struct fd_set
 
 
 
-typedef VOID (*DNS_CALLBACK_FUNC_T)(DNS_Status_t status, void* param);
+typedef void (*DNS_CALLBACK_FUNC_T)(DNS_Status_t status, void* param);
 
 
 #ifdef __cplusplus

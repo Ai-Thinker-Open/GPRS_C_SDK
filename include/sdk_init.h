@@ -2,7 +2,10 @@
 #define SDK_INIT_H
 
 #include <string.h>
-#include <cs_types.h>
+// #include <cs_types.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <sdk_init.h>
 #include <api_inc_fs.h>
 #include <api_inc_gpio.h>
@@ -36,7 +39,7 @@ typedef struct T_INTERFACE_VTBL_TAG
 {
     //debug
     bool                (*Trace)(uint16_t nIndex,const char* fmt, ...) __attribute__((format(printf, 2, 3)));
-    void                (*MEMBLOCK_Trace)(UINT16 nIndex, UINT8 *buffer, UINT16 len, UINT8 radix);
+    void                (*MEMBLOCK_Trace)(uint16_t nIndex, uint8_t *buffer, uint16_t len, uint8_t radix);
     void                (*__assert)(const char* fmt);
 
     //power
@@ -50,8 +53,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     /*api_os*/
     void                (*OS_SetUserMainHandle)(HANDLE* UserHandle);
     HANDLE              (*OS_GetUserMainHandle)();
-    HANDLE              (*OS_CreateTask)(PTASK_FUNC_T pTaskEntry,void* pParameter,void* pStackAddr,UINT16 nStackSize
-                                            ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);
+    HANDLE              (*OS_CreateTask)(PTASK_FUNC_T pTaskEntry,void* pParameter,void* pStackAddr,uint16_t nStackSize
+                                            ,uint8_t nPriority,uint16_t nCreationFlags,uint16_t nTimeSlice,const char* pTaskName);
     void                (*OS_StartTask)(HANDLE hTask,void* pParameter);
     void                (*OS_StopTask)(HANDLE hTask);
     bool                (*OS_DeleteTask)(HANDLE hTask);
@@ -60,7 +63,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*OS_Sleep)(uint32_t nMillisecondes);
     void                (*OS_SleepUs)(uint32_t us);
     bool                (*OS_WaitEvent)(HANDLE hTask,void** pEvent,uint32_t nTimeOut);
-    bool                (*OS_SendEvent)(HANDLE hTask,void* pEvent,uint32_t nTimeOut,UINT16 nOption);
+    bool                (*OS_SendEvent)(HANDLE hTask,void* pEvent,uint32_t nTimeOut,uint16_t nOption);
     bool                (*OS_ResetEventQueue)(HANDLE hTask);
     bool                (*OS_IsEventAvailable)(HANDLE hTask);
     void*               (*OS_Malloc)(uint32_t nSize);
@@ -213,24 +216,24 @@ typedef struct T_INTERFACE_VTBL_TAG
 
     /*fs*/
     void                (*API_FS_SetUseOldVersion)(bool useOldVersion);
-    int32_t             (*API_FS_Open)(PCSTR    fileName,uint32_t operationFlag,uint32_t mode);
+    int32_t             (*API_FS_Open)(const char*    fileName,uint32_t operationFlag,uint32_t mode);
     int32_t             (*API_FS_Close)(int32_t fd);
     int32_t             (*API_FS_Read)(int32_t  fd,uint8_t* pBuffer,uint32_t length);
     int32_t             (*API_FS_Write)(int32_t  fd,uint8_t* pBuffer,uint32_t length);
     uint32_t            (*API_FS_Flush)(int32_t fd);
-    int32_t             (*API_FS_Create)(PCSTR fileName,uint32_t mode);
-    int32_t             (*API_FS_Delete)(PCSTR fileName);
+    int32_t             (*API_FS_Create)(const char* fileName,uint32_t mode);
+    int32_t             (*API_FS_Delete)(const char* fileName);
     int64_t             (*API_FS_Seek)( int32_t  fd, int64_t  offset, uint8_t  origin);
     int32_t             (*API_FS_IsEndOfFile)(int32_t fd);
-    int32_t             (*API_FS_Rename)(PCSTR oldName,PCSTR newName);
+    int32_t             (*API_FS_Rename)(const char* oldName,const char* newName);
     int32_t             (*API_FS_GetFileName)(int32_t  fd, int32_t  nameBufferLen, uint8_t* fileName);
     int64_t             (*API_FS_GetFileSize)(int32_t fd);
-    int64_t             (*API_FS_GetDirSize)(PCSTR fileName, uint64_t* size);
-    int32_t             (*API_FS_GetCurDir)(uint32_t size,PSTR pCurDir);
-    int32_t             (*API_FS_ChangeDir)(PCSTR pDirName);
-    int32_t             (*API_FS_Mkdir)(PCSTR fileName,uint32_t mode);
-    int32_t             (*API_FS_Rmdir)(PCSTR fileName);
-    int32_t             (*API_FS_GetFSInfo)(PCSTR pDevName, API_FS_INFO* pFsInfo);
+    int64_t             (*API_FS_GetDirSize)(const char* fileName, uint64_t* size);
+    int32_t             (*API_FS_GetCurDir)(uint32_t size,char* pCurDir);
+    int32_t             (*API_FS_ChangeDir)(const char* pDirName);
+    int32_t             (*API_FS_Mkdir)(const char* fileName,uint32_t mode);
+    int32_t             (*API_FS_Rmdir)(const char* fileName);
+    int32_t             (*API_FS_GetFSInfo)(const char* pDevName, API_FS_INFO* pFsInfo);
     Dir_t*              (*API_FS_OpenDir)(const char* name);
     Dirent_t*           (*API_FS_ReadDir)(Dir_t* pDir);
     int                 (*API_FS_ReadDir_r)(Dir_t *pDir, Dirent_t *entry, Dirent_t **outDirent);

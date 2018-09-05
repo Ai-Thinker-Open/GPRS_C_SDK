@@ -5,7 +5,8 @@
 extern "C" {
 #endif
 
-#include "cs_types.h"
+#include "stdbool.h"
+#include "stdint.h"
 #include "stddef.h"
 #include "sdk_init.h"
 
@@ -28,14 +29,14 @@ unsigned long strtoul(const char *nptr, char **endptr, int base);
 #define  rand         CSDK_FUNC(rand)
 #define  srand        CSDK_FUNC(srand)
 
-typedef INT STD_COMPAR_FUNC_T (const VOID*, const VOID*);
+typedef int STD_COMPAR_FUNC_T (const void*, const void*);
 
-PUBLIC VOID  qsort (VOID *baseP, INT32 nElem, INT32 width, STD_COMPAR_FUNC_T *compar);
+void  qsort (void *baseP, int32_t nElem, int32_t width, STD_COMPAR_FUNC_T *compar);
 
 
 void *
 bsearch (const void *key, const void *base, size_t nmemb, size_t size,
-         int (*compar) __P ((const void *, const void *)));
+         int (*compar)(const void *, const void *));
 
 
 

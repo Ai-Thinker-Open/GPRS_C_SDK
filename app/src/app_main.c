@@ -24,7 +24,7 @@ HANDLE mainTaskHandle  = NULL;
 HANDLE otherTaskHandle = NULL;
 
 
-void LoopTask(VOID *pData)
+void LoopTask(void *pData)
 {
     int count = 0;
     //wait for trace initilize complete
@@ -54,7 +54,7 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 
-void AppMainTask(VOID *pData)
+void AppMainTask(void *pData)
 {
     API_Event_t* event=NULL;
 

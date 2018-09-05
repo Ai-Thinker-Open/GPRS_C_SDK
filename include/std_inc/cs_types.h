@@ -91,7 +91,10 @@ typedef char                        CHAR;
 typedef unsigned char               BYTE;
 typedef float                       FLOAT;
 typedef double                      DOUBLE;
-typedef UINT32                      HANDLE;
+#ifndef TYPE_HANDLE
+#define TYPE_HANDLE
+typedef uint32_t                    HANDLE;
+#endif
 typedef UINT8*                      PUINT8;
 typedef UINT32*                     PUINT32;
 typedef INT32*                      PINT32;
@@ -268,7 +271,7 @@ typedef unsigned int u32_t;
 #define __U32_T__
 #endif
 
-#ifndef __US_T__
+#ifndef __S8_T__
 typedef signed char s8_t;
 #define __S8_T__
 #endif
@@ -283,11 +286,24 @@ typedef signed int s32_t;
 #define __S32_T__
 #endif
 
+#ifndef __INT64_T__
+#define __INT64_T__
 typedef long long   int64_t;
+#endif
+#ifndef __UINT64_T__
+#define __UINT64_T__
 typedef unsigned long long  uint64_t;
+#endif
+#ifndef __S64_T__
+#define __S64_T__
 typedef int64_t   s64_t;
+#endif
+#ifndef __U64_T__
+#define __U64_T__
 typedef uint64_t  u64_t;
 #endif
+
+#endif//#if !(defined(WIN32) || defined(_USERGEN))
 
 #if (!defined(WIN32) || defined(_USERGEN))
 #if defined(UNICODE)

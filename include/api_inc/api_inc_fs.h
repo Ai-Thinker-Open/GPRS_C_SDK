@@ -1,7 +1,8 @@
 #ifndef __API_INC_FS_H__
 #define __API_INC_FS_H__
 
-#include <cs_types.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 #define FS_TFLASH_ROOT "/t"
 
@@ -113,8 +114,8 @@ typedef struct
 
 typedef struct
 {
-    UINT64 totalSize;    // Total size
-    UINT64 usedSize;     // Has used  size
+    uint64_t totalSize;    // Total size
+    uint64_t usedSize;     // Has used  size
 } API_FS_INFO;
 
 #define FS_DEVICE_NAME_T_FLASH  "/t"

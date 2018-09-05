@@ -1,7 +1,8 @@
 #ifndef __API_INC_NETWORK_H__
 #define __API_INC_NETWORK_H__
 
-#include <cs_types.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 /*#################      network      #################################*/
 #define PDP_APN_MAX_LENGTH         64

@@ -1,7 +1,8 @@
 #ifndef __API_INC_GPIO_H__
 #define __API_INC_GPIO_H__
 
-#include <cs_types.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 /*#################      gpio      #################################*/
 typedef enum{

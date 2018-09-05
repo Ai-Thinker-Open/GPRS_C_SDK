@@ -1,7 +1,86 @@
 #ifndef _STDINT_H
 #define _STDINT_H
-#include "cs_types.h"
+// #include "cs_types.h"
 // #include "unistd.h"
+
+#ifndef __INT8_T__
+typedef char        int8_t;
+#define __INT8_T__
+#endif
+
+#ifndef __INT16_T__
+typedef short       int16_t;
+#define __INT16_T__
+#endif
+
+#ifndef __INT32_T__
+typedef int         int32_t;
+#define __INT32_T__
+#endif
+
+#ifndef __UINT8_T__
+typedef unsigned char   uint8_t;
+#define __UINT8_T__
+#endif
+
+#ifndef __UINT16_T__
+typedef unsigned short  uint16_t;
+#define __UINT16_T__
+#endif
+
+#ifndef __UINT32_T__
+typedef unsigned int    uint32_t;
+#define __UINT32_T__
+#endif
+
+
+#ifndef __U8_T__
+typedef unsigned char u8_t;
+#define __U8_T__
+#endif
+
+#ifndef __U16_T__
+typedef unsigned short u16_t;
+#define __U16_T__
+#endif
+
+#ifndef __U32_T__
+typedef unsigned int u32_t;
+#define __U32_T__
+#endif
+
+#ifndef __S8_T__
+typedef signed char s8_t;
+#define __S8_T__
+#endif
+
+#ifndef __S16_T__
+typedef signed short s16_t;
+#define __S16_T__
+#endif
+
+#ifndef __S32_T__
+typedef signed int s32_t;
+#define __S32_T__
+#endif
+
+#ifndef __INT64_T__
+#define __INT64_T__
+typedef long long   int64_t;
+#endif
+#ifndef __UINT64_T__
+#define __UINT64_T__
+typedef unsigned long long  uint64_t;
+#endif
+#ifndef __S64_T__
+#define __S64_T__
+typedef int64_t   s64_t;
+#endif
+#ifndef __U64_T__
+#define __U64_T__
+typedef uint64_t  u64_t;
+#endif
+
 #ifndef INT8_MIN
 #define INT8_MIN       (-0x7f-1)
 #endif

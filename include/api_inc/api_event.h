@@ -3,7 +3,8 @@
 #ifndef __API_EVENT_H_
 #define __API_EVENT_H_
 
-#include <cs_types.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 typedef enum{
     //system
