@@ -214,7 +214,14 @@ FULL_LIBRARY_FILES := ${SRC_LIBRARY_FILES} ${BINARY_LIBRARY_FILES} ${LOCAL_ADD_L
 FULL_LIBRARY_EXT := ${foreach MODULE_PATH, ${FULL_LIBRARY_FILES}, -l${patsubst lib%,%,${basename ${notdir ${MODULE_PATH}}}}}
 
 # Used when building a toplevel with submodules only : all object files from submodules that go into the lib
-IS_TOP_LEVEL_ = $(strip $(IS_TOP_LEVEL))
+ifneq "$(strip $(IS_CONTAIN_SUB_MODULE))" "yes"
+	IS_TOP_LEVEL_ = yes
+endif
+
+ifneq "$(strip $(IS_TOP_LEVEL))" "yes"
+	IS_TOP_LEVEL_ = yes
+endif
+
 ifeq "$(IS_TOP_LEVEL_)" "yes"
 FULL_LIBRARY_OBJECTS := ${foreach lib, ${LOCAL_MODULE_DEPENDS}, ${BUILD_ROOT}/${lib}/${OBJ_DIR}/${CT_RELEASE}/*.o} 
 endif

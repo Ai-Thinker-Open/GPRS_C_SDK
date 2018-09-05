@@ -24,7 +24,7 @@ LOCAL_ADD_INCLUDE := include \
 
                     
 # `yes` if have submodule or left empty  or `no`
-IS_TOP_LEVEL := no
+IS_CONTAIN_SUB_MODULE := no
 
 ## ------------------------------------ ##
 ## 	Add your custom flags here          ##
