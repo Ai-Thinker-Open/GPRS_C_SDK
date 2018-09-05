@@ -23,7 +23,7 @@ LOCAL_ADD_INCLUDE := \
 
 
                     
-# `yes` if have submodule or left empty  or `no`
+# `yes` if have submodule, or left empty  or `no`
 IS_TOP_LEVEL := yes
 
 ## ------------------------------------ ##
