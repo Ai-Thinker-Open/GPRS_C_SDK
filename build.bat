@@ -27,7 +27,7 @@ if "%1%"x =="demo"x (
         set compileMode=release
     )
     sed -i "15d" Makefile
-    sed -i "15i\LOCAL_MODULE_DEPENDS += demo/%2%" Makefile
+    sed -i "15i\PROJECT_PATH += demo/%2%" Makefile
     goto compile
     REM goto end_exit
 )else (
@@ -43,7 +43,7 @@ if "%1%"x =="demo"x (
                     set compileMode=release
                 )
                 sed -i "15d" Makefile
-                sed -i "15i\LOCAL_MODULE_DEPENDS += %1%" Makefile
+                sed -i "15i\PROJECT_PATH += %1%" Makefile
                 goto compile                     
                 REM goto end_exit
             ) else (

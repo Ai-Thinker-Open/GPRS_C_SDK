@@ -97,7 +97,7 @@ if [[ $paramNum -eq 1  ]]; then
         sed -i "15i\#" Makefile
     else
         sed -i '15d' Makefile
-        sed -i "15i\LOCAL_MODULE_DEPENDS += $1" Makefile
+        sed -i "15i\PROJECT_PATH += $1" Makefile
     fi
     export PROJ_NAME=$1
 elif [[ $paramNum -eq 2  ]]; then
@@ -125,7 +125,7 @@ elif [[ $paramNum -eq 2  ]]; then
         # sed -i '5d' Makefile
         # sed -i "5i\LOCAL_LIBS += platform/lib/libinit.a" Makefile
         sed -i '15d' Makefile
-        sed -i "15i\LOCAL_MODULE_DEPENDS += demo/$2" Makefile
+        sed -i "15i\PROJECT_PATH += demo/$2" Makefile
     elif [[ "$1x" == "projectx" ]]; then
         export IS_PROJECT_DIR=$SOFT_WORKDIR/project/$2
         if [[ ! -d $IS_PROJECT_DIR ]]; then
@@ -137,7 +137,7 @@ elif [[ $paramNum -eq 2  ]]; then
         # sed -i '5d' Makefile
         # sed -i "5i\LOCAL_LIBS += platform/lib/libinit.a" Makefile
         sed -i '15d' Makefile
-        sed -i "15i\LOCAL_MODULE_DEPENDS += project/$2" Makefile
+        sed -i "15i\PROJECT_PATH += project/$2" Makefile
     fi
 elif [[ $paramNum -eq 4  ]]; then
     if [[ "$1x" == "fotax" ]]; then
