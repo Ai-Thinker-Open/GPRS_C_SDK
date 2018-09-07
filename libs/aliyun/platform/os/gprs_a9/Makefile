@@ -3,12 +3,12 @@
 
 
 # Name of the this module
-LOCAL_NAME := libs/aliyun
+LOCAL_NAME := libs/aliyun/platform/os/gprs_a9
 
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
-LOCAL_MODULE_DEPENDS := libs/aliyun/platform
+LOCAL_MODULE_DEPENDS := 
                         
 
 
@@ -22,7 +22,7 @@ LOCAL_ADD_INCLUDE := \
 
                     
 # `yes` if have submodule, or left empty  or `no`
-IS_CONTAIN_SUB_MODULE := yes
+IS_CONTAIN_SUB_MODULE := no
 
 ## ------------------------------------ ##
 ## 	Add your custom flags here          ##
