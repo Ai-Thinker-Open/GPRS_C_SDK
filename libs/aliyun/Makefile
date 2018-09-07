@@ -3,18 +3,14 @@
 
 
 # Name of the this module
-LOCAL_NAME := libs
+LOCAL_NAME := libs/aliyun
 
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
-LOCAL_MODULE_DEPENDS := libs/gps \
-                        libs/utils \
-                        libs/cjson \
+LOCAL_MODULE_DEPENDS := 
                         
-ifeq "$(strip ${CFG_ALIYUN_SUPPORT})" "y"
-    LOCAL_MODULE_DEPENDS += libs/aliyun 
-endif
+
 
 # Add includes from other modules we do not wish to link to
 LOCAL_API_DEPENDS := \
