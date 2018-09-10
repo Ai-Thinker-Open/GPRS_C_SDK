@@ -550,20 +550,20 @@ ifeq ($(strip $(AM_SUBPROJ_SUPPORT)), TRUE)
 else
 	# find $(DES_CFP_FILE_DIR) -name "*.cfp" -exec rm {} \;
 	
-	@${ECHO} "CP  		  AUDIO CFP FILE......"
-	if [ $(AM_CFP_FILE_CNT) -gt 1 ]; then  \
-		${ECHO} "AUDIO CFG         There are $(AM_CFP_FILE_CNT) find audio cfp files."; \
-		exit 1; \
-	else \
-		if [ $(AM_CFP_FILE_CNT) -eq 1 ]; then \
-			cp -f ${AM_CFP_FILE_NAME} ${DES_CFP_FILE_DIR};\
-		else\
-			if [ $(AM_CFP_FILE_CNT) -eq 0 ]; then \
-				${ECHO} "AUDIO CFG         No audio cfp file"; \
-#				exit 1; \
-			fi;\
-		fi;\
-	fi;	
+#	 @${ECHO} "CP  		  AUDIO CFP FILE......"
+# 	if [ $(AM_CFP_FILE_CNT) -gt 1 ]; then  \
+# 		${ECHO} "AUDIO CFG         There are $(AM_CFP_FILE_CNT) find audio cfp files."; \
+# 		exit 1; \
+# 	else \
+# 		if [ $(AM_CFP_FILE_CNT) -eq 1 ]; then \
+# 			cp -f ${AM_CFP_FILE_NAME} ${DES_CFP_FILE_DIR};\
+# 		else\
+# 			if [ $(AM_CFP_FILE_CNT) -eq 0 ]; then \
+# 				${ECHO} "AUDIO CFG         No audio cfp file"; \
+# #				exit 1; \
+# 			fi;\
+# 		fi;\
+# 	fi;	
 	
 	@${ECHO} "SREC              ${LODBASE_NO_PATH}.srec for flash/romulator"
 	${MAKE} targetgen
