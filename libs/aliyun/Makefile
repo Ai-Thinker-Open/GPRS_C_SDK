@@ -35,8 +35,21 @@ MYCFLAGS +=
 S_SRC := ${notdir ${wildcard src/*.s}}
 C_SRC := ${notdir ${wildcard src/*.c}}
 
+ALIYUN_PATH = $(SOFT_WORKDIR)/libs/aliyun/iotkit-embedded
+
 all:
-	echo "aaaaaaaa"
+	@echo "========================"
+	@echo " start build aliyun lib "
+	@echo "========================"
+	cp $(ALIYUN_PATH)/src/configs/default_settings.mk $(ALIYUN_PATH)/src/configs/default_settings.mk.bak
+	cp $(SOFT_WORKDIR)/libs/aliyun/config/default_settings.mk $(ALIYUN_PATH)/src/configs/
+	cp $(SOFT_WORKDIR)/libs/aliyun/config/config.Ai_Thinker.gprs_a9 $(ALIYUN_PATH)/src/configs/
+	make -C $(ALIYUN_PATH) distclean
+	@echo "bbbbbbb"
+	make -C $(ALIYUN_PATH) SOFT_WORKDIR=${SOFT_WORKDIR}
+	rm $(ALIYUN_PATH)/src/configs/config.Ai_Thinker.gprs_a9
+	mv $(ALIYUN_PATH)/src/configs/default_settings.mk.bak $(ALIYUN_PATH)/src/configs/default_settings.mk
+
 
 ## ------------------------------------------------------------------- ##
 ##  Do Not touch below this line unless you know what you're doing.    ##

@@ -1,0 +1,33 @@
+
+CROSS_PREFIX = mips-elf-
+
+
+STD_INC = -I$(SOFT_WORKDIR)/include \
+          -I$(SOFT_WORKDIR)/include/std_inc \
+          -I$(SOFT_WORKDIR)/include/api_inc \
+          -I$(SOFT_WORKDIR)/libs/aliyun/platform/os/gprs_a9/include
+
+CONFIG_ENV_CFLAGS = \
+          $(STD_INC) \
+          -DIOTX_NET_INIT_WITH_PK_EXT \
+          -Wshadow \
+		  -std=gnu99 \
+          -Os -g -fno-inline-small-functions -fno-inline-functions -fno-align-functions -fno-align-jumps -fno-align-loops -fno-align-labels \
+          -msoft-float \
+          -Wunused-function \
+          -Wuninitialized \
+          -minterlink-mips16 -fno-strict-aliasing \
+          -ffunction-sections -fdata-sections \
+          -fno-builtin-iswspace \
+          -ffixed-t3 -ffixed-t4 -ffixed-t5 -ffixed-t6 -ffixed-t7 -ffixed-s2 -ffixed-s3 -ffixed-s4 -ffixed-s5 -ffixed-s6 -ffixed-s7 -ffixed-fp \
+          -G0 -Wall -march=xcpu -mtune=xcpu -Wa,-march=xcpu,-mtune=xcpu -EL -mexplicit-relocs -fweb -frename-registers -mmemcpy -mmips-tfile -nostartfiles -nostdlib -nostdinc -nodefaultlibs -c -pipe \
+          -fwide-exec-charset=UTF-16LE -fshort-wchar \
+		  -mips16 
+
+
+OVERRIDE_STRIP  := strip
+
+CONFIG_src/platform =
+CONFIG_sample =
+CONFIG_src/sdk-tests =
+CONFIG_src/tls =

@@ -16,9 +16,10 @@ PROJECT_PATH += demo/aliyun
 
 LOCAL_MODULE_DEPENDS += ${PROJECT_PATH}
 
-IS_CFG_FILE_EXIST = $(shell if [ -f $(FILE) ]; then echo "exist"; else echo "notexist"; fi;)
+CFG_FILE = ${SOFT_WORKDIR}/${PROJECT_PATH}/config.mk
+IS_CFG_FILE_EXIST = $(shell if [ -f $(CFG_FILE) ]; then echo "exist"; else echo "notexist"; fi;)
 ifeq "${strip ${IS_CFG_FILE_EXIST}}" "exist"
-	include ${SOFT_WORKDIR}/${PROJECT_PATH}/config.mk
+	include ${CFG_FILE}
 endif
 
 
