@@ -20,8 +20,11 @@ int          atoi(const char *s);
 #define  itoa        CSDK_FUNC(itoa)
 #define  gcvt        CSDK_FUNC(gcvt)
 
-long          strtol(const char *nptr, char **endptr, int base);
-unsigned long strtoul(const char *nptr, char **endptr, int base);
+// long          strtol(const char *nptr, char **endptr, int base);
+// unsigned long strtoul(const char *nptr, char **endptr, int base);
+
+//!!not the standard strtod, just impl with atof!!
+double        strtod(const char *restrict s, char **restrict p);
 
 /* Standard random functions, work as the libc ones. */
 #define RAND_MAX        32767
@@ -44,6 +47,7 @@ bsearch (const void *key, const void *base, size_t nmemb, size_t size,
 void* malloc(uint32_t size);
 void free(void* p);
 void* realloc(void* p, uint32_t size);
+void *calloc(size_t nmemb, size_t size);
 
 
 #ifdef __cplusplus

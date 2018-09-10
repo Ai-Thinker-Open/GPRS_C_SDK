@@ -10,7 +10,9 @@ extern "C" {
 #include <stdarg.h>
 #include "sdk_init.h"
 
-
+#ifndef EOF
+# define EOF (-1)
+#endif
 
 #define  sprintf       CSDK_FUNC(sprintf)
 #define  snprintf      CSDK_FUNC(snprintf)
@@ -28,7 +30,9 @@ extern "C" {
 // int vsscanf (const char *fp, const char *fmt0, va_list ap);
 
 #include "api_debug.h"
-#define printf(fmt,...)   Trace(1,"[%s][%s][%d]>>"#fmt,__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+// #define printf(fmt,...)   Trace(1,"[%s][%s][%d]>>"#fmt,__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define printf(fmt,...)   Trace(1,fmt,##__VA_ARGS__)
+
 
 #ifdef __cplusplus
 }
