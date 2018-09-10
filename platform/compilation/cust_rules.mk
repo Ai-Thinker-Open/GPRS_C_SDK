@@ -45,8 +45,7 @@ export CROSS ?= mips-elf-
 export AS := $(CROSS)as
 export CC := $(CROSS)gcc
 export CPP := ${CC} -E
-export CPP_ := $(CROSS)g++
-export ABCD := $(CROSS)g++
+export CXX := $(CROSS)g++
 export AR := $(CROSS)ar
 export OBJCOPY := $(CROSS)objcopy
 export OBJDUMP := $(CROSS)objdump
@@ -201,11 +200,10 @@ BINARY_LIBRARY_PATH += ${foreach MODULE_PATH, ${BINARY_LIBS}, -L${SOFT_WORKDIR}/
 BINARY_LIBRARY_FILES += ${foreach MODULE_PATH, ${BINARY_LIBS}, ${SOFT_WORKDIR}/${MODULE_PATH}/${LIB_DIR}/lib${notdir ${MODULE_PATH}}_${CT_RELEASE}.a }
 
 # Local libs path and files : in $SOFT_WORKDIR
-LOCAL_ADD_LIBRARY_PATH := ${foreach MODULE_PATH, ${LOCAL_LIB}, -L${SOFT_WORKDIR}/${dir ${MODULE_PATH}}}
+LOCAL_ADD_LIBRARY_PATH := ${foreach MODULE_PATH, ${LOCAL_LIBS}, -L${SOFT_WORKDIR}/${dir ${MODULE_PATH}}}
 # LOCAL_LIBS is already a file list:
-#LOCAL_ADD_LIBRARY_FILES := ${foreach MODULE_PATH, ${LOCAL_LIB}, ${SOFT_WORKDIR}/${MODULE_PATH}/${notdir ${MODULE_PATH}}}
-LOCAL_ADD_LIBRARY_FILES := ${foreach FILE_PATH, ${LOCAL_LIB}, ${SOFT_WORKDIR}/${FILE_PATH}}
-
+#LOCAL_ADD_LIBRARY_FILES := ${foreach MODULE_PATH, ${LOCAL_LIBS}, ${SOFT_WORKDIR}/${MODULE_PATH}/${notdir ${MODULE_PATH}}}
+LOCAL_ADD_LIBRARY_FILES := ${foreach FILE_PATH, ${LOCAL_LIBS}, ${SOFT_WORKDIR}/${FILE_PATH}}
 # Full libraries path used for linking -L<path_to_library>
 FULL_LIBRARY_PATH := ${SRC_LIBRARY_PATH} ${BINARY_LIBRARY_PATH} ${LOCAL_ADD_LIBRARY_PATH}
 # List all library files for dependencies checking full_path+"lib"+libname.a
@@ -232,7 +230,7 @@ endif
 FULL_SRC_OBJECTS :=	${LOCAL_OBJS} \
 				    ${patsubst %.S,%.o,${S_SRC}}			\
 				    ${patsubst %.c,%.o,${C_SRC}}			\
-				    ${patsubst %.cpp,%.o,${C++_SRCD}}		
+				    ${patsubst %.cpp,%.o,${CXX_SRCD}}		
 FULL_SRC_OBJECTS := ${foreach obj, ${FULL_SRC_OBJECTS},${OBJ_REL_PATH}/${obj}}
 
 ########################################################
@@ -941,7 +939,7 @@ CT_MIPS16_CFLAGS += -mips16
 ASFLAGS += -march=xcpu -mtune=xcpu -EL 
 
 #------------------- cpp file flags --------------------------------------
-C++_SPECIFIC_CFLAGS += -Wno-write-strings
+CXX_SPECIFIC_CFLAGS += -Wno-write-strings
 
 #------------------- pp file flags --------------------------------------
 ASCPPFLAGS += -DCT_ASM
@@ -972,8 +970,8 @@ ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.c
 	$(CC) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH)
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.cpp
-	@${ECHO} "C++               $*.cpp"
-	$(CPP_) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C++_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
+	@${ECHO} "CXX               $*.cpp"
+	$(CXX) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(CXX_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
 
 # The libraries are always generated before. This rule respond allways true.
 %.a:

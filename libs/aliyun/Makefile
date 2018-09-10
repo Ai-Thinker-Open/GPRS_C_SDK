@@ -36,6 +36,8 @@ S_SRC := ${notdir ${wildcard src/*.s}}
 C_SRC := ${notdir ${wildcard src/*.c}}
 
 ALIYUN_PATH = $(SOFT_WORKDIR)/libs/aliyun/iotkit-embedded
+ALIYUN_LIB_PATH = $(ALIYUN_PATH)/output/release/lib
+ALIYUN_LIB_NAME = libiot_sdk.a
 
 all:
 	@echo "========================"
@@ -44,10 +46,20 @@ all:
 	cp $(ALIYUN_PATH)/src/configs/default_settings.mk $(ALIYUN_PATH)/src/configs/default_settings.mk.bak
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/default_settings.mk $(ALIYUN_PATH)/src/configs/
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/config.Ai_Thinker.gprs_a9 $(ALIYUN_PATH)/src/configs/
-	make -C $(ALIYUN_PATH) distclean
+	# make -C $(ALIYUN_PATH) distclean
 	make -C $(ALIYUN_PATH) SOFT_WORKDIR=${SOFT_WORKDIR}
 	rm $(ALIYUN_PATH)/src/configs/config.Ai_Thinker.gprs_a9
 	mv $(ALIYUN_PATH)/src/configs/default_settings.mk.bak $(ALIYUN_PATH)/src/configs/default_settings.mk
+	@echo "lib $(ALIYUN_LIB_PATH)/$(ALIYUN_LIB_NAME)"
+	@if [ -f "$(ALIYUN_LIB_PATH)/$(ALIYUN_LIB_NAME)" ]; then \
+		echo "========================";\
+		echo "build aliyun lib success";\
+		echo "========================";\
+	else \
+		echo "========================";\
+		echo "build aliyun lib fail!!!";\
+		echo "========================";\
+	fi
 
 
 ## ------------------------------------------------------------------- ##
