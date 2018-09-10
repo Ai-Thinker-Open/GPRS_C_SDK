@@ -105,6 +105,8 @@ elif [[ $paramNum -eq 2  ]]; then
         if [[ "$2x" == "allx" ]]; then
             rm -rf $SOFT_WORKDIR/build
             rm -rf $SOFT_WORKDIR/hex
+        elif [[ "$2x" == "aliyunx" ]]; then
+            make -C libs/aliyun/iotkit-embedded distclean
         else
             rm -rf $SOFT_WORKDIR/build/$2_$compileMode
             rm -rf $SOFT_WORKDIR/hex/$2_$compileMode
