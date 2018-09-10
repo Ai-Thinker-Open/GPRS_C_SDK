@@ -20,75 +20,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <unistd.h>
-#include <pthread.h>
 
 #include "iot_import.h"
 
+#include "api_socket.h"
+#include "errno.h"
+
+
 void *HAL_UDP_create(char *host, unsigned short port)
 {
-#define NETWORK_ADDR_LEN    (16)
-
-    int                     rc = -1;
-    long                    socket_id = -1;
-    char                    port_ptr[6] = {0};
-    struct addrinfo         hints;
-    char                    addr[NETWORK_ADDR_LEN] = {0};
-    struct addrinfo        *res, *ainfo;
-    struct sockaddr_in     *sa = NULL;
+    int fd = 0;
+    char tmp[16];
+    struct sockaddr_in sockaddr;
+    int ret = 0;
 
     if (NULL == host) {
         return (void *)(-1);
-    }
+    }    
 
-    sprintf(port_ptr, "%u", port);
-    memset((char *)&hints, 0x00, sizeof(hints));
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_family = AF_INET;
-    hints.ai_protocol = IPPROTO_UDP;
-
-    rc = getaddrinfo(host, port_ptr, &hints, &res);
-    if (0 != rc) {
-        perror("getaddrinfo error");
+    ret = DNS_GetHostByName2(host,tmp);
+    if(ret <0 )
+    {
+        perror("get ip by hostname fail");
         return (void *)(-1);
     }
 
-    for (ainfo = res; ainfo != NULL; ainfo = ainfo->ai_next) {
-        if (AF_INET == ainfo->ai_family) {
-            sa = (struct sockaddr_in *)ainfo->ai_addr;
-            inet_ntop(AF_INET, &sa->sin_addr, addr, NETWORK_ADDR_LEN);
-            fprintf(stderr, "The host IP %s, port is %d\r\n", addr, ntohs(sa->sin_port));
-
-            socket_id = socket(ainfo->ai_family, ainfo->ai_socktype, ainfo->ai_protocol);
-            if (socket_id < 0) {
-                perror("create socket error");
-                continue;
-            }
-            if (0 == connect(socket_id, ainfo->ai_addr, ainfo->ai_addrlen)) {
-                break;
-            }
-
-            close(socket_id);
-        }
+    fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (fd < 0) {
+        perror("create socket error");
+        return (void *)(-1);
     }
-    freeaddrinfo(res);
 
-    return (void *)socket_id;
+    memset(&sockaddr,0,sizeof(sockaddr));
+    sockaddr.sin_family = AF_INET;
+    sockaddr.sin_port = htons(port);
+    inet_pton(AF_INET,tmp,&sockaddr.sin_addr);
 
-#undef NETWORK_ADDR_LEN
+    ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
+    if (ret == 0) {
+        return (void *)(fd);
+    }
+    close(fd);
+
+    return (void *)(-1);
 }
 
 void HAL_UDP_close(void *p_socket)
 {
-    long            socket_id = -1;
+    int            socket_id = -1;
 
-    socket_id = (long)p_socket;
+    socket_id = (int)p_socket;
     close(socket_id);
 }
 
@@ -97,9 +79,9 @@ int HAL_UDP_write(void *p_socket,
                   unsigned int datalen)
 {
     int             rc = -1;
-    long            socket_id = -1;
+    int             socket_id = -1;
 
-    socket_id = (long)p_socket;
+    socket_id = (int)p_socket;
     rc = send(socket_id, (char *)p_data, (int)datalen, 0);
     if (-1 == rc) {
         return -1;

@@ -8,7 +8,7 @@
 #include "api_debug.h"
 #include "api_event.h"
 
-
+#include "mqtt-example.h"
 
 
 #define MAIN_TASK_STACK_SIZE    (2048 * 2)
@@ -47,7 +47,7 @@ void EventDispatch(API_Event_t* pEvent)
 
 void SecondTask(void *pData)
 {
-
+    aliyun_mqtt_main(0,NULL);
     while(1)
     {
         OS_Sleep(3000);

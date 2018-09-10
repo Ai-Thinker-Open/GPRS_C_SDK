@@ -11,6 +11,10 @@ LOCAL_API_DEPENDS := \
 LOCAL_ADD_INCLUDE := include\
                     include/std_inc \
                     include/api_inc \
+                    libs/aliyun/iotkit-embedded/src/sdk-impl \
+                    libs/aliyun/iotkit-embedded/src/sdk-impl/imports \
+					libs/aliyun/iotkit-embedded/src/sdk-impl/exports \
+                    libs/aliyun/platform/os/gprs_a9/include \
 
 
 # Set this to any non-null string to signal a module which 

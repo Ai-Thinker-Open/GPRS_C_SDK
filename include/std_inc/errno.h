@@ -1,6 +1,8 @@
 #ifndef __ERRNO_H_
 #define __ERRNO_H_
 
+#include <sdk_init.h>
+
 #define EPERM        1  /* Operation not permitted */
 #define ENOENT       2  /* No such file or directory */
 #define ESRCH        3  /* No such process */
@@ -138,5 +140,10 @@
 /* for robust mutexes */
 #define EOWNERDEAD  130 /* Owner died */
 #define ENOTRECOVERABLE 131 /* State not recoverable */
+
+
+#define err_to_errno         CSDK_FUNC(err_to_errno)
+#define errno                CSDK_FUNC(Socket_GetLastError)()
+
 
 #endif

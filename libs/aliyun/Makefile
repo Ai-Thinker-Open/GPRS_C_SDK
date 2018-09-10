@@ -45,7 +45,6 @@ all:
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/default_settings.mk $(ALIYUN_PATH)/src/configs/
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/config.Ai_Thinker.gprs_a9 $(ALIYUN_PATH)/src/configs/
 	make -C $(ALIYUN_PATH) distclean
-	@echo "bbbbbbb"
 	make -C $(ALIYUN_PATH) SOFT_WORKDIR=${SOFT_WORKDIR}
 	rm $(ALIYUN_PATH)/src/configs/config.Ai_Thinker.gprs_a9
 	mv $(ALIYUN_PATH)/src/configs/default_settings.mk.bak $(ALIYUN_PATH)/src/configs/default_settings.mk

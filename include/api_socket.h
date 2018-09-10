@@ -144,7 +144,6 @@ int                 (*err_to_errno)(err_t err);
 #define htons                CSDK_FUNC(lwip_htons)
 #define htonl                CSDK_FUNC(lwip_htonl)
 #define strerr               CSDK_FUNC(lwip_strerr)
-#define err_to_errno         CSDK_FUNC(err_to_errno)
 
 /* directly map this to the lwip internal functions */
 #define inet_addr(cp)                   ipaddr_addr(cp)
