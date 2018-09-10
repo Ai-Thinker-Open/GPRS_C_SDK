@@ -38,6 +38,7 @@ typedef enum{
 #define PM_Voltage          CSDK_FUNC(PM_Voltage)
 #define PM_ShutDown         CSDK_FUNC(PM_ShutDown)
 #define PM_Restart          CSDK_FUNC(PM_Restart)
+#define PM_Reboot           PM_Restart
 #define PowerEnable         CSDK_FUNC(PM_PowerEnable)
 
 // void PM_SetSysMinFreq(PM_Sys_Freq_t freq);
