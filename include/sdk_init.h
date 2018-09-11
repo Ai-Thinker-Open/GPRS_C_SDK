@@ -81,6 +81,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*OS_StartCallbackTimer)(HANDLE hTask, uint32_t ms, OS_CALLBACK_FUNC_T callback, void* param);
     bool                (*OS_StopCallbackTimer)(HANDLE hTask, OS_CALLBACK_FUNC_T callback, void *param);
     uint32_t            (*OS_QueryCallbackTimer)(HANDLE hTask, OS_CALLBACK_FUNC_T callback, void *param);
+    bool                (*OS_GetTaskInfo)(HANDLE pHTask, OS_Task_Info_t* taskInfo);
 
 
     /*api_hal_gpio*/
@@ -163,8 +164,8 @@ typedef struct T_INTERFACE_VTBL_TAG
     char*               (*ip4addr_ntoa)(const ip4_addr_t *addr);
     int                 (*ip6addr_aton)(const char *cp, ip6_addr_t *addr);
     int                 (*ip4addr_aton)(const char *cp, ip4_addr_t *addr);
-    u16_t               (*lwip_htons)(u16_t x);
-    u32_t               (*lwip_htonl)(u32_t x);
+    uint16_t            (*lwip_htons)(uint16_t x);
+    uint32_t            (*lwip_htonl)(uint32_t x);
     const char*         (*lwip_strerr)(err_t err);
     int                 (*err_to_errno)(err_t err);
     int                 (*Socket_GetLastError)(void);
@@ -229,7 +230,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     int32_t             (*API_FS_GetFileName)(int32_t  fd, int32_t  nameBufferLen, uint8_t* fileName);
     int64_t             (*API_FS_GetFileSize)(int32_t fd);
     int64_t             (*API_FS_GetDirSize)(const char* fileName, uint64_t* size);
-    int32_t             (*API_FS_GetCurDir)(uint32_t size,char* pCurDir);
+    int32_t             (*API_FS_GetCurDir)(uint32_t size, char* pCurDir);
     int32_t             (*API_FS_ChangeDir)(const char* pDirName);
     int32_t             (*API_FS_Mkdir)(const char* fileName,uint32_t mode);
     int32_t             (*API_FS_Rmdir)(const char* fileName);

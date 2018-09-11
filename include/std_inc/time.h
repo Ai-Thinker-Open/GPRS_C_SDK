@@ -4,6 +4,12 @@
 #include <sdk_init.h>
 
 #define gettimeofday                  CSDK_FUNC(gettimeofday)
+/**
+  * Sync time from GSM/GPRS network when attach success
+  * 
+  * @attention  Some base station may not publish time, so the NTP is the best time sync way
+  * 
+  */
 #define TIME_SetIsAutoUpdateRtcTime   CSDK_FUNC(TIME_SetIsAutoUpdateRtcTime)
 #define TIME_IsAutoUpdateRtcTime      CSDK_FUNC(TIME_IsAutoUpdateRtcTime)
 #define TIME_SetRtcTime               CSDK_FUNC(TIME_SetRtcTime)

@@ -8,6 +8,7 @@ extern "C" {
 #include "stdbool.h"
 #include "stdint.h"
 #include "stddef.h"
+#include "limits.h"
 #include "sdk_init.h"
 
 /* Standard atoi() function. Work as the libc one. */

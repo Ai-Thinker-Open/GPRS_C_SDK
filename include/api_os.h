@@ -255,6 +255,8 @@ void OS_UnlockMutex(HANDLE mutex);
 /// \return void , 
 #define OS_UnlockMutex                              CSDK_FUNC(OS_UnlockMutex)
 
+/// \brief  bool OS_GetTaskInfo(HANDLE pHTask, OS_Task_Info_t* taskInfo);
+#define OS_GetTaskInfo                              CSDK_FUNC(OS_GetTaskInfo)
 
 /**
   *

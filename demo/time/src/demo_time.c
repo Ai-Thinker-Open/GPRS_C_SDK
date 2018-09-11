@@ -53,6 +53,8 @@ void TestTime3()
 
 void time_MainTask()
 {
+    //sync time from GSM/GPRS network when attach success
+    //@attention  (some base station may not publish time, so the NTP is the best time sync way)
     TIME_SetIsAutoUpdateRtcTime(true);
 
     while(1)
