@@ -10,6 +10,7 @@ extern "C" {
 #include "stddef.h"
 #include "limits.h"
 #include "sdk_init.h"
+#include "ctype.h"
 
 /* Standard atoi() function. Work as the libc one. */
 int          atoi(const char *s);
@@ -20,6 +21,9 @@ int          atoi(const char *s);
 #define  atof        CSDK_FUNC(atof)
 #define  itoa        CSDK_FUNC(itoa)
 #define  gcvt        CSDK_FUNC(gcvt)
+extern double strtod(const char *restrict s, char **restrict p);
+extern int strtol(const char *nptr, char **endptr, int base);
+extern unsigned int strtoul(const char *nptr, char **endptr, int base);
 
 // long          strtol(const char *nptr, char **endptr, int base);
 // unsigned long strtoul(const char *nptr, char **endptr, int base);

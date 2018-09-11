@@ -6,3 +6,6 @@
 [submodule "libs/gps/minmea/src"]
 	path = libs/gps/minmea/src
 	url = https://github.com/kosma/minmea.git
+[submodule "libs/aliyun/iotkit-embedded"]
+	path = libs/aliyun/iotkit-embedded
+	url = https://github.com/aliyun/iotkit-embedded.git
