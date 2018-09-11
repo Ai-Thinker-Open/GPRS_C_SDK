@@ -31,7 +31,7 @@
 
 #include "api_os.h"
 #include "time.h"
-
+#include "api_fs.h"
 
 
 
@@ -117,6 +117,7 @@ void HAL_Printf(_IN_ const char *fmt, ...)
     va_list args;
     char uart_buf[256];
 
+    memset(uart_buf,0,sizeof(uart_buf));
     va_start(args, fmt);
     vsnprintf(uart_buf, sizeof(uart_buf), fmt, args);
     va_end(args);
@@ -256,7 +257,7 @@ static uint32_t fd;
 
 void HAL_Firmware_Persistence_Start(void)
 {
-    fd = fopen(otafilename, FS_O_WRONLY|FS_O_CREAT,0);
+    fd = API_FS_Open(otafilename, FS_O_WRONLY|FS_O_CREAT,0);
 //    assert(fp);
 }
 

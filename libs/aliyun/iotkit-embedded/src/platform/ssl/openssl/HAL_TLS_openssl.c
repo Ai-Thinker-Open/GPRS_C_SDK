@@ -281,6 +281,7 @@ int platform_ssl_recv(void *ssl, char *buf, uint32_t len, int timeout_ms)
                     break;
                 }
             } else if (0 == ret) {
+                printf("111111 timeout");
                 break;
             } else {
                 PLATFORM_WINSOCK_PERROR("select-read fail");
@@ -291,7 +292,7 @@ int platform_ssl_recv(void *ssl, char *buf, uint32_t len, int timeout_ms)
     }
     /* priority to return data bytes if any data be received from TCP connection. */
     /* It will get error code on next calling */
-
+    printf("2222222222 %d",(0 != len_recv) ? len_recv : err_code);
     return (0 != len_recv) ? len_recv : err_code;
 }
 

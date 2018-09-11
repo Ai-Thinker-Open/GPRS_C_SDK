@@ -25,6 +25,9 @@
 #include "iot_import.h"
 #include "iot_export.h"
 
+#define YIELED_TIMEOUT_MS          200
+#define REQUEST_TIMEOUT_MS         10000
+
 #if defined(MQTT_ID2_AUTH) && defined(ON_DAILY)
     #define PRODUCT_KEY             "9rx2yMNV5l0"
     #define DEVICE_NAME             "sh_online_sample_mqtt"
@@ -205,7 +208,9 @@ int mqtt_client(void)
     mqtt_params.password = pconn_info->password;
     mqtt_params.pub_key = pconn_info->pub_key;
 
-    mqtt_params.request_timeout_ms = 2000;
+    mqtt_params.request_timeout_ms = REQUEST_TIMEOUT_MS;
+                                    // GPRS network may not stable as Ethernet or WiFi
+                                    // so the value of timeout should be set longer!
     mqtt_params.clean_session = 0;
     mqtt_params.keepalive_interval_ms = 60000;
     mqtt_params.pread_buf = msg_readbuf;
@@ -267,7 +272,9 @@ int mqtt_client(void)
     rc = IOT_MQTT_Publish(pclient, TOPIC_DATA, &topic_msg);
     EXAMPLE_TRACE("\n publish message: \n topic: %s\n payload: \%s\n rc = %d", TOPIC_DATA, topic_msg.payload, rc);
 
-    IOT_MQTT_Yield(pclient, 200);
+    EXAMPLE_TRACE("11111111111111111111111111111111111");
+    IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
+    EXAMPLE_TRACE("22222222222222222222222222222222222");
 
     do {
         /* Generate topic message */
@@ -281,7 +288,8 @@ int mqtt_client(void)
 
         topic_msg.payload = (void *)msg_pub;
         topic_msg.payload_len = msg_len;
-
+        
+        EXAMPLE_TRACE("publish data:%s",msg_pub);
         rc = IOT_MQTT_Publish(pclient, TOPIC_DATA, &topic_msg);
         if (rc < 0) {
             EXAMPLE_TRACE("error occur when publish");
@@ -298,7 +306,7 @@ int mqtt_client(void)
 #endif
 
         /* handle the MQTT packet received from TCP or SSL connection */
-        IOT_MQTT_Yield(pclient, 200);
+        IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
 
         /* infinite loop if running with 'loop' argument */
         if (user_argc >= 2 && !strcmp("loop", user_argv[1])) {
@@ -308,11 +316,11 @@ int mqtt_client(void)
 
     } while (cnt < 1);
         
-    IOT_MQTT_Yield(pclient, 200);
+    IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
 
     IOT_MQTT_Unsubscribe(pclient, TOPIC_DATA);
 
-    IOT_MQTT_Yield(pclient, 200);
+    IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
 
     IOT_MQTT_Destroy(&pclient);
 
@@ -383,7 +391,7 @@ int mqtt_client_secure()
     mqtt_params.password = pconn_info->password;
     mqtt_params.pub_key = pconn_info->pub_key;
 
-    mqtt_params.request_timeout_ms = 2000;
+    mqtt_params.request_timeout_ms = REQUEST_TIMEOUT_MS;
     mqtt_params.clean_session = 0;
     mqtt_params.keepalive_interval_ms = 60000;
     mqtt_params.pread_buf = msg_readbuf;
@@ -451,7 +459,7 @@ int mqtt_client_secure()
                      );
 
         /* handle the MQTT packet received from TCP or SSL connection */
-        IOT_MQTT_Yield(pclient, 200);
+        IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
 
         /* infinite loop if running with 'loop' argument */
         if (user_argc >= 2 && !strcmp("loop", user_argv[1])) {
