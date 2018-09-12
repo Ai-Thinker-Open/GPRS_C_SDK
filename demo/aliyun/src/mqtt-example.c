@@ -272,9 +272,7 @@ int mqtt_client(void)
     rc = IOT_MQTT_Publish(pclient, TOPIC_DATA, &topic_msg);
     EXAMPLE_TRACE("\n publish message: \n topic: %s\n payload: \%s\n rc = %d", TOPIC_DATA, topic_msg.payload, rc);
 
-    EXAMPLE_TRACE("11111111111111111111111111111111111");
     IOT_MQTT_Yield(pclient, YIELED_TIMEOUT_MS);
-    EXAMPLE_TRACE("22222222222222222222222222222222222");
 
     do {
         /* Generate topic message */
