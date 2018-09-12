@@ -10,7 +10,7 @@ Ai-Thinker GPRS SoC development SDK written by C
 
 [English Readme](./README_EN.md)
 
-
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/ai-thinker-open/gprs_c_sdk.svg)](http://isitmaintained.com/project/ai-thinker-open/gprs_c_sdk "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/ai-thinker-open/gprs_c_sdk.svg)](http://isitmaintained.com/project/ai-thinker-open/gprs_c_sdk "Percentage of issues still open")
 
 ## (一) 硬件
 
@@ -117,6 +117,7 @@ A9/A9G开发板，方便开发和调试
     * 看门狗
     * 音频播放(如播放MP3)
     * 机智云平台快速接入
+    * 阿里云CSDK
     * 其它库如json、NMEA解析库等等，具体可以看`demo`目录或者`libs`目录
 
 #### 获得SDK

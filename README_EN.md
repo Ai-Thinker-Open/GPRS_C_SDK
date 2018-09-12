@@ -6,6 +6,8 @@ Ai-Thinker GPRS SoC development SDK written by C.
 [中文版本](./README.md)
 
 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/ai-thinker-open/gprs_c_sdk.svg)](http://isitmaintained.com/project/ai-thinker-open/gprs_c_sdk "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/ai-thinker-open/gprs_c_sdk.svg)](http://isitmaintained.com/project/ai-thinker-open/gprs_c_sdk "Percentage of issues still open")
+
 
 ## ( A ) Hardware
 
@@ -76,7 +78,7 @@ Therefore, in order to download or debug, you need at least one USB to serial po
 ### SDK Features
 
 * Provide easy-to-use API, as long as you have `C` language knowledge. 
-Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, RTC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS, LBS, Audio play, Gizwits cloud, libs cJson、NMEA etc.
+Integrates a wide range of features including basic GPIO, UART, SPI, IIC, ADC, RTC, OS, FS, SMS, CALL and GPRS, socket, DNS, MQTT, SSL/TLS, LBS, Audio play, Gizwits cloud, aliyun, libs cJson、NMEA etc.
 
 
 ### Get the SDK
