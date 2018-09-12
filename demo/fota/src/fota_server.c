@@ -3,7 +3,18 @@
 #include "api_os.h"
 #include "api_debug.h"
 #include "api_fota.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "demo_fota.h"
 
+
+
+////////////////////////////////////////////////////////////////////////////////////
+///  change comment in new version
+#define SOFT_VERSION          "V1.0.0"
+// #define SOFT_VERSION          "V2.0.0"
+#define FOTA_HTTP_SERVER      "http://test.ai-thinker.com/csdk/fota/%stonew.pack"
+////////////////////////////////////////////////////////////////////////////////////
 
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
@@ -11,41 +22,26 @@
 #define MAIN_TASK_NAME         "FOTA SERVER Test Task"
 
 
-#define SOFT_VERSION          "V3.1"
-#define FOTA_HTTP_SERVER      "http://test.ai-thinker.com/csdk/fota/%stonew.pack"
-
-
-
 static HANDLE mainTaskHandle = NULL;
-static int fotasize = 0; 
 
-static int processFotaUpgradeData(const unsigned char *data, size_t len)
+static void processFotaUpgradeData(const unsigned char *data, int len)
 {
     if(len)
     {
-        Trace(1,"fota len:%d data:%s fotasize:%d ", len, data, fotasize);
-        if(fotasize == 0)
-        {
-            if(!API_FotaInit(len))
-                goto upgrade_faile;
-            if(API_FotaReceiveData(data, len) == 0)
-                goto upgrade_faile;
-        }
-        else if(fotasize)
-        {
-            if(API_FotaReceiveData(data, len) == 0)
-                goto upgrade_faile;
-        }
+        MEMBLOCK_Trace(1, (uint8_t*)data, (uint16_t)len, 16);
+        Trace(1,"fota total len:%d data:%s", len, data);
+        if(!API_FotaInit(len))
+            goto upgrade_faile;
+        if(API_FotaReceiveData((unsigned char*)data, (int)len) == 0);
     }else{//error
-        Trace(1,"fota len:%d data:%s fotasize:%d ", len, data, fotasize);
+        Trace(1,"fota total len:%d data:%s", len, data);
         goto upgrade_faile;
     }
     return;
 
 upgrade_faile:
     Trace(1,"server fota false");
-    // API_FotaClean();
-    return 0;
+    API_FotaClean();
 }
 
 static void OnNetworkStatusChanged(Network_Status_t status)
@@ -53,6 +49,8 @@ static void OnNetworkStatusChanged(Network_Status_t status)
     switch(status)
     {
         case NETWORK_STATUS_REGISTERED:
+            ///////////////////////////////////
+            /// full network related operation see demo/network
             Trace(1,"fota network register success");
             Network_StartAttach();
             break;

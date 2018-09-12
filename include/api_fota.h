@@ -30,7 +30,7 @@
 /// \brief  get upgrade from server
 /// \param  url get pack form url
 /// \param  data_process the function receive data
-// bool API_FotaInit(int size);
+// int API_FotaByServer(char *url, fota_handler_t data_process)
 #define API_FotaByServer     CSDK_FUNC(API_FotaByServer)
 /*********************************************************************************/
 #endif
