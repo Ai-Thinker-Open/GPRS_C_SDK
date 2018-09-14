@@ -23,6 +23,30 @@
 static HANDLE mainTaskHandle = NULL;
 static HANDLE secondTaskHandle = NULL;
 
+class A{
+
+public:
+    virtual void Show() = 0;
+    void ShowA()
+    {
+        printf("class A");
+    }
+};
+
+class B: public A{
+
+public:
+    virtual void Show()
+    {
+        printf("Show in B");
+    }
+
+    void ShowB()
+    {
+        printf("class B");
+    }
+};
+
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -53,11 +77,16 @@ void SecondTask(void *pData)
     config.channel = ADC_CHANNEL_0;
     config.samplePeriod = ADC_SAMPLE_PERIOD_100MS;
     ADC_Init(config);
-
+    
+    B b = B();
     while(1)
     {
         if(ADC_Read(ADC_CHANNEL_0, &value, &mV))
             Trace(1,"ADC value:%d, %dmV",value,mV);
+        b.ShowA();
+        b.ShowB();
+        b.Show();
+
         OS_Sleep(3000);
     }
 }
@@ -67,7 +96,7 @@ void MainTask(void *pData)
     API_Event_t* event=NULL;
 
     secondTaskHandle = OS_CreateTask(SecondTask,
-        NULL, NULL, SECOND_TASK_STACK_SIZE, SECOND_TASK_PRIORITY, 0, 0, (const uint8_t*)SECOND_TASK_NAME);
+        NULL, NULL, SECOND_TASK_STACK_SIZE, SECOND_TASK_PRIORITY, 0, 0, SECOND_TASK_NAME);
 
     while(1)
     {
@@ -88,7 +117,7 @@ extern "C"
 void cpp_Main(void)
 {
     mainTaskHandle = OS_CreateTask(MainTask,
-        NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, (const uint8_t*)MAIN_TASK_NAME);
+        NULL, NULL, MAIN_TASK_STACK_SIZE, MAIN_TASK_PRIORITY, 0, 0, MAIN_TASK_NAME);
     OS_SetUserMainHandle(&mainTaskHandle);
 }
 

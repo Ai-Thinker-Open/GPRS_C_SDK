@@ -939,7 +939,8 @@ CT_MIPS16_CFLAGS += -mips16
 ASFLAGS += -march=xcpu -mtune=xcpu -EL 
 
 #------------------- cpp file flags --------------------------------------
-CXX_SPECIFIC_CFLAGS += -Wno-write-strings
+CXX_SPECIFIC_CFLAGS += -Wno-write-strings \
+                       -fno-rtti 
 
 #------------------- pp file flags --------------------------------------
 ASCPPFLAGS += -DCT_ASM
