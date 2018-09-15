@@ -142,6 +142,7 @@ int Http_Get(const char* domain, int port,const char* path, char* retBuffer, int
     int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
     if(ret < 0){
         Trace(1,"socket connect fail");
+        close(fd);
         return -1;
     }
     Trace(1,"socket connect success");
@@ -149,6 +150,7 @@ int Http_Get(const char* domain, int port,const char* path, char* retBuffer, int
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
         Trace(1,"socket send fail");
+        close(fd);
         return -1;
     }
     Trace(1,"socket send success");

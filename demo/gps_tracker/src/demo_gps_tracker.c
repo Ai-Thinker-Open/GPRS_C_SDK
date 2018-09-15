@@ -183,6 +183,7 @@ int Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint1
     if(ret < 0){
         Trace(2,"socket connect fail");
         OS_Free(temp);
+        close(fd);
         return -1;
     }
     // Trace(2,"socket connect success");
@@ -191,12 +192,14 @@ int Http_Post(const char* domain, int port,const char* path,uint8_t* body, uint1
     if(ret < 0){
         Trace(2,"socket send fail");
         OS_Free(temp);
+        close(fd);
         return -1;
     }
     ret = send(fd, body, bodyLen, 0);
     if(ret < 0){
         Trace(2,"socket send fail");
         OS_Free(temp);
+        close(fd);
         return -1;
     }
     // Trace(2,"socket send success");
