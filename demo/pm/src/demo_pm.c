@@ -23,6 +23,7 @@
 static HANDLE mainTaskHandle = NULL;
 static HANDLE secondTaskHandle = NULL;
 
+Power_On_Cause_t powerOnCause = POWER_ON_CAUSE_MAX;
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -43,18 +44,18 @@ void EventDispatch(API_Event_t* pEvent)
             break;
 
         case API_EVENT_ID_POWER_ON:
-            Trace(1,"Power on ,cause:0x%02x",pEvent->param1);
+            powerOnCause = pEvent->param1;
             break;
 
         case API_EVENT_ID_KEY_DOWN:
-            Trace(1,"key down, key:0x%02x",pEvent->param1);
+            // Trace(1,"key down, key:0x%02x",pEvent->param1);
             if(pEvent->param1 == KEY_POWER)
             {
                 Trace(1,"power key press down now");
             }
             break;
         case API_EVENT_ID_KEY_UP:
-            Trace(1,"key release, key:0x%02x",pEvent->param1);
+            // Trace(1,"key release, key:0x%02x",pEvent->param1);
             if(pEvent->param1 == KEY_POWER)
             {
                 Trace(1,"power key release now");
@@ -69,24 +70,26 @@ void SecondTask(void *pData)
 {
     int i = 0;
     uint8_t percent;
+    OS_Sleep(3000);
+    Trace(1,"Power on ,cause:0x%02x",powerOnCause);
     while(1)
     {
         OS_Sleep(500);
-        uint16_t v = PM_Voltage(&percent);
-        Trace(1,"voltage:%dmV,%d percent last,times count:%d",v,percent,i);
-        ++i;
-        if(i==40)//20s
-        {
-            Trace(1,"Sleep now");
-            PM_SleepMode(true);
-        }
-        if(i==80)//40s
-        {
-            Trace(1,"Exit sleep mode now");
-            PM_SleepMode(false);
-        }
-        if(i == 200)
-            PM_Restart();
+        // uint16_t v = PM_Voltage(&percent);
+        // Trace(1,"voltage:%dmV,%d percent last,times count:%d",v,percent,i);
+        // ++i;
+        // if(i==40)//20s
+        // {
+        //     Trace(1,"Sleep now");
+        //     PM_SleepMode(true);
+        // }
+        // if(i==80)//40s
+        // {
+        //     Trace(1,"Exit sleep mode now");
+        //     PM_SleepMode(false);
+        // }
+        // if(i == 200)
+        //     PM_Restart();
     }
 }
 

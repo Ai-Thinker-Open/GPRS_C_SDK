@@ -22,11 +22,12 @@ typedef enum{
 }Power_Type_t;
 
 typedef enum{
-    POWER_ON_CAUSE_KEY = 0  ,
-    POWER_ON_CAUSE_CHARGE   ,
-    POWER_ON_CAUSE_ALARM    ,
-    POWER_ON_CAUSE_EXCEPTION,
-    POWER_ON_CAUSE_RESET    ,
+    POWER_ON_CAUSE_KEY       = 0x01 ,
+    POWER_ON_CAUSE_CHARGE    = 0x02 ,
+    POWER_ON_CAUSE_ALARM     = 0x04 ,
+    POWER_ON_CAUSE_EXCEPTION = 0x08 ,
+    POWER_ON_CAUSE_RESET     = 0x10 ,
+    POWER_ON_CAUSE_UNKNOWN   = 0x80 ,
     POWER_ON_CAUSE_MAX
 }Power_On_Cause_t;
 
