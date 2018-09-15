@@ -48,6 +48,9 @@ void TestTime3()
     printf("localtime:%d-%d-%d %02d:%02d:%02d",localTime.year,localTime.month,localTime.day,localTime.hour,localTime.minute,localTime.second);
     time = time(NULL);
     printf("timestamp UTC:%d",time);
+    
+    TIME_TimeStamp2SystemTime(0,&localTime);
+    printf("timestamp 0:%d-%d-%d %02d:%02d:%02d",localTime.year,localTime.month,localTime.day,localTime.hour,localTime.minute,localTime.second);
 
 }
 

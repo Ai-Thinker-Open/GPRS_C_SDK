@@ -163,6 +163,7 @@ int                 (*err_to_errno)(err_t err);
     (((af) == AF_INET6) ? ip6addr_aton((src),(ip6_addr_t*)(dst)) \
      : (((af) == AF_INET) ? ip4addr_aton((src),(ip4_addr_t*)(dst)) : 0))
 
+#define ntohl(x) PP_NTOHL(x)
 
 
 /*******************************************************************************************/

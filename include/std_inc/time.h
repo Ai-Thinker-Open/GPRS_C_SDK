@@ -3,6 +3,8 @@
 
 #include <sdk_init.h>
 
+#define TIME_2000_1970_S    946684800UL
+
 #define gettimeofday                  CSDK_FUNC(gettimeofday)
 /**
   * Sync time from GSM/GPRS network when attach success
@@ -39,11 +41,17 @@
 #define TIME_SetLocalTime                         CSDK_FUNC(TIME_SetLocalTime)
 
 // uint32_t TIME_SystemTime2TimeStamp(TIME_System_t* sysTime);
+//return time from 2000-1-1 00:00:00(UTC) unit:s
 #define TIME_SystemTime2TimeStamp                 CSDK_FUNC(TIME_SystemTime2TimeStamp)
+
 // bool     TIME_TimeStamp2SystemTime(uint32_t stamp, TIME_System_t* sysTime);
+//param stamp: time from 2000-1-1 00:00:00(UTC) unit:s, if unix timestamp, should - TIME_2000_1970_S
 #define TIME_TimeStamp2SystemTime                 CSDK_FUNC(TIME_TimeStamp2SystemTime)
 
-///////standard///
+
+///////////////////////////standard/////////////////////////////////
+//unix time
+
 // time_t time(time_t* timer);
 #define TIME_GetTime2           CSDK_FUNC(time)
 #define time(x)                TIME_GetTime2(x)
@@ -55,5 +63,10 @@
 
 #define timegm(x) mktime(x)
 
+/**
+  * 
+  * @attention not safe for multi thread!! 
+  */  
+char *ctime(const time_t *time);
 
 #endif
