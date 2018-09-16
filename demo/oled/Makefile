@@ -3,7 +3,7 @@
 ## ----------------------------------------------------------- ##
 
 # Name of the module
-LOCAL_NAME := oled
+LOCAL_NAME := demo/oled
 
 # List of submodules which contain code we need to include in the final lib
 LOCAL_API_DEPENDS := \

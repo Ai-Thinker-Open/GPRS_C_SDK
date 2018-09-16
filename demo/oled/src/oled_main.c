@@ -28,7 +28,7 @@ void EventDispatch(API_Event_t* pEvent)
 }
 
 
-void AppMainTask(VOID *pData)
+void AppMainTask(void *pData)
 {
     API_Event_t* event=NULL;
     
