@@ -13,4 +13,5 @@ SSD1306 spi oled display demo
 | CS     | SPI CS| IO1|
 
 
+![](./assets/ssd1306_oled.gif)
 
