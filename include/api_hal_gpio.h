@@ -148,4 +148,7 @@ typedef struct{
 /// \return bool
 #define GPIO_Close                                  CSDK_FUNC(GPIO_Close)
 
+
+void GPIO_EnablePower(GPIO_PIN pin, bool enable);
+
 #endif
