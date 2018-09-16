@@ -12,6 +12,7 @@ typedef enum
 {
     SPI1      = 1 ,
     SPI2      = 2 ,
+	SPI_MAX
 } SPI_ID_t;
 
 /// Chip Select

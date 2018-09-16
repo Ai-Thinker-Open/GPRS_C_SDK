@@ -8,9 +8,9 @@
 #include "string.h"
 
 /// Only one DEMO can be selected for each compilation !!!
-// #define SPI_DERECT_DEMO
+#define SPI_DERECT_DEMO
 // #define SPI_DMA_DEMO
-#define SPI_IRQ_DEMO
+// #define SPI_IRQ_DEMO
 
 #define MAIN_TASK_STACK_SIZE    (1024 * 2)
 #define MAIN_TASK_PRIORITY      0

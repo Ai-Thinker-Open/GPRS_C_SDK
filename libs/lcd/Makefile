@@ -3,33 +3,30 @@
 
 
 # Name of the this module
-LOCAL_NAME := libs
+LOCAL_NAME := libs/lcd
 
 
 # Space-separated list of modules (libraries) your module depends upon.
 # These should include the toplevel name, e.g. "libs/gps"
-LOCAL_MODULE_DEPENDS := libs/gps \
-                        libs/utils \
-                        libs/cjson \
-                        
-ifeq "$(strip ${CFG_ALIYUN_SUPPORT})" "y"
-    LOCAL_MODULE_DEPENDS += libs/aliyun 
+
+
+ifeq "$(strip ${CFG_LCD_NAME})" "ssd1306"
+    LOCAL_MODULE_DEPENDS :=  libs/lcd/ssd1306 
 endif
 
-ifeq "$(strip ${CFG_LCD_SUPPORT})" "y"
-    LOCAL_MODULE_DEPENDS += libs/lcd 
-endif
+
 
 # Add includes from other modules we do not wish to link to
-LOCAL_API_DEPENDS := \
+LOCAL_API_DEPENDS := libs/utils \
 
 
 # include folder
-LOCAL_ADD_INCLUDE := \
-
+LOCAL_ADD_INCLUDE := include \
+                     include/std_inc \
+                     include/api_inc \
 
                     
-# `yes` if have submodule, or left empty  or `no`
+# `yes` if have submodule or left empty  or `no`
 IS_CONTAIN_SUB_MODULE := yes
 
 ## ------------------------------------ ##
@@ -42,6 +39,7 @@ MYCFLAGS +=
 ## ------------------------------------- ##
 S_SRC := ${notdir ${wildcard src/*.s}}
 C_SRC := ${notdir ${wildcard src/*.c}}
+
 
 
 ## ------------------------------------------------------------------- ##
