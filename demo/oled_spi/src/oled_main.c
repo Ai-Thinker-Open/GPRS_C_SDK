@@ -53,28 +53,6 @@ void EventDispatch(API_Event_t* pEvent)
     }
 }
 
-uint8_t SPI_WriteReadByte(SPI_ID_t spi, uint8_t data)
-{
-	uint8_t r;
-	SPI_Write(spi, &data, 1);
-	while(!SPI_IsTxDone(spi));
-	SPI_Read(spi, &r, 1);
-	return r;
-}
-
-uint32_t SPI_ReadWriteData(SPI_ID_t SPIx, uint8_t *s_data, uint8_t *r_data, uint32_t length)
-{
-	uint8_t *r_data_ptr = r_data;
-	for(uint32_t i=0; i<length; i++)
-	{
-		SPI_Write(SPIx, s_data++, 1);
-		while(!SPI_IsTxDone(SPIx));
-		SPI_Read(SPIx, r_data_ptr++, 1);
-	}
-	return length;
-}
-
-
 
 
 void Init_Interface()
@@ -111,12 +89,12 @@ void SSD1306_Task(void* param)
     {
         for(int8_t i=0;i<(128-48);++i)
         {
-            SSD1306_DrawBMP(i,47+i,2,7,bmp_rocket);
+            SSD1306_DrawBMP(i,47+i,2,7,(unsigned char*)bmp_rocket);
             OS_Sleep(10);
         }
         for(int8_t i=(128-48);i>=0;--i)
         {
-            SSD1306_DrawBMP(i,47+i,2,7,bmp_rocket);
+            SSD1306_DrawBMP(i,47+i,2,7,(unsigned char*)bmp_rocket);
             OS_Sleep(10);
         }
     }

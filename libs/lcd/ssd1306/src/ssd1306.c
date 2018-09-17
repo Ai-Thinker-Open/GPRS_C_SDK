@@ -221,6 +221,14 @@ const unsigned char F8X16[]=
 };
 
 
+uint8_t SPI_WriteReadByte(SPI_ID_t spi, uint8_t data)
+{
+	uint8_t r;
+	SPI_Write(spi, &data, 1);
+	while(!SPI_IsTxDone(spi));
+	SPI_Read(spi, &r, 1);
+	return r;
+}
 
 //向SSD1106写入一个字节。
 //dat:要写入的数据/命令
