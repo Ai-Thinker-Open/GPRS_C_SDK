@@ -969,7 +969,10 @@ CXX_SPECIFIC_CFLAGS += -Wno-write-strings \
 ASCPPFLAGS += -DCT_ASM
 MYCPPFLAGS += -D__NEW_GCC__ \
               -DUSE_GCC_4=1 -DUSE_BINUTILS_2_19=1 \
-              -D__REDUCED_REGS__
+              -D__REDUCED_REGS__ \
+			  -D__ORDER_LITTLE_ENDIAN__=1234 \
+			  -D__ORDER_BIG_ENDIAN__=4321 \
+			  -D__BYTE_ORDER__=__ORDER_LITTLE_ENDIAN__ 
 
 # User flags
 LOCAL_EXPORT_FLAG += PRONAME_MAIN=$(PROJ_NAME)_Main
