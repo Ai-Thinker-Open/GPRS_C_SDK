@@ -29,13 +29,7 @@ my $output_elf_file = undef;
 
 
 
-print "$Config{osname}\n";
-print "$Config{archname}\n";
-print "$Config{osvers}\n";
-
 my $os=$Config{osname};
-
-print "Current OS is $os\n";
 
 my $objstrip;
 my $objdump;

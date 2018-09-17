@@ -47,6 +47,7 @@ elf_file=$(ls $CSDK_LIB_PATH|grep '.elf')
 lib_file=$(ls $CSDK_LIB_PATH|grep '.lod')
 
 if [[ "${memdef_file}aa" = "aa" || "${elf_file}aa" = "aa" || "${lib_file}aa" = "aa" ]]; then
+    echo -ne "\033[1;31m" #red
     echo "!!!!!!!!!!!!!!"
     echo "NO LIB FILES"
     echo "!!!!!!!!!!!!!!"
@@ -56,34 +57,26 @@ if [[ "${memdef_file}aa" = "aa" || "${elf_file}aa" = "aa" || "${lib_file}aa" = "
     echo ""
     echo "      https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases"
     echo ""
+    echo -ne "\033[0m" #normal
     exit 1
 fi
 #####################################
 
 start_time=`date +%s`
-#where the cygwin install in unix path,example if windows path is G:\CSDTK\cygwin,cygwin path may be /cygdrive/g/CSDTK/cygwin
-# CYGWIN_HOME= 
-# if [[ ! -d $CYGWIN_HOME ]]; then
-#     echo  PATH $CYGWIN_HOME is not exist
-#     exit
-# fi
-
-#set the path
-# export PATH=$CYGWIN_HOME/bin:$CYGWIN_HOME/crosscompiler/bin:$CYGWIN_HOME/cooltools:/bin:/usr/bin;
-export PATH=/bin:/crosscompiler/bin:/cooltools:/bin:/usr/bin:$PATH;
-# echo path:$PATH
 
 export SOFT_WORKDIR=`pwd -P`
 
-echo "param number:$paramNum"
-echo "compileMode:$compileMode"
+echo ""
+echo "===================Start build====================="
+echo "-- Param   number : $paramNum"
+echo "-- Compile mode   : $compileMode"
 
 if [[ $paramNum -eq 1  ]]; then
     if [[ "$1xx" == "cleanxx" ]]; then
         echo "Clean all..."
         rm -rf $SOFT_WORKDIR/build
         rm -rf $SOFT_WORKDIR/hex
-        echo "Clean complete"
+        echo "====================Clean End======================"
         exit 0
     fi
     export IS_PROJECT_DIR=$SOFT_WORKDIR/$1
@@ -159,10 +152,6 @@ else
     exit 0
 fi
 
-# if [[ ! -d target/$PROJ_NAME ]]; then
-#     cp -rf target/init target/$PROJ_NAME
-#     echo "user default for init-target";
-# fi
 
 #build path and log
 LOG_FILE_PATH=$SOFT_WORKDIR/build
@@ -171,12 +160,13 @@ if [ ! -d ${LOG_FILE_PATH} ]; then
 fi
 LOG_FILE=${LOG_FILE_PATH}/${PROJ_NAME}_build.log
 
-echo "compile project $PROJ_NAME";
-echo "compile path $IS_PROJECT_DIR";
-
 MAKE_J_NUMBER=`cat /proc/cpuinfo | grep vendor_id | wc -l`
-echo "core number:$MAKE_J_NUMBER"
-# rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
+echo "-- Core    number : $MAKE_J_NUMBER"
+echo "-- Compile project: $PROJ_NAME";
+echo "-- Project path   : "
+echo "  |"
+echo "   --$IS_PROJECT_DIR";
+echo "---------------------------------------------------"
 
 cd $SOFT_WORKDIR
 if [ ${MAKE_J_NUMBER} -gt 1 ]; then
@@ -185,20 +175,12 @@ else
     make CT_RELEASE=$compileMode 2>&1 | tee ${LOG_FILE}
 fi
 
-# rm -f $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}/*
-# rm -rf $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-# mkdir $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-# cp -f $SOFT_WORKDIR/hex/$PROJ_NAME/* $SOFT_WORKDIR/hex/${PROJ_NAME}_${compileMode}
-# rm -rf $SOFT_WORKDIR/hex/$PROJ_NAME
-# if [[ "$1x" == "initx" ]]; then
-#     cp build/init/init/lib/libinit_*.a platform/lib/libinit.a
-# fi
-
 end_time=`date +%s`
 time_distance=`expr ${end_time} - ${start_time}`
 date_time_now=$(date +%F\ \ %H:%M:%S)
+echo -ne "\033[1;32m" #green
 echo ====== Build Time: ${time_distance}s  complete at  ${date_time_now} ======= | tee -a ${LOG_FILE}
-
+echo -ne "\033[0m"
 
 # print RAM and ROM info
 
@@ -220,10 +202,12 @@ map_file=$(ls ./build/$mapPathName|grep '.map')
 result=`cat ${LOG_FILE}|grep "Error"`
 
 if [[ "${result}aa" != "aa" || "${map_file}aa" = "aa" ]]; then
+    echo -ne "\033[1;31m"
     echo "!!!!!!!!!!!!!!!!!!!!"
     echo "   BUILD FAILED"
     echo "!!!!!!!!!!!!!!!!!!!!"
-    echo "============================================================="
+    echo -ne "\033[0m"
+    echo "==================================================="
     exit 1
 fi
 
@@ -248,5 +232,7 @@ rom_used_percent=$(awk 'BEGIN{printf "%.2f%%\n",('$rom_used'/'$(($rom_total))')*
 
 echo ROM total: ${rom_total}\($((${rom_total}))\) Bytes, used: $rom_used Bytes \($rom_used_percent\)
 echo RAM total: ${ram_total}\($((${ram_total}))\) Bytes, used: $ram_used Bytes \($ram_used_percent\)
+echo -ne "\033[1;32m" #green
 echo "============================================================="
+echo -ne "\033[0m" #normal
 exit
