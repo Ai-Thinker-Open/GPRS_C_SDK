@@ -6,9 +6,6 @@
 #include "api_os.h"
 
 
-#define SSD1306_CMD  0	//写命令
-#define SSD1306_DATA 1	//写数据
-
 static uint16_t ssd1306_width  = 0;
 static uint16_t ssd1306_height = 0;
 static SPI_ID_t ssd1306_spi = SPI_MAX;

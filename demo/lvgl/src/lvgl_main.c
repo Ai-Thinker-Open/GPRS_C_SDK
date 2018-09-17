@@ -49,6 +49,7 @@ static void ex_mem_fill(lv_color_t * dest, uint32_t length, lv_color_t color);
 #endif
 static bool ex_tp_read(lv_indev_data_t * data);
 
+uint8_t oled_buffer[SSD1306_WIDTH*SSD1306_HEIGHT/8];
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -86,6 +87,8 @@ void Init_Interface()
         .irqHandler = NULL,
         .irqMask = {0,0,0,0,0}
     };
+    for(uint16_t i=0;i<SSD1306_WIDTH*SSD1306_HEIGHT/8;++i)
+            oled_buffer[i] = 0x00;
     SSD1306_Init(SSD1306_WIDTH,SSD1306_HEIGHT,SSD1306_SPI,&spi_cfg,SSD1306_PIN_RST,SSD1306_PIN_DC);
 	
 }
@@ -123,12 +126,13 @@ void Init_LVGL()
     lv_indev_drv_register(&indev_drv);              /*Finally register the driver*/
 
 }
-
-void SSD1306_Task(void* param)
+bool lvgl_init_flag = false;
+void LVGL_Task(void* param)
 {
     Init_Interface();
     Init_LVGL();
-
+    lvgl_init_flag = true;
+    Trace(3,"init complete");
     // //show hello world and height 16 bits
     // SSD1306_ShowString(8,0,"==hello oled==",16);
 
@@ -156,13 +160,39 @@ void SSD1306_Task(void* param)
     //     }
     // }
 }
+lv_style_t btn3_style;
+void Display_Task(void* param)
+{
+    while(!lvgl_init_flag)
+        OS_Sleep(200);
+    OS_Sleep(3000);
+    Trace(3,"start display");
+    
+    /*Create a Label on the currently active screen*/
+    lv_obj_t * label1 =  lv_label_create(lv_scr_act(), NULL);
+
+    /*Modify the Label's text*/
+    lv_label_set_text(label1, "Hello world!");
+
+    /* Align the Label to the center
+     * NULL means align on parent (which is the screen now)
+     * 0, 0 at the end means an x, y offset after alignment*/
+    lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 16);
+
+    while(1)
+    {
+        OS_Sleep(1000);
+    }
+}
 
 void AppMainTask(void *pData)
 {
     API_Event_t* event=NULL;
             
-    OS_CreateTask(SSD1306_Task ,
+    OS_CreateTask(LVGL_Task ,
         NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY+1, 0, 0, "lvgl Task");
+    OS_CreateTask(Display_Task ,
+        NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY+2, 0, 0, "display Task");
     while(1)
     {
         if(OS_WaitEvent(mainTaskHandle, (void**)&event, OS_TIME_OUT_WAIT_FOREVER))
@@ -193,16 +223,23 @@ static void ex_disp_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const 
 
     int32_t x;
     int32_t y;
+    Trace(3,"flush %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color_p)*/
             // SSD1306_SetPos(x/8,y);
-            Trace(3,"flush %d,%d %d,%d",x1,y1,x2,y2);
+            uint8_t data = color_p->full?1:0;
+            uint16_t page = x/8;
+            uint8_t  raw_in_page = x%8;
+            data <<= raw_in_page;
+            oled_buffer[page*SSD1306_WIDTH+y] = data;
+            // SSD1306_SetPos(page,y);
+            // SSD1306_WriteByte(data,SSD1306_DATA);
             color_p++;
         }
     }
-
+    SSD1306_Show(oled_buffer);
     /* IMPORTANT!!!
      * Inform the graphics library that you are ready with the flushing*/
     lv_flush_ready();
@@ -217,13 +254,19 @@ static void ex_disp_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2,  lv_col
 
     int32_t x;
     int32_t y;
+    Trace(3,"fill %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color)*/
-            Trace(3,"fill %d,%d %d,%d",x1,y1,x2,y2);
+            uint8_t data = color.full?1:0;
+            uint16_t page = x/8;
+            uint8_t  raw_in_page = x%8;
+            data <<= raw_in_page;
+            oled_buffer[page*SSD1306_WIDTH+y] = data;
         }
     }
+    SSD1306_Show(oled_buffer);
 }
 
 /* Write a pixel array (called 'map') to the a specific area on the display
@@ -234,14 +277,20 @@ static void ex_disp_map(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const lv
 
     int32_t x;
     int32_t y;
+    Trace(3,"map %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color_p)*/
-            Trace(3,"map %d,%d %d,%d",x1,y1,x2,y2);
+            uint8_t data = color_p->full?1:0;
+            uint16_t page = x/8;
+            uint8_t  raw_in_page = x%8;
+            data <<= raw_in_page;
+            oled_buffer[page*SSD1306_WIDTH+y] = data;
             color_p++;
         }
     }
+    SSD1306_Show(oled_buffer);
 }
 
 

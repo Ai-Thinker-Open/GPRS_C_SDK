@@ -11,6 +11,9 @@ extern "C"{
 #include "api_hal_spi.h"
 
 
+#define SSD1306_CMD  0	//写命令
+#define SSD1306_DATA 1	//写数据
+
 /**
   * Initialize SSD1306
   * 
