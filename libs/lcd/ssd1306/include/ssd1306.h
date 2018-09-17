@@ -29,6 +29,14 @@ bool SSD1306_Init(uint16_t width, uint16_t height, SPI_ID_t spiN, SPI_Config_t* 
  */
 void SSD1306_SetPos(unsigned char x, unsigned char y);
 
+
+/**
+  * 
+  * write a byte to ssd1306
+  * 
+  */
+void SSD1306_WriteByte(uint8_t data, uint8_t cmd);
+
 void SSD1306_DisplayOn(void);
 void SSD1306_DisplayOff(void);
 

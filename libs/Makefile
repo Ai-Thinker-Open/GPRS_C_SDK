@@ -10,7 +10,7 @@ LOCAL_NAME := libs
 # These should include the toplevel name, e.g. "libs/gps"
 LOCAL_MODULE_DEPENDS := libs/gps \
                         libs/utils \
-                        libs/cjson \
+                        libs/cjson 
                         
 ifeq "$(strip ${CFG_ALIYUN_SUPPORT})" "y"
     LOCAL_MODULE_DEPENDS += libs/aliyun 
@@ -18,6 +18,10 @@ endif
 
 ifeq "$(strip ${CFG_LCD_SUPPORT})" "y"
     LOCAL_MODULE_DEPENDS += libs/lcd 
+endif
+
+ifeq "$(strip ${CFG_LVGL_SUPPORT})" "y"
+    LOCAL_MODULE_DEPENDS += libs/lvgl 
 endif
 
 # Add includes from other modules we do not wish to link to

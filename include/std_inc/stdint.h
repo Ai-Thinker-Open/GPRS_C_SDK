@@ -89,12 +89,20 @@ typedef uint64_t  u64_t;
 #define INT8_MAX       0x7f
 #endif
 
+#ifndef UINT8_MAX
+#define UINT8_MAX       0xff
+#endif
+
 #ifndef INT16_MIN
 #define INT16_MIN       (-0x7fff-1)
 #endif
 
 #ifndef INT16_MAX
 #define INT16_MAX       0x7fff
+#endif
+
+#ifndef UINT16_MAX
+#define UINT16_MAX       0xffff
 #endif
 
 #ifndef INT32_MIN
