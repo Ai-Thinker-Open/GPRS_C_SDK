@@ -27,7 +27,7 @@ MYCFLAGS +=
 ##	List all your sources here           ##
 ## ------------------------------------- ##
 C_SRC := ${notdir ${wildcard src/*.c}}
-CXX_SRCD := ${notdir ${wildcard src/*.cpp}}
+CXX_SRC := ${notdir ${wildcard src/*.cpp}}
 ## ------------------------------------- ##
 ##  Do Not touch below this line         ##
 ## ------------------------------------- ##

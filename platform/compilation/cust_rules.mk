@@ -230,7 +230,11 @@ endif
 FULL_SRC_OBJECTS :=	${LOCAL_OBJS} \
 				    ${patsubst %.S,%.o,${S_SRC}}			\
 				    ${patsubst %.c,%.o,${C_SRC}}			\
-				    ${patsubst %.cpp,%.o,${CXX_SRCD}}		
+					${patsubst %.cpp,%.o,${CXX_SRC}}		\
+					${patsubst src/%.s,%.o,${S_SRC_FILES}}		\
+					${patsubst src/%.c,%.o,${C_SRC_FILES}}		\
+				    ${patsubst src/%.cpp,%.o,${CPP_SRC_FILES}}		
+
 FULL_SRC_OBJECTS := ${foreach obj, ${FULL_SRC_OBJECTS},${OBJ_REL_PATH}/${obj}}
 
 ########################################################
@@ -962,16 +966,22 @@ CPPFLAGS	= ${INCLUDE_PATH} -DEL ${MYCPPFLAGS}
 # Empty rules are generated for all header files, to avoid issues in case one header is deleted (-MP)
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.S
 	@${ECHO} "CPP               $*.S"
+	mkdir -p ${dir ${OBJ_REL_PATH}/$*.o}
+	mkdir -p ${dir ${DEPS_REL_PATH}/$*.d}
 	$(CPP) $(CPPFLAGS) $(ASCPPFLAGS)  -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d -o ${OBJ_REL_PATH}/$*.asm $(REALPATH)
 	@${ECHO} "AS                $*.asm"
 	$(AS) $(ASFLAGS) -o ${OBJ_REL_PATH}/$*.o ${OBJ_REL_PATH}/$*.asm
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.c
 	@${ECHO} "CC                $*.c"
+	mkdir -p ${dir ${OBJ_REL_PATH}/$*.o}
+	mkdir -p ${dir ${DEPS_REL_PATH}/$*.d}
 	$(CC) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH)
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.cpp
 	@${ECHO} "CXX               $*.cpp"
+	mkdir -p ${dir ${OBJ_REL_PATH}/$*.o}
+	mkdir -p ${dir ${DEPS_REL_PATH}/$*.d}
 	$(CXX) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(CXX_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
 
 # The libraries are always generated before. This rule respond allways true.
