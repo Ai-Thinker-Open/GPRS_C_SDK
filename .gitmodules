@@ -9,3 +9,6 @@
 [submodule "libs/aliyun/iotkit-embedded"]
 	path = libs/aliyun/iotkit-embedded
 	url = https://github.com/aliyun/iotkit-embedded.git
+[submodule "libs/lvgl/src"]
+	path = libs/lvgl/src
+	url = https://github.com/littlevgl/lvgl.git
