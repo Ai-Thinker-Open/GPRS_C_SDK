@@ -19,6 +19,23 @@ SHELL := /bin/bash
 # 	echo "#####  $(MAKELEVEL)  ########################################"     
 ifeq ($(MAKELEVEL),0)
 
+BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
+export BUILD_HOST_TYPE := $(shell sh -c $(BUILD_HOST_TYPE_CMD))
+
+ifeq "$(BUILD_HOST_TYPE)" "UNKNOWN"
+BUILD_HOST_UNAME := $(shell uname)
+$(error "$(BUILD_HOST_UNAME) is unsupported(LINUX, CYGWIN, WINDOWS)")
+endif
+
+ifeq "${BUILD_HOST_TYPE}" "LINUX"
+	export COLOR_YELLOW=echo -ne "\033[0;33m";
+	export COLOR_NORMAL=echo -ne "\033[0m";
+	export COLOR_BOLD=echo -ne "\033[1m";
+	export COLOR_GREEN=echo -ne "\033[1;32m";
+	export COLOR_PURPLE=echo -ne "\033[1;35m";
+	export COLOR_CYAN=echo -ne "\033[1;36m";
+endif
+
 # Check if CT_RELEASE is defined and valid
 ifeq "$(strip $(CT_RELEASE))" ""
     export CT_RELEASE := debug
@@ -240,7 +257,7 @@ FULL_SRC_OBJECTS := ${foreach obj, ${FULL_SRC_OBJECTS},${OBJ_REL_PATH}/${obj}}
 SRC_DIRS := ${foreach MODULE_PATH, ${SRC_LIBS}, ${MODULE_PATH}}
 
 # For all dependencies in SRC, rules to call make in dependency modules
-FULL_DEPENDENCY_COMPILE := ${foreach SUBDIR, ${SRC_DIRS}, echo && echo -ne "\033[1m" && printf "\n[MAKE]  %s\n" "${SUBDIR}" && echo -ne "\033[0m" && ${MAKE} -C ${SOFT_WORKDIR}/${SUBDIR} all && } echo
+FULL_DEPENDENCY_COMPILE := ${foreach SUBDIR, ${SRC_DIRS}, echo && printf "\n[MAKE]  %s\n" "${SUBDIR}" && ${MAKE} -C ${SOFT_WORKDIR}/${SUBDIR} all && } echo
 FULL_DEPENDENCY_CLEAN := ${foreach SUBDIR, ${SRC_DIRS}, ${MAKE} -C ${SOFT_WORKDIR}/${SUBDIR} cleanstem;}
 FULL_DEPENDENCY_ALLCLEAN := ${foreach SUBDIR, ${SRC_DIRS}, ${MAKE} -C ${SOFT_WORKDIR}/${SUBDIR} allcleanstem;}
 FULL_DEPENDENCY_DEPCLEAN := ${foreach SUBDIR, ${SRC_DIRS}, ${MAKE} -C ${SOFT_WORKDIR}/${SUBDIR} depcleanstem;}
@@ -373,18 +390,11 @@ endif
 all: $(TOP_TARGET)
 
 ifeq ($(MAKELEVEL),0)
-BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
-export BUILD_HOST_TYPE := $(shell sh -c $(BUILD_HOST_TYPE_CMD))
-
-ifeq "$(BUILD_HOST_TYPE)" "UNKNOWN"
-BUILD_HOST_UNAME := $(shell uname)
-$(error "$(BUILD_HOST_UNAME) is unsupported(LINUX, CYGWIN, WINDOWS)")
-endif
 
 lod:
-	@echo -ne "\033[0;33m"; #
+	${COLOR_YELLOW}
 	@echo "-- System Version : $(BUILD_HOST_TYPE)"
-	@echo -ne "\033[0m"; #normal
+	${COLOR_NORMAL}
 	@echo "---------------------------------------------------"
 	${MAKE} bin
 else
@@ -664,9 +674,9 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 				exit 1; \
 			fi;\
 			mv $(LOD_FILE) $(LODBASE)flash_${CT_RELEASE}.lod;\
-			${ECHO} -ne "\033[1;32m";                             \
+			${COLOR_GREEN}                             \
 			${ECHO} "[LODCOMBINE]        Combine sucessful";                                     \
-			${ECHO} -ne "\033[0m";                                \
+			${COLOR_NORMAL}                                \
 		else                                                                                    \
 			${ECHO} "[LODCOMBINE]        Cannot find Platform lod file:$(AM_PLT_LOD_FILE)";   \
 		fi;                                                                                     \
@@ -827,7 +837,7 @@ ifneq "$(FULL_SRC_OBJECTS)" ""
 	${MAKE} $(FULL_SRC_OBJECTS)
 
 endif
-	@echo -ne "\033[1;35m"; #
+	${COLOR_PURPLE}
 	@${ECHO} "[AR]   ${notdir ${LOCAL_SRCLIBRARY}}"
 ifneq "${COMBINE_LIB}" "yes"
 	echo "/* ${LOCAL_SRCLIBRARY} */" > ${LOCAL_SRCLIBRARY}
@@ -844,7 +854,7 @@ ifneq "$(FULL_SRC_OBJECTS)" ""
 endif
 else
 	${LOCAL_SUBMODULE_LIBRARY_EXPLODE} ${ECHO} " "
-	@echo -ne "\033[0m";
+	${COLOR_NORMAL}
 	if find ${OBJ_REL_PATH} -name "*.o" | sort >${LOCAL_SRCLIBRARY}.l 2>/dev/null; \
 		then $(AR) cru 	${LOCAL_SRCLIBRARY} @${LOCAL_SRCLIBRARY}.l; \
 		else $(AR) cq 	${LOCAL_SRCLIBRARY}; \
@@ -858,9 +868,9 @@ endif # DEPS_NOT_IN_SUBDIR
 else # !IS_TOP_LEVEL_
 
 $(LOCAL_SRCLIBRARY): ${FULL_SRC_OBJECTS} | makedirs ccflagoutput
-	@echo -ne "\033[1;35m"; #
+	${COLOR_PURPLE}
 	@${ECHO} "[AR]   ${notdir ${LOCAL_SRCLIBRARY}}"
-	@echo -ne "\033[0m"; #
+	${COLOR_NORMAL}
 	$(AR) cru ${LOCAL_SRCLIBRARY} ${FULL_SRC_OBJECTS} ${STDERR_NULL} || ${ECHO} "	Error in AR"
 endif # IS_TOP_LEVEL_
 endif # IS_ENTRY_POINT
@@ -995,15 +1005,17 @@ ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.S
 	$(AS) $(ASFLAGS) -o ${OBJ_REL_PATH}/$*.o ${OBJ_REL_PATH}/$*.asm
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.c
-	echo -ne "\033[1;36m" && printf "[CC]   %-27s <== %s\n" "$(notdir $*.o)" "$(notdir $*.c)" && echo -ne "\033[0m"
+	${COLOR_CYAN}
+	printf "[CC]   %-27s <== %s\n" "$(notdir $*.o)" "$(notdir $*.c)"
+	${COLOR_NORMAL}
 	mkdir -p ${dir ${OBJ_REL_PATH}/$*.o}
 	mkdir -p ${dir ${DEPS_REL_PATH}/$*.d}
-	# echo -ne "\033[1;33m"; #yellow
 	$(CC) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(C_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH)
-	# echo -ne "\033[0m"; #normal
 
 ${OBJ_REL_PATH}/%.o: ${LOCAL_SRC_DIR}/%.cpp
-	echo -ne "\033[1;36m" && printf "[CXX]  %-27s <== %s\n" "$(notdir $*.o)" "$(notdir $*.cpp)" && echo -ne "\033[0m"
+	${COLOR_CYAN}
+	printf "[CXX]  %-27s <== %s\n" "$(notdir $*.o)" "$(notdir $*.cpp)"
+	${COLOR_NORMAL}
 	mkdir -p ${dir ${OBJ_REL_PATH}/$*.o}
 	mkdir -p ${dir ${DEPS_REL_PATH}/$*.d}
 	$(CXX) -MT ${OBJ_REL_PATH}/$*.o -MD -MP -MF ${DEPS_REL_PATH}/$*.d $(CXX_SPECIFIC_CFLAGS) $(CFLAGS) $(CT_MIPS16_CFLAGS) $(MYCFLAGS) $(CPPFLAGS)  -o ${OBJ_REL_PATH}/$*.o $(REALPATH) $(EXTERN_CPPFLAGS)
