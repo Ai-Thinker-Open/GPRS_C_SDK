@@ -43,13 +43,15 @@ all:
 	@echo "========================"
 	@echo " start build aliyun lib "
 	@echo "========================"
-	cp $(ALIYUN_PATH)/src/configs/default_settings.mk $(ALIYUN_PATH)/src/configs/default_settings.mk.bak
+	@if [ ! -f "$(ALIYUN_PATH)/src/configs/default_settings.mk.bak" ]; then \
+		cp $(ALIYUN_PATH)/src/configs/default_settings.mk $(ALIYUN_PATH)/src/configs/default_settings.mk.bak; \
+	fi
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/default_settings.mk $(ALIYUN_PATH)/src/configs/
 	cp $(SOFT_WORKDIR)/libs/aliyun/config/config.Ai_Thinker.gprs_a9 $(ALIYUN_PATH)/src/configs/
 	# make -C $(ALIYUN_PATH) distclean
 	make -C $(ALIYUN_PATH) SOFT_WORKDIR=${SOFT_WORKDIR}
 	rm $(ALIYUN_PATH)/src/configs/config.Ai_Thinker.gprs_a9
-	mv $(ALIYUN_PATH)/src/configs/default_settings.mk.bak $(ALIYUN_PATH)/src/configs/default_settings.mk
+	cp $(ALIYUN_PATH)/src/configs/default_settings.mk.bak $(ALIYUN_PATH)/src/configs/default_settings.mk
 	@echo "lib $(ALIYUN_LIB_PATH)/$(ALIYUN_LIB_NAME)"
 	@if [ -f "$(ALIYUN_LIB_PATH)/$(ALIYUN_LIB_NAME)" ]; then \
 		echo "========================";\
