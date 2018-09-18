@@ -7,6 +7,7 @@
 #include "api_hal_gpio.h"
 #include "api_hal_pm.h"
 #include "ssd1306.h"
+#include "stdio.h"
 
 #include "lvgl.h"
 
@@ -20,17 +21,6 @@
 #define SSD1306_HEIGHT  64   // y
 
 ///////////////////////////////////////////////////////////////////////////
-
-const unsigned char bmp_rocket[]={
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0x80,0xC0,0xC0,0xE0,0xE0,0xF0,0xF0,0xF8,0xF8,0xF8,0xF8,0xF8,0xF8,0xF8,0xF8,0xF8,0xF0,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0xC0,0xE0,0xE0,0xE0,0xE0,0xE0,0xE0,0xE0,0xF0,0xF8,0xF8,0xFC,0xFE,0xFE,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xE7,0x83,0x81,0x81,0x81,0xC3,0xFF,0xFF,0xFF,0xFF,0x7F,0x0F,0x00,0x00,0x00,
-0x00,0x00,0x00,0x80,0xC0,0xE0,0xF0,0xF8,0xFC,0xFE,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x3F,0x1F,0x07,0x01,0x00,0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x03,0x03,0x03,0x03,0x07,0x87,0x87,0x87,0x87,0x87,0x87,0x0F,0x1F,0x3F,0x7F,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x1F,0x0F,0x07,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0xF0,0xFC,0xFE,0xFF,0xFF,0xFF,0xE7,0xF3,0xF1,0xF0,0xF0,0xF0,0xF8,0xFC,0x38,0x00,0x01,0x73,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x7F,0x3F,0x1F,0x0F,0x07,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x1E,0x1F,0x0F,0x07,0x07,0x03,0x0F,0x0F,0x07,0x03,0x03,0x01,0x01,0x00,0x00,0x00,0x00,0x00,0x07,0x1F,0x1F,0x0F,0x07,0x03,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-};/* (48 X 48 )*/
-//列行式
-
 
 
 #define AppMain_TASK_STACK_SIZE    (1024 * 2)
@@ -49,7 +39,8 @@ static void ex_mem_fill(lv_color_t * dest, uint32_t length, lv_color_t color);
 #endif
 static bool ex_tp_read(lv_indev_data_t * data);
 
-uint8_t oled_buffer[SSD1306_WIDTH*SSD1306_HEIGHT/8];
+static uint8_t oled_buffer[SSD1306_WIDTH*SSD1306_HEIGHT/8];
+// static uint8_t oled_buffer2[SSD1306_WIDTH*SSD1306_HEIGHT];
 
 void EventDispatch(API_Event_t* pEvent)
 {
@@ -57,16 +48,12 @@ void EventDispatch(API_Event_t* pEvent)
     {
         case API_EVENT_ID_POWER_ON:
             break;
-        case API_EVENT_ID_NO_SIMCARD:
-            break;
-        case API_EVENT_ID_NETWORK_REGISTERED_HOME:
-        case API_EVENT_ID_NETWORK_REGISTERED_ROAMING:
+        case API_EVENT_ID_SYSTEM_READY:
             break;
         default:
             break;
     }
 }
-
 
 
 void Init_Interface()
@@ -90,7 +77,15 @@ void Init_Interface()
     for(uint16_t i=0;i<SSD1306_WIDTH*SSD1306_HEIGHT/8;++i)
             oled_buffer[i] = 0x00;
     SSD1306_Init(SSD1306_WIDTH,SSD1306_HEIGHT,SSD1306_SPI,&spi_cfg,SSD1306_PIN_RST,SSD1306_PIN_DC);
-	
+
+    // for(uint16_t i=0;i<SSD1306_WIDTH*SSD1306_HEIGHT;++i)
+    //     oled_buffer2[i] = 0x00;	
+}
+
+void lvgl_task_tick()
+{
+    lv_tick_inc(1);
+    OS_StartCallbackTimer(mainTaskHandle,1,lvgl_task_tick,NULL);
 }
 
 void Init_LVGL()
@@ -114,6 +109,8 @@ void Init_LVGL()
    /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
 
+    // OS_StartCallbackTimer(mainTaskHandle,1,lvgl_task_tick,NULL);
+
     /*************************
      * Input device interface
      *************************/
@@ -134,7 +131,6 @@ void LVGL_Task(void* param)
     lvgl_init_flag = true;
     Trace(3,"init complete");
     // //show hello world and height 16 bits
-    // SSD1306_ShowString(8,0,"==hello oled==",16);
 
     /*************************************
      * Run the task handler of LittlevGL
@@ -142,42 +138,29 @@ void LVGL_Task(void* param)
     while(1) {
         /* Periodically call this function.
          * The timing is not critical but should be between 1..10 ms */
+        lv_tick_inc(5);
         lv_task_handler();
         OS_Sleep(5);
     }
-
-    // while(1)
-    // {
-    //     for(int8_t i=0;i<(128-48);++i)
-    //     {
-    //         SSD1306_DrawBMP(i,47+i,2,7,(unsigned char*)bmp_rocket);
-    //         OS_Sleep(10);
-    //     }
-    //     for(int8_t i=(128-48);i>=0;--i)
-    //     {
-    //         SSD1306_DrawBMP(i,47+i,2,7,(unsigned char*)bmp_rocket);
-    //         OS_Sleep(10);
-    //     }
-    // }
 }
-lv_style_t btn3_style;
+
 void Display_Task(void* param)
 {
     while(!lvgl_init_flag)
         OS_Sleep(200);
-    OS_Sleep(3000);
+    
     Trace(3,"start display");
     
     /*Create a Label on the currently active screen*/
     lv_obj_t * label1 =  lv_label_create(lv_scr_act(), NULL);
 
     /*Modify the Label's text*/
-    lv_label_set_text(label1, "Hello world!");
+    lv_label_set_text(label1, "Hello World!"SYMBOL_AUDIO);
 
     /* Align the Label to the center
      * NULL means align on parent (which is the screen now)
      * 0, 0 at the end means an x, y offset after alignment*/
-    lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 16);
+    lv_obj_align(label1, NULL, LV_ALIGN_CENTER, 0, 0);
 
     while(1)
     {
@@ -188,6 +171,7 @@ void Display_Task(void* param)
 void AppMainTask(void *pData)
 {
     API_Event_t* event=NULL;
+    OS_Sleep(3000);
             
     OS_CreateTask(LVGL_Task ,
         NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY+1, 0, 0, "lvgl Task");
@@ -223,23 +207,42 @@ static void ex_disp_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const 
 
     int32_t x;
     int32_t y;
+    uint8_t data ;
+    uint16_t page;
+    uint8_t  raw_in_page;
     Trace(3,"flush %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color_p)*/
-            // SSD1306_SetPos(x/8,y);
-            uint8_t data = color_p->full?1:0;
-            uint16_t page = x/8;
-            uint8_t  raw_in_page = x%8;
+            // oled_buffer2[y*SSD1306_WIDTH+x] = color_p->full;
+            data = 1;
+            page = y/8;
+            raw_in_page = y%8;
             data <<= raw_in_page;
-            oled_buffer[page*SSD1306_WIDTH+y] = data;
+            oled_buffer[page*SSD1306_WIDTH+x] &= ~data;//clear this bit
+            if(!color_p->full)
+                data = 0; //not fill this bit
+            oled_buffer[page*SSD1306_WIDTH+x] |= data;
             // SSD1306_SetPos(page,y);
             // SSD1306_WriteByte(data,SSD1306_DATA);
             color_p++;
         }
     }
     SSD1306_Show(oled_buffer);
+
+    // uint8_t tmp[300];
+    // for(uint16_t i=0;i<SSD1306_HEIGHT;++i)
+    // {
+    //     memset(tmp,0,sizeof(tmp));
+    //     snprintf(tmp,sizeof(tmp),"%d: ",i);
+    //     for(uint16_t j=0;j<SSD1306_WIDTH;++j)
+    //     {
+    //         snprintf(tmp+strlen(tmp),sizeof(tmp)-strlen(tmp),"%s ",oled_buffer2[i*SSD1306_WIDTH+j]?"$":"^");
+            
+    //     }
+    //     Trace(5,tmp);
+    // }
     /* IMPORTANT!!!
      * Inform the graphics library that you are ready with the flushing*/
     lv_flush_ready();
@@ -254,16 +257,22 @@ static void ex_disp_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2,  lv_col
 
     int32_t x;
     int32_t y;
+    uint8_t data ;
+    uint16_t page;
+    uint8_t  raw_in_page;
     Trace(3,"fill %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color)*/
-            uint8_t data = color.full?1:0;
-            uint16_t page = x/8;
-            uint8_t  raw_in_page = x%8;
+            data = 1;
+            page = y/8;
+            raw_in_page = y%8;
             data <<= raw_in_page;
-            oled_buffer[page*SSD1306_WIDTH+y] = data;
+            oled_buffer[page*SSD1306_WIDTH+x] &= ~data;//clear this bit
+            if(!color.full)
+                data = 0; //not fill this bit
+            oled_buffer[page*SSD1306_WIDTH+x] |= data;
         }
     }
     SSD1306_Show(oled_buffer);
@@ -277,16 +286,22 @@ static void ex_disp_map(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const lv
 
     int32_t x;
     int32_t y;
+    uint8_t data ;
+    uint16_t page;
+    uint8_t  raw_in_page;
     Trace(3,"map %d,%d %d,%d",x1,y1,x2,y2);
     for(y = y1; y <= y2; y++) {
         for(x = x1; x <= x2; x++) {
             /* Put a pixel to the display. For example: */
             /* put_px(x, y, *color_p)*/
-            uint8_t data = color_p->full?1:0;
-            uint16_t page = x/8;
-            uint8_t  raw_in_page = x%8;
+            data = 1;
+            page = y/8;
+            raw_in_page = y%8;
             data <<= raw_in_page;
-            oled_buffer[page*SSD1306_WIDTH+y] = data;
+            oled_buffer[page*SSD1306_WIDTH+x] &= ~data;//clear this bit
+            if(!color_p->full)
+                data = 0; //not fill this bit
+            oled_buffer[page*SSD1306_WIDTH+x] |= data;
             color_p++;
         }
     }
@@ -333,3 +348,4 @@ static bool ex_tp_read(lv_indev_data_t *data)
 
     return false;   /*false: no more data to read because we are no buffering*/
 }
+

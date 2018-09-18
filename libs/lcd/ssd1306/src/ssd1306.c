@@ -320,7 +320,7 @@ void SSD1306_DrawBMP(unsigned char x0, unsigned char x1, unsigned char y0, unsig
         SSD1306_SetPos(x0,y);
         for(x=x0;x<=x1;x++)
         {      
-            SSD1306_WriteByte(BMP[j++],SSD1306_DATA);	    	
+            SSD1306_WriteByte(BMP[j++],SSD1306_DATA);
         }
     }
 } 
@@ -334,12 +334,14 @@ void SSD1306_DrawBMP(unsigned char x0, unsigned char x1, unsigned char y0, unsig
   */
 void SSD1306_Show(uint8_t* data)
 {
-    uint16_t i;
-    SSD1306_SetPos(0,0);
-    SSD1306_DC_DATA();
-    for(i=0;i<SSD1306_MAX_DATA_BYTES;++i)
+    uint16_t i,j;
+    
+    for(i=0;i<ssd1306_height/8;++i)
     {
-        SPI_WriteReadByte(ssd1306_spi,data[i]);
+        SSD1306_SetPos(0,i);
+        SSD1306_DC_DATA();
+        for(j = 0; j<ssd1306_width; ++j)
+            SPI_WriteReadByte(ssd1306_spi,data[i*ssd1306_width+j]);
     }
 	SSD1306_DC_CMD();  
 }

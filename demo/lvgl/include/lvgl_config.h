@@ -14,7 +14,7 @@
 
 /* Memory size which will be used by the library
  * to store the graphical objects and other data */
-#define LV_MEM_CUSTOM      0                /*1: use custom malloc/free, 0: use the built-in lv_mem_alloc/lv_mem_free*/
+#define LV_MEM_CUSTOM      1                /*1: use custom malloc/free, 0: use the built-in lv_mem_alloc/lv_mem_free*/
 #if LV_MEM_CUSTOM == 0
 #define LV_MEM_SIZE    (32U * 1024U)        /*Size memory used by `lv_mem_alloc` in bytes (>= 2kB)*/
 #define LV_MEM_ATTR                         /*Complier prefix for big array declaration*/
@@ -77,7 +77,7 @@
 #define USE_LV_ANIMATION        1               /*1: Enable all animations*/
 #define USE_LV_SHADOW           1               /*1: Enable shadows*/
 #define USE_LV_GROUP            1               /*1: Enable object groups (for keyboards)*/
-#define USE_LV_GPU              1               /*1: Enable GPU interface*/
+#define USE_LV_GPU              0               /*1: Enable GPU interface*/
 #define USE_LV_REAL_DRAW        1               /*1: Enable function which draw directly to the frame buffer instead of VDB (required if LV_VDB_SIZE = 0)*/
 #define USE_LV_FILESYSTEM       1               /*1: Enable file system (required by images*/
 
@@ -94,7 +94,7 @@
 #define USE_LV_THEME_ALIEN      0       /*Dark futuristic theme*/
 #define USE_LV_THEME_NIGHT      0       /*Dark elegant theme*/
 #define USE_LV_THEME_MONO       0       /*Mono color theme for monochrome displays*/
-#define USE_LV_THEME_MATERIAL   0       /*Flat theme with bold colors and light shadows*/
+#define USE_LV_THEME_MATERIAL   1       /*Flat theme with bold colors and light shadows*/
 #define USE_LV_THEME_ZEN        0       /*Peaceful, mainly light theme */
 
 /*==================
