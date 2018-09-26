@@ -80,7 +80,7 @@ void SSD1306_Task(void* param)
     while(1)
     {
         lcd.FillRect16(&roi,color);
-        OS_Sleep(500);
+        OS_Sleep(100);
         color += 20;
         
     }

@@ -20,6 +20,7 @@
 #include "api_debug.h"
 #include "api_os.h"
 #include "api_sys.h"
+#include "hal_iomux.h"
 
 #include "lcd.h"
 
@@ -230,11 +231,11 @@ static void lcddp_Init(void)
 // ============================================================================
 static LCD_Error_t lcddp_Open(void)
 {
-    // hwp_iomux->pad_LCD_RSTB_cfg = IOMUX_PAD_LCD_RSTB_SEL(IOMUX_PAD_LCD_RSTB_SEL_FUN_LCD_RSTB_SEL);
-    // hwp_iomux->pad_SPI_LCD_CS_cfg  = IOMUX_PAD_SPI_LCD_CS_SEL(IOMUX_PAD_SPI_LCD_CS_SEL_FUN_SPI_LCD_CS_SEL);
-    // hwp_iomux->pad_SPI_LCD_SCK_cfg = IOMUX_PAD_SPI_LCD_SCK_SEL(IOMUX_PAD_SPI_LCD_SCK_SEL_FUN_SPI_LCD_SCK_SEL);
-    // hwp_iomux->pad_SPI_LCD_DIO_cfg = IOMUX_PAD_SPI_LCD_DIO_SEL(IOMUX_PAD_SPI_LCD_DIO_SEL_FUN_SPI_LCD_DIO_SEL);
-    // hwp_iomux->pad_SPI_LCD_SDC_cfg = IOMUX_PAD_SPI_LCD_SDC_SEL(IOMUX_PAD_SPI_LCD_SDC_SEL_FUN_SPI_LCD_SDC_SEL);
+    hwp_iomux->pad_LCD_RSTB_cfg = IOMUX_PAD_LCD_RSTB_SEL(IOMUX_PAD_LCD_RSTB_SEL_FUN_LCD_RSTB_SEL);
+    hwp_iomux->pad_SPI_LCD_CS_cfg  = IOMUX_PAD_SPI_LCD_CS_SEL(IOMUX_PAD_SPI_LCD_CS_SEL_FUN_SPI_LCD_CS_SEL);
+    hwp_iomux->pad_SPI_LCD_SCK_cfg = IOMUX_PAD_SPI_LCD_SCK_SEL(IOMUX_PAD_SPI_LCD_SCK_SEL_FUN_SPI_LCD_SCK_SEL);
+    hwp_iomux->pad_SPI_LCD_DIO_cfg = IOMUX_PAD_SPI_LCD_DIO_SEL(IOMUX_PAD_SPI_LCD_DIO_SEL_FUN_SPI_LCD_DIO_SEL);
+    hwp_iomux->pad_SPI_LCD_SDC_cfg = IOMUX_PAD_SPI_LCD_SDC_SEL(IOMUX_PAD_SPI_LCD_SDC_SEL_FUN_SPI_LCD_SDC_SEL);
     Trace(1,"ili9341 lcddp_Open");
     hal_GoudaSerialOpen(LCDD_SPI_LINE_TYPE, LCDD_SPI_FREQ, &g_tgtLcddCfg, 0);
 
