@@ -30,6 +30,7 @@
 #include <api_inc_gizwits.h>
 #include <api_inc_audio.h>
 #include <setjmp_inc.h>
+#include <api_hal_gouda_inc.h>
 
 
 
@@ -421,6 +422,24 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*WatchDogSetPeriod)(uint32_t delay);
     void                (*WatchDog_KeepAlive)(void);
     void                (*WatchDog_Close)(void);
+
+    //gouda hal driver
+    void                (*hal_GoudaSerialOpen)(HAL_GOUDA_SPI_LINE_T spiLineType, uint32_t spiFreq, const HAL_GOUDA_LCD_CONFIG_T* config, uint32_t ebcCsAddr);
+    void                (*hal_GoudaClose)(void);
+    HAL_ERR_T           (*hal_GoudaWriteCmd)(uint16_t addr);
+    HAL_ERR_T           (*hal_GoudaWriteData)(uint16_t data);
+    HAL_ERR_T           (*hal_GoudaWriteReg)(uint16_t addr, uint16_t data);
+    HAL_ERR_T           (*hal_GoudaReadData)(uint16_t addr, uint8_t *pData, uint32_t len);
+    HAL_ERR_T           (*hal_GoudaReadReg)(uint16_t addr, uint16_t *pData);
+    HAL_ERR_T           (*hal_GoudaBlitRoi)(const HAL_GOUDA_WINDOW_T* pRoi, const uint32_t nbCmd, const HAL_GOUDA_LCD_CMD_T* pCmds, HAL_GOUDA_IRQ_HANDLER_T handler);
+    HAL_ERR_T           (*hal_GoudaBlitRoi2Ram)(uint32_t* pBuffer, const uint16_t width, const HAL_GOUDA_WINDOW_T* pRoi, HAL_GOUDA_IRQ_HANDLER_T handler);
+    bool                (*hal_GoudaIsActive)(void);
+    void                (*hal_GoudaSetBgColor)(uint16_t color);
+    uint16_t            (*hal_GoudaGetBgColor)(void);
+    HAL_ERR_T           (*hal_GoudaOvlLayerOpen)(HAL_GOUDA_OVL_LAYER_ID_T id, HAL_GOUDA_OVL_LAYER_DEF_T* def);
+    void                (*hal_GoudaOvlLayerClose)(HAL_GOUDA_OVL_LAYER_ID_T id);
+    void                (*hal_GoudaSetBlock)(uint32_t block);
+
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
