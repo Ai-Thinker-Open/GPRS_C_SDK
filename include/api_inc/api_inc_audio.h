@@ -32,23 +32,23 @@ typedef enum
     AUDIO_TYPE_WAV_ALAW,            /* 14 */
     AUDIO_TYPE_WAV_ULAW,            /* 15 */
     AUDIO_TYPE_WAV_DVI_ADPCM,       /* 16 */
-    AUDIO_TYPE_SMF,                    /* 17 */
-    AUDIO_TYPE_IMELODY,                /* 18 */
-    AUDIO_TYPE_SMF_SND,             /* 19 */
-    AUDIO_TYPE_MMF,                /* 20 */
-    AUDIO_TYPE_AU,                 /*  21 */
-    AUDIO_TYPE_AIFF,                 /*  22 */
-    AUDIO_TYPE_M4A,                  /* 23  */
-    AUDIO_TYPE_3GP,                  /*  24 */
-    AUDIO_TYPE_MP4,                      /* 25 */
-    AUDIO_TYPE_JPG,                      /* 26 */
-    AUDIO_TYPE_GIF,                      /* 27 */
-    AUDIO_TYPE_MJPG,                     /* 28 */
-    AUDIO_TYPE_WMA,                  /* 29 */
-    AUDIO_TYPE_MIDI,                  /* 30 */
-    AUDIO_TYPE_RM,              /*31*/
-    AUDIO_TYPE_AVSTRM,         /*32*/
-    AUDIO_TYPE_SCO,                 /*33*/
+    // AUDIO_TYPE_SMF,                    /* 17 */
+    // AUDIO_TYPE_IMELODY,                /* 18 */
+    // AUDIO_TYPE_SMF_SND,             /* 19 */
+    // AUDIO_TYPE_MMF,                /* 20 */
+    // AUDIO_TYPE_AU,                 /*  21 */
+    // AUDIO_TYPE_AIFF,                 /*  22 */
+    // AUDIO_TYPE_M4A,                  /* 23  */
+    // AUDIO_TYPE_3GP,                  /*  24 */
+    // AUDIO_TYPE_MP4,                      /* 25 */
+    // AUDIO_TYPE_JPG,                      /* 26 */
+    // AUDIO_TYPE_GIF,                      /* 27 */
+    // AUDIO_TYPE_MJPG,                     /* 28 */
+    // AUDIO_TYPE_WMA,                  /* 29 */
+    // AUDIO_TYPE_MIDI,                  /* 30 */
+    // AUDIO_TYPE_RM,              /*31*/
+    // AUDIO_TYPE_AVSTRM,         /*32*/
+    // AUDIO_TYPE_SCO,                 /*33*/
 
     AUDIO_TYPE_MAX
 } AUDIO_Type_t;
