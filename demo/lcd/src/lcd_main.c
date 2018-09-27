@@ -33,12 +33,7 @@ void EventDispatch(API_Event_t* pEvent)
 
 
 
-LCD_ROI_t roi = {
-    .x = 0,
-    .y = 0,
-    .width = 100,
-    .height = 200
-};
+
 
 LCD_OP_t lcd = {
     .Open              = NULL,
@@ -59,22 +54,38 @@ LCD_OP_t lcd = {
     .SetDirDefault     = NULL,
     .GetStringId       = NULL,
     .GetLcdId          = NULL,
-    .ChangeLcdSpiFreq  = NULL,
-    .GoudaBltHdl       = NULL,
 };
     
 void Init_Interface()
 {
+    LCD_Screen_Info_t info;
+
+    //register functions by lcd driver
     LCD_ili9341_Register(&lcd);
     lcd.Open();
+    lcd.GetScreenInfo(&info);
+
+    LCD_ROI_t roi = {
+        .x = 0,
+        .y = 0,
+        .width = info.width,
+        .height = info.height
+    };
+    lcd.FillRect16(&roi,0xffff);
 	
 }
 
 
 
-void SSD1306_Task(void* param)
+void LCD_Task(void* param)
 {
-    // OS_Sleep(2000);
+    // OS_Sleep(5000);
+    LCD_ROI_t roi = {
+        .x = 0,
+        .y = 0,
+        .width = 100,
+        .height = 200
+    };
     Init_Interface();
     uint16_t color = 0x0000;
     while(1)
@@ -90,7 +101,7 @@ void AppMainTask(void *pData)
 {
     API_Event_t* event=NULL;
             
-    OS_CreateTask(SSD1306_Task ,
+    OS_CreateTask(LCD_Task ,
         NULL, NULL, AppMain_TASK_STACK_SIZE, AppMain_TASK_PRIORITY+1, 0, 0, "lcd Task");
     while(1)
     {

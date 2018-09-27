@@ -53,7 +53,8 @@ const HAL_GOUDA_LCD_CONFIG_T g_tgtLcddCfg = {
     .cs1Polarity    =   false,
     .rsPolarity     =   false,
     .wrPolarity     =   false,
-    .rdPolarity     =   false}
+    .rdPolarity     =   false,
+    .resetb         =   true}
     };
 
 bool g_lcddRotate = false;
@@ -830,7 +831,7 @@ bool lcddp_SetDirDefault(void)
     return true;
 }
 
-char* lcdd_get_id_string(void)
+char* lcddp_GetStringId(void)
 {
     static char ili9341_id_str[] = "ili9341\n";
     return ili9341_id_str;
@@ -897,6 +898,16 @@ bool lcddp_CheckProductId()
 //     return false;
 // }
 
+LCD_Error_t lcddp_SetBrightness(uint8_t brightness)
+{
+    return LCD_ERROR_NONE;
+}
+
+uint16_t lcddp_GetLcdId()
+{
+    return 0x0000;
+}
+
 
 
 #include "lcd.h"
@@ -905,8 +916,25 @@ LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg)
 {
     // if( lcddp_CheckProductId())
     {
-        reg->Open = lcddp_Open;
-        reg->FillRect16 = lcddp_FillRect16;
+        reg->Open              = lcddp_Open;
+        reg->Close             = lcddp_Close;
+        reg->SetContrast       = lcddp_SetContrast;
+        reg->SetBrightness     = lcddp_SetBrightness;
+        reg->SetStandbyMode    = lcddp_SetStandbyMode;
+        reg->Sleep             = lcddp_Sleep;
+        reg->PartialOn         = lcddp_PartialOn;
+        reg->PartialOff        = lcddp_PartialOff;
+        reg->WakeUp            = lcddp_WakeUp;
+        reg->GetScreenInfo     = lcddp_GetScreenInfo;
+        reg->SetPixel16        = lcddp_SetPixel16;
+        reg->FillRect16        = lcddp_FillRect16;
+        reg->Blit16            = lcddp_Blit16;
+        reg->Busy              = lcddp_Busy;
+        reg->SetDirRotation    = lcddp_SetDirRotation;
+        reg->SetDirDefault     = lcddp_SetDirDefault;
+        reg->GetStringId       = lcddp_GetStringId;
+        reg->GetLcdId          = lcddp_GetLcdId;
+        // reg->GoudaBltHandler   = lcddp_GoudaBlitHandler;
     }
     lcdd_MutexFree();
     return LCD_ERROR_NONE;

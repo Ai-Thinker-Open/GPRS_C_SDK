@@ -1,17 +1,20 @@
 
-SSD1306 spi oled display demo
+lcd spi display demo
 ====
 
-|Oled Pin| SPI   | A9 |
-|--------|-------| -- |
-| GND    | GND   | GND|
-| VCC    | 3~5.5V|VBAT/VUSB/VIO|
-| D0     | SPI CLK| IO0|
-| D1     | SPI MO | IO3|
-| RES    |  NC   | IO6|
-| DC     |  NC   | IO7|
-| CS     | SPI CS| IO1|
+e.g. ili9341
+
+|LCD Pin |A9          |
+|--------|--          |
+| GND    |GND         |
+| VCC    |            |
+| MOSI   |LCD_DIO/IO17|
+| MISO   |            |
+| SCK    |LCD_SCK/IO16|
+| RES    |LCD_RST/IO14|
+| DC     |LCD_SDC/IO18|
+| CS     |LCD_CD/IO15 |
 
 
-![](./assets/ssd1306_oled.gif)
+
 

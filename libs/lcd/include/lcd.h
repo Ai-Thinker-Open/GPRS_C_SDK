@@ -117,8 +117,6 @@ typedef struct
     bool        (*SetDirDefault)(void);
     char*       (*GetStringId)(void);
     uint16_t    (*GetLcdId)(void);
-    void        (*ChangeLcdSpiFreq)(bool high);
-    void        (*GoudaBltHdl)(void);
 } LCD_OP_t;
 
 
