@@ -55,13 +55,17 @@ LCD_OP_t lcd = {
     .GetStringId       = NULL,
     .GetLcdId          = NULL,
 };
-    
+void OnBlit(void* param)
+{
+
+}
+
 void Init_Interface()
 {
     LCD_Screen_Info_t info;
 
     //register functions by lcd driver
-    LCD_ili9341_Register(&lcd);
+    LCD_ili9341_Register(&lcd,OnBlit);
     lcd.Open();
     lcd.GetScreenInfo(&info);
 

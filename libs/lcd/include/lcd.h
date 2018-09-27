@@ -117,10 +117,11 @@ typedef struct
     bool        (*SetDirDefault)(void);
     char*       (*GetStringId)(void);
     uint16_t    (*GetLcdId)(void);
+    // void        (*OnBlt)(void*);
 } LCD_OP_t;
 
 
-extern LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg);
+extern LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg,void(*pOnBlit)(void*));
 
 #ifdef __cplusplus
 }

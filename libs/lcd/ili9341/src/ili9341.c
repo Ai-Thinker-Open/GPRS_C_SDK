@@ -118,6 +118,7 @@ static uint32_t lcdd_MutexGet(void)
     return result;
 }
 
+static void  (*pOnBlt)(void*) = NULL;
 
 // =============================================================================
 // lcddp_GoudaBlitHandler
@@ -133,6 +134,8 @@ void lcddp_GoudaBlitHandler(void)
         hal_GoudaOvlLayerClose(HAL_GOUDA_OVL_LAYER_ID0);
         g_lcddAutoCloseLayer = false;
     }
+    if(pOnBlt)
+        pOnBlt(NULL);
 }
 
 
@@ -240,6 +243,7 @@ static LCD_Error_t lcddp_Open(void)
     Trace(1,"ili9341 lcddp_Open");
     hal_GoudaSerialOpen(LCDD_SPI_LINE_TYPE, LCDD_SPI_FREQ, &g_tgtLcddCfg, 0);
 
+    // hal_GoudaSetBlock(1);//block wait for op complete
     // Init code
     OS_Sleep(50);
 
@@ -418,9 +422,10 @@ void lcddp_BlitRoi2Win(const HAL_GOUDA_WINDOW_T* pRoi, const HAL_GOUDA_WINDOW_T*
 // ============================================================================
 LCD_Error_t lcddp_Blit16(const LCD_FBW_t* frameBufferWin, uint16_t startX, uint16_t startY)
 {
-    LCDD_ASSERT((frameBufferWin->fb.width&1) == 0, "LCDD: FBW must have an even number "
-                "of pixels per line. Odd support is possible at the price of a huge "
-                "performance lost");
+    // LCDD_ASSERT((frameBufferWin->fb.width&1) == 0, "LCDD: FBW must have an even number "
+    //             "of pixels per line. Odd support is possible at the price of a huge "
+    //             "performance lost");
+    
     // Active window coordinates.
     HAL_GOUDA_WINDOW_T inputWin;
     HAL_GOUDA_WINDOW_T activeWin;
@@ -912,7 +917,7 @@ uint16_t lcddp_GetLcdId()
 
 #include "lcd.h"
 
-LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg)
+LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg,void(*onBlit)(void*))
 {
     // if( lcddp_CheckProductId())
     {
@@ -934,7 +939,8 @@ LCD_Error_t LCD_ili9341_Register(LCD_OP_t* reg)
         reg->SetDirDefault     = lcddp_SetDirDefault;
         reg->GetStringId       = lcddp_GetStringId;
         reg->GetLcdId          = lcddp_GetLcdId;
-        // reg->GoudaBltHandler   = lcddp_GoudaBlitHandler;
+        // reg->OnBlt             = pOnBlit;
+        pOnBlt = onBlit;
     }
     lcdd_MutexFree();
     return LCD_ERROR_NONE;
