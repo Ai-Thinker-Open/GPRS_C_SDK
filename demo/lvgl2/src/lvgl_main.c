@@ -118,7 +118,7 @@ void Init_LVGL()
    /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
 
-    // OS_StartCallbackTimer(mainTaskHandle,1,lvgl_task_tick,NULL);
+    OS_StartCallbackTimer(mainTaskHandle,1,lvgl_task_tick,NULL);
 
     /*************************
      * Input device interface
@@ -147,9 +147,9 @@ void LVGL_Task(void* param)
     while(1) {
         /* Periodically call this function.
          * The timing is not critical but should be between 1..10 ms */
-        lv_tick_inc(5);
+        // lv_tick_inc(1);
         lv_task_handler();
-        OS_Sleep(5);
+        OS_Sleep(1);
     }
 }
 
