@@ -138,8 +138,8 @@ elif [[ $paramNum -eq 4  ]]; then
     if [[ "$1x" == "fotax" ]]; then
         if [ -f "$2" ]; then
             if [ -f "$3" ]; then
-                echo "waiting for making fota pack..."
-                echo "this will take a few minutes"
+                echo "[OTA] waiting for making fota pack..."
+                echo "      this will take a few minutes..."
                 mkdir -p hex/tmp
                 old_ota_path=hex/tmp/old_ota_lod.lod
                 new_ota_path=hex/tmp/new_ota_lod.lod

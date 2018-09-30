@@ -105,10 +105,15 @@ if "%1%"x =="demo"x (
 :run_fota         
     if exist "%2%" (
         if exist "%3%" (
-            echo waiting for making fota pack...
-            echo this will take a few minutes
-            REM platform\compilation\fota\fotacreate.exe 4194304 65536 0.lod 1.lod 0.pack
-            platform\compilation\fota\fotacreate.exe 4194304 65536 %2% % %3% % %4%
+            echo [OTA] waiting for making fota pack...
+            echo       this will take a few minutes...
+            md hex/tmp
+            set old_ota_path=hex/tmp/old_ota_lod.lod
+            set new_ota_path=hex/tmp/new_ota_lod.lod
+            python platform/compilation/lodtool.py gen_ota --lod %2% --out %old_ota_path%
+            python platform/compilation/lodtool.py gen_ota --lod %3% --out %new_ota_path%
+            platform\compilation\fota\fotacreate.exe 4194304 65536 %old_ota_path% % %new_ota_path% %4%
+            rd /q /s hex/tmp
         ) else (
             echo usage: 'build.bat fota old.lod new.lod fota.pack'
         )
