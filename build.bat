@@ -107,13 +107,11 @@ if "%1%"x =="demo"x (
         if exist "%3%" (
             echo [OTA] waiting for making fota pack...
             echo       this will take a few minutes...
-            md hex/tmp
-            set old_ota_path=hex/tmp/old_ota_lod.lod
-            set new_ota_path=hex/tmp/new_ota_lod.lod
-            python platform/compilation/lodtool.py gen_ota --lod %2% --out %old_ota_path%
-            python platform/compilation/lodtool.py gen_ota --lod %3% --out %new_ota_path%
-            platform\compilation\fota\fotacreate.exe 4194304 65536 %old_ota_path% % %new_ota_path% %4%
-            rd /q /s hex/tmp
+            if not exist "hex\tmp" md hex\tmp
+            python platform\compilation\lodtool.py gen_ota --lod %2% --out hex\tmp\old_ota_lod.lod
+            python platform\compilation\lodtool.py gen_ota --lod %3% --out hex\tmp\new_ota_lod.lod
+            platform\compilation\fota\fotacreate.exe 4194304 65536 hex\tmp\old_ota_lod.lod hex\tmp\new_ota_lod.lod %4%
+            rd /q /s hex\tmp
         ) else (
             echo usage: 'build.bat fota old.lod new.lod fota.pack'
         )
