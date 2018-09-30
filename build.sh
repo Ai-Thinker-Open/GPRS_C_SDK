@@ -140,7 +140,13 @@ elif [[ $paramNum -eq 4  ]]; then
             if [ -f "$3" ]; then
                 echo "waiting for making fota pack..."
                 echo "this will take a few minutes"
-                platform/compilation/fota/linux/fotacreate 4194304 65536 $2 $3 $4
+                mkdir -p hex/tmp
+                old_ota_path=hex/tmp/old_ota_lod.lod
+                new_ota_path=hex/tmp/new_ota_lod.lod
+                python platform/compilation/lodtool.py gen_ota --lod $2 --out $old_ota_path
+                python platform/compilation/lodtool.py gen_ota --lod $3 --out $new_ota_path
+                platform/compilation/fota/linux/fotacreate 4194304 65536  $old_ota_path  $new_ota_path $4
+                rm -rf hex/tmp
                 exit 0
             fi
         fi

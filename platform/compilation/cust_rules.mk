@@ -137,7 +137,7 @@ ifneq "${AM_MODEL}" ""
 endif
 
 export LODCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/lodCombine.pl
-export LODPYCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/lodCombine.py
+export LODPYCOMBINE_TOOL := ${SOFT_WORKDIR}/platform/compilation/lodtool.py
 
 ########################################################################
 # End of MAKELEVEL=0. Things to do only once.
@@ -662,13 +662,10 @@ ifneq "${AM_PLT_LOD_FILE}" ""
 endif
 else 
 ifneq "${AM_PLT_LOD_FILE}" ""
-	# $(LOD_TO_BIN) ${LOD_FILE} -0                                                   \
-			# python $(LODPYCOMBINE_TOOL) --opt merge --bl $(AM_PLT_LOD_FILE) --lod $(LOD_FILE) --output $(WITH_PLT_LOD_FILE); \
-	# $(LODCOMBINE_TOOL) openat -l $(tepath)SW_V2000_csdk.lod -i $(tepath)uart_flash_debug.lod -o $(tepath)test.lod -u $(tepath)testota.lod; 
 	@${ECHO} "[LODCOMBINE]        Combine with Platform lod"
 	if [ -f $(LOD_FILE) ]; then                                                                 \
 		if [ -f $(AM_PLT_LOD_FIFLE) ]; then  \
-			$(LODCOMBINE_TOOL) openat -l  $(AM_PLT_LOD_FILE) -i $(LOD_FILE) -o $(WITH_PLT_LOD_FILE) -u $(WITH_PLT_OTA_FILE);   \
+			python $(LODPYCOMBINE_TOOL) merge --platform $(AM_PLT_LOD_FILE) --app $(LOD_FILE) --out $(WITH_PLT_LOD_FILE); \
 			if [ $$? -gt 0 ]; then \
 				${ECHO} "[LODCOMBINE]        Combine failed";   \
 				exit 1; \

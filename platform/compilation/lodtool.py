@@ -123,12 +123,11 @@ class LOD(object):
 
     def start_address(self):
         return sorted(self.blocks.keys())[0]
-
-    def remove_boot(self,outlod):
-        for block_base, block_data in iteritems(self.blocks):
-            if(int(block_base) < 0x08010000):
-                continue
-            outlod.blocks[block_base] = block_data
+    
+    def remove_bootloader(self):
+        for block_base in self.blocks.keys():
+            if(block_base < 0x08010000):#bootloader end address at 0x08010000
+                del self.blocks[block_base]
 
 def load_lod(fname):
     lod = LOD()
@@ -136,183 +135,134 @@ def load_lod(fname):
         return lod
     return None
 
-def dual_merge(bl, lod):
-    if 'USER_BASE' not in bl.attrnames:
-        print('USER_BASE not in base LOD')
+def dual_merge(bl, lod, fill_blank):
+    if 'BOOT_SECTOR' not in bl.attrnames:
+        print('BOOT_SECTOR not in platform lod')
         return None
-    if 'USER_BASE' not in lod.attrnames:
-        print('USER_BASE not in second LOD')
+    # if 'BOOT_SECTOR' not in lod.attrnames:
+    #     print('BOOT_SECTOR not in second LOD')
+    #     return None
+
+    bs1 = int(bl.attrs['BOOT_SECTOR'], 0) | 0x08000000
+    # bs2 = int(lod.attrs['BOOT_SECTOR'], 0) | 0x08000000
+    if bs1 not in bl.blocks.keys():
+        print('BOOT_SECTOR data not in platform lod')
         return None
+    # if bs2 not in lod.blocks.keys():
+    #     print('BOOT_SECTOR data not in second LOD')
+    #     return None
 
-
-    ub1 = int(bl.attrs['USER_BASE'], 0) | 0x08000000
-    ub2 = int(lod.attrs['USER_BASE'], 0) | 0x08000000
-    if ub1 != ub2:
-        print('USER_BASE are not the same  %x %x'%(ub1, ub2) )
-        return None
-
+    sa1 = bl.start_address()
     sa2 = lod.start_address()
-    if ub2 != sa2:
-        print('USER_BASE of second LOD is not the start address')
+    if bs1 != sa1:
+        print('BOOT_SECTOR of platform lod is not the start address')
         return None
+    # if bs2 != sa2:
+    #     print('BOOT_SECTOR of second LOD is not the start address')
+    #     return None
 
     ea1 = bl.end_address()
     if ea1 > sa2:
-        print('USER_BASE is too big')
+        print('platform lod is too big!!! please reduce platform code!!!')
         return None
 
     output = LOD()
     output.blocks = lod.blocks
+    # output.blocks[bs2][0] = 0x87654321 #magic number, already set in sdk_init.c, so comment here
 
-    pa = ea1
-    while pa < sa2:
-        block_base = pa
-        block_size = sa2 - pa
-        if pa % 0x10000 == 0 and block_size >= 0x10000:
-            block_size = 0x10000
-        elif pa % 0x1000 == 0 and block_size >= 0x1000:
-            block_size = 0x1000
-        else:
-            print('failed to padding at 0x%x, size %d' % (block_base, block_size))
-            return None
+    #fill 0xffffffff, must do it when generate ota lod
+    if fill_blank:
+        pa = ea1
+        while pa < sa2:
+            block_base = pa
+            block_size = sa2 - pa
+            if pa % 0x10000 == 0 and block_size >= 0x10000:
+                block_size = 0x10000
+            elif pa % 0x1000 == 0 and block_size >= 0x1000:
+                block_size = 0x1000
+            else:
+                print('failed to padding at 0x%x, size %d' % (block_base, block_size))
+                return None
 
-        block_data = [0xffffffff] * int(block_size/4)
-        output.blocks[block_base] = block_data
-        pa += block_size
+            block_data = [0xffffffff] * int(block_size/4)
+            output.blocks[block_base] = block_data
+            pa += block_size
 
     output.attrnames = lod.attrnames
     for attr in output.attrnames:
         output.attrs[attr] = lod.attrs[attr]
-    # output.attrs['BOOT_SECTOR'] = bl.attrs['BOOT_SECTOR']
+    output.attrs['BOOT_SECTOR'] = bl.attrs['BOOT_SECTOR']
     output.blocks.update(bl.blocks)
     return output
 
-
-def dual_otapack(lodstr):
-    lod = load_lod(lodstr)
-    if lod is None:
-        return 1
-    output = LOD()
-    if output is None:
-        return 1
-    lod.remove_boot(output)
-    for attr in lod.attrnames:
-        output.attrs[attr] = lod.attrs[attr]
-    otaout = lodstr[:-4] + "_ota.lod"
-    if not output.store(otaout):
-        return 1
-    return 0
-
-def dual_addpack(fname, str):
-    try:
-        fh = open(fname, 'r+')
-    except:
-        print("failed to open %s for read" % fname)
-        return False
-
-    fh.seek(0,2)
-    len = fh.tell()
-    str += "\n%d\n"%len
-    fh.seek(0,0)
-    fh.write(str)
-    fh.close()
-    return True
-
-
 def main(argv):
     opt = optparse.OptionParser(usage="""%prog [options]
-
-This utility will merge 2 LODs of dual boot into one LOD. During merge:
-* check BOOT_SECTOR of both inputs;
-* BOOT_SECTOR of the output LOD will follow bootloader LOD;
-* first word of the 2nd LOD will be changed to magic number;
-* padding from bootloader to second LOD;
-* checksum will be regenerated.
+merge:
+      merge platform lod and app lod into one LOD. During merge:
+    * check BOOT_SECTOR of platform inputs;
+    * BOOT_SECTOR of the output LOD will follow platform LOD;
+    * padding from platform to second LOD(with 0xffffffff);
+    * checksum will be regenerated.
+gen_ota:
+      generate ota pack. During genrate:
+    * remove bootloader in LOD 
+    * checksum will be regenerated.
 """)
 
-    opt.add_option("--opt", action="store", dest="op",
-                   help="bootloader LOD file name")
-
-    opt.add_option("--bl", action="store", dest="bl",
-                   help="bootloader LOD file name")
+    opt.add_option("--platform", action="store", dest="platform",
+                   help="platform LOD file name")
+    opt.add_option("--app", action="store", dest="app",
+                   help="app  LOD file name")
     opt.add_option("--lod", action="store", dest="lod",
-                   help="second LOD file name")
-    opt.add_option("--output", action="store", dest="output",
+                   help="LOD file name generate by this tool with --out option( combined platform lod and app lod)")
+    opt.add_option("--out", action="store", dest="out",
                    help="output LOD file name")
 
-    opt.add_option("--old", action="store", dest="old",
-                   help="old LOD file name")
-    opt.add_option("--new", action="store", dest="new",
-                   help="new LOD file name")
-
-    opt.add_option("--pack", action="store", dest="pack",
-                   help="pack file name")
-    opt.add_option("--str", action="store", dest="str",
-                   help="str need to add")
-
-    opt, argv = opt.parse_args(argv)
-
-    if opt.op is None:
-        print("please set you option!")
+    cmd = argv[0]
+    if cmd != "merge" and cmd != "gen_ota":
+        argv[0]="--help"
+        opt.parse_args(argv)
         return 1
-
-        #merge
-        #merge
-    if opt.op == "merge":
-        if opt.bl is None:
+    opt, argv = opt.parse_args(argv[1:])
+    if cmd == "merge":
+        if opt.platform is None:
             print("bootloader LOD file name is not specified!")
             return 1
-        if opt.lod is None:
+        if opt.app is None:
             print("second LOD file name is not specified!")
             return 1
-        if opt.output is None:
+        if opt.out is None:
             print("output LOD file name is not specified!")
             return 1
-        
-        bl = load_lod(opt.bl)
-        if bl is None:
+        ######### merge lods ############
+        platform_lod = load_lod(opt.platform)
+        if platform_lod is None:
             return 1
+        app_lod = load_lod(opt.app)
+        if app_lod is None:
+            return 1
+        output = dual_merge(platform_lod, app_lod, True)
+        if output is None:
+            return 1
+        if not output.store(opt.out):
+            return 1
+        
+    elif cmd == "gen_ota":
+        if opt.lod is None:
+            print("LOD file name is not specified!")
+            return 1
+        if opt.out is None:
+            print("output LOD file name is not specified!")
+            return 1
+        ######### generage ota lod ############
         lod = load_lod(opt.lod)
         if lod is None:
             return 1
-
-        output = dual_merge(bl, lod)
-        if output is None:
+        lod.remove_bootloader()
+        if not lod.store(opt.out):
             return 1
-
-        if not output.store(opt.output):
-            return 1
-        #otapack
-        #otapack
-    elif opt.op == "otapack":
-        # python platform\compilation\lodCombine.py --opt otapack --old fota\fota_B1508_debugnew.lod --new fota\fota_B1509_debug.lod
-        if opt.old is None:
-            print("old LOD file name is not specified!")
-            return 1
-        if opt.new is None:
-            print("new LOD file name is not specified!")
-            return 1
-        print("old: %s new: %s"%(opt.old[:-4], opt.new[:-4]))
-
-        dual_otapack(opt.old)
-        dual_otapack(opt.new)
-        #otapack
-        #otapack
-    elif opt.op == "addpack":
-        # python platform\compilation\lodCombine.py --opt addpack --pack fota\fota1.pack --str fota\fota_B1509_debug.lod
-        if opt.pack is None:
-            print("pack file name is not specified!")
-            return 1
-        if opt.str is None:
-            print("str is not specified!")
-            return 1
-        print("output LOD file name is not errro!")
-        dual_addpack(opt.pack, opt.str)
-        #other
-        #other
-    else :
-        print("output LOD file name is not errro!")
-        return 1
+    else:
+        pass
 
     return 0
 
