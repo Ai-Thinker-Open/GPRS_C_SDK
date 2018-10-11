@@ -126,8 +126,8 @@ void OS_UnlockMutex(HANDLE mutex);
 //                                         ,UINT8 nPriority,UINT16 nCreationFlags,UINT16 nTimeSlice,PCSTR pTaskName);
 /// \param  PTASK_FUNC_T pTaskEntry , 
 /// \param  PVOID pParameter  , the pEvent pParameter pointer
-/// \param  PVOID pStackAddr  , the pEvent pStackAddr pointer
-/// \param  UINT16 nStackSize  , the stack size of task
+/// \param  PVOID pStackAddr  , the pEvent pStackAddr pointer,reserved, only NULL
+/// \param  UINT16 nStackSize  , the stack size of task, unit: Word(4 Bytes), so the actual size is nStackSize*4 Bytes
 /// \param  UINT8 nPriority  , the priority of task
 /// \param  UINT16 nCreationFlags  , 
 /// \param  UINT16 nTimeSlice  , 

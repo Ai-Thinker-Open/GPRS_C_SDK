@@ -65,6 +65,15 @@ void EventDispatch(API_Event_t* pEvent)
     }
 }
 
+void ShowStackInfo()
+{
+    OS_Task_Info_t info;
+    OS_GetTaskInfo(testTaskHandle,&info);
+    volatile uint32_t j = 0;
+    uint32_t last_bytes = (uint32_t)&j - info.stackTop;
+    uint32_t all_bytes  = info.stackSize*4;
+    printf("stack usage:%d/%d", all_bytes-last_bytes,all_bytes);
+}
 
 void TestTest(void* pData)
 {
@@ -75,13 +84,14 @@ void TestTest(void* pData)
     Trace(1,"Wait semaphore success!");
     StartTimer1(2000);
     StartTimer2(3000);
+    
     while(1)
     {
         if(OS_GetHeapUsageStatus(&heapStatus))
             Trace(1,"1 heap total:%d, used:%d",heapStatus.totalSize,heapStatus.usedSize);
         else
             Trace(1,"get heap status failed!!");
-        uint8_t* p = OS_Malloc(10000);
+        uint8_t* p = OS_Malloc(10000);// if malloc size is not big, the used size may not change, more see the doc
         if(!p)
             Trace(1,"malloc fail");
         const char* text = "12345679";
@@ -93,6 +103,10 @@ void TestTest(void* pData)
         OS_Free(p);
         OS_GetHeapUsageStatus(&heapStatus);
         Trace(1,"3 heap total:%d, used:%d",heapStatus.totalSize,heapStatus.usedSize);
+
+
+        ShowStackInfo();
+
         OS_Sleep(5000);
     }
 }
