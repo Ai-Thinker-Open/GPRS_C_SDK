@@ -31,7 +31,7 @@ typedef struct{
 typedef struct{
     const char*    name;
     uint8_t        priority;
-    uint16_t       stackSize;
+    uint16_t       stackSize; // unit: Word(4 Bytes), so stack size in byte is stackSize*4
     uint32_t       stackTop;
 }OS_Task_Info_t;
 
