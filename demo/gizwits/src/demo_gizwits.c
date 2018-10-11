@@ -147,6 +147,7 @@ bool GIZWITS_TEST()
     int ret;
     
     GIZWITS_GetConfig(&config,GIZWITS_CONFIG_FILE_PATH);
+    memset((void*)&config,0,sizeof(Gizwits_Config_t));
     memcpy(config.pk,GIZWITS_TRACKER_PK,strlen(GIZWITS_TRACKER_PK));
     memcpy(config.pk_secret,GIZWITS_TRACKER_PK_SECRET,strlen(GIZWITS_TRACKER_PK_SECRET));
     config.alive = 300;
@@ -163,7 +164,7 @@ bool GIZWITS_TEST()
     ret = GIZWITS_Connect(&gizwits,&config,GIZWITS_CONFIG_FILE_PATH);
     if(ret<0)
     {
-        Trace(1,"connect gizwits fail");
+        Trace(1,"connect gizwits fail:%d",ret);
         return false;
     }
     Trace(1,"connect gizwits success");
