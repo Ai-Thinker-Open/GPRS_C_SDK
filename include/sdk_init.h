@@ -31,6 +31,7 @@
 #include <api_inc_audio.h>
 #include <setjmp_inc.h>
 #include <api_hal_gouda_inc.h>
+#include <api_inc_flash.h>
 
 
 
@@ -440,6 +441,35 @@ typedef struct T_INTERFACE_VTBL_TAG
     void                (*hal_GoudaOvlLayerClose)(HAL_GOUDA_OVL_LAYER_ID_T id);
     void                (*hal_GoudaSetBlock)(uint32_t block);
 
+    //spi flash hal
+    void                (*hal_SpiFlashLock)(void);
+    void                (*hal_SpiFlashUnlock)(void);
+    void                (*hal_SpiFlashOpen)(void);
+    void                (*hal_SpiFlashClose)();
+    uint32_t            (*hal_SpiFlashGetID)(void);
+    void                (*hal_SpiFlashSetLockCallback)(HAL_FLASH_CALLBACK_FUNCTION_T lock, void *param);
+    void                (*hal_SpiFlashSetUnlockCallback)(HAL_FLASH_CALLBACK_FUNCTION_T unlock, void *param);
+    void                (*hal_SpiFlashSetCheckIrq)(bool checkirq);
+    void*               (*hal_SpiFlashMapUncacheAddress)(uint32_t flashAddress);
+    uint32_t            (*hal_SpiFlashOffset)(void *address);
+    bool                (*hal_SpiFlashWrite)(uint32_t flashAddress, const void *data, unsigned size);
+    bool                (*hal_SpiFlashErase)(uint32_t flashAddress, unsigned size);
+    void                (*hal_SpiFlashChipErase)(void);
+    void                (*hal_SpiFlashSleep)(void);
+    void                (*hal_SpiFlashWakeup)(void);
+    void                (*hal_SpiFlashReset)(void);
+    unsigned            (*hal_SpiFlashGetPageSize)(void);
+    unsigned            (*hal_SpiFlashGetSectorSize)(void);
+    unsigned            (*hal_SpiFlashGetBlockSize)(void);
+    unsigned            (*hal_SpiFlashGetSize)(void);
+    uint16_t            (*hal_SpiFlashReadStatusRegister)(void);
+    void                (*hal_SpiFlashWriteStatusRegister)(uint16_t val, uint16_t mask);
+    uint8_t             (*hal_SpiFlashReadStatusRegisterEx)(uint8_t n);
+    void                (*hal_SpiFlashWriteStatusRegisterEx)(uint8_t n, uint8_t val);
+    void                (*hal_SpiFlashWriteVolatileStatusRegisterEx)(uint8_t n, uint8_t val);
+    void                (*hal_SpiFlashSecurityErase)(uint32_t address);
+    void                (*hal_SpiFlashSecurityWrite)(uint32_t address, const void *data, unsigned size);
+    void                (*hal_SpiFlashSecurityRead)(uint32_t address, void *data, unsigned size);
 
 } T_INTERFACE_VTBL_TAG;
 extern T_INTERFACE_VTBL_TAG *g_InterfaceVtbl;
