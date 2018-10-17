@@ -46,6 +46,7 @@ typedef enum{
 
 typedef struct{
     void* mqttClient;
+    void* sslConfig;
 }MQTT_Client_t;
 
 typedef enum{
@@ -98,6 +99,42 @@ typedef struct{
 
 typedef enum
 {
+    MQTT_CONNECTION_ERROR_NONE       =  0,  //no error
+    /** Out of memory error.     */
+    MQTT_CONNECTION_ERROR_MEM        = -1,
+    /** Buffer error.            */
+    MQTT_CONNECTION_ERROR_BUF        = -2,
+    /** Timeout.                 */
+    MQTT_CONNECTION_ERROR_TIMEOUT    = -3,
+    /** Routing problem.         */
+    MQTT_CONNECTION_ERROR_RTE        = -4,
+    /** Operation in progress    */
+    MQTT_CONNECTION_ERROR_INPROGRESS = -5,
+    /** Illegal value.           */
+    MQTT_CONNECTION_ERROR_VAL        = -6,
+    /** Operation would block.   */
+    MQTT_CONNECTION_ERROR_WOULDBLOCK = -7,
+    /** Address in use.          */
+    MQTT_CONNECTION_ERROR_USE        = -8,
+    /** Already connecting.      */
+    MQTT_CONNECTION_ERROR_ALREADY    = -9,
+    /** Conn already established.*/
+    MQTT_CONNECTION_ERROR_ISCONN     = -10,
+    /** Not connected.           */
+    MQTT_CONNECTION_ERROR_CONN       = -11,
+    /** Low-level netif error    */
+    MQTT_CONNECTION_ERROR_IF         = -12,
+
+    /** Connection aborted.      */
+    MQTT_CONNECTION_ERROR_ABRT       = -13,
+    /** Connection reset.        */
+    MQTT_CONNECTION_ERROR_RST        = -14,
+    /** Connection closed.       */
+    MQTT_CONNECTION_ERROR_CLSD       = -15,
+    /** Illegal argument.        */
+    MQTT_CONNECTION_ERROR_ARG        = -16,
+    MQTT_CONNECTION_ERROR_PARAM      = -17,
+    MQTT_CONNECTION_ERROR_DNS        = -18,
     /** Accepted */
     MQTT_CONNECTION_ACCEPTED                 = 0,
     /** Refused protocol version */
