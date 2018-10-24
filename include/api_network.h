@@ -88,11 +88,11 @@ typedef void (*Network_Callback_Func_t)(Network_Status_t status);
 // bool Network_GetStatusInfo(Network_Status_Info_t* status);
 #define Network_GetStatusInfo         CSDK_FUNC(Network_GetStatusInfo)
 
-// bool Network_SetFilghtMode(bool enable);
-#define Network_SetFilghtMode         CSDK_FUNC(Network_SetFilghtMode)
+// bool Network_SetFlightMode(bool enable);
+#define Network_SetFlightMode         CSDK_FUNC(Network_SetFlightMode)
 
-// bool Network_GetFilghtMode(bool* enable);
-#define Network_GetFilghtMode         CSDK_FUNC(Network_GetFilghtMode)
+// bool Network_GetFlightMode(bool* enable);
+#define Network_GetFlightMode         CSDK_FUNC(Network_GetFlightMode)
 
 /**
  * 
