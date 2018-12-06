@@ -19,7 +19,7 @@ SHELL := /bin/bash
 # 	echo "#####  $(MAKELEVEL)  ########################################"     
 ifeq ($(MAKELEVEL),0)
 
-BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
+BUILD_HOST_TYPE_CMD := "case `uname` in Linux*) echo LINUX;; CYGWIN*) echo CYGWIN;; MINGW*) echo CYGWIN;; Windows*) echo WINDOWS;; *) echo UNKNOWN;; esac"
 export BUILD_HOST_TYPE := $(shell sh -c $(BUILD_HOST_TYPE_CMD))
 
 ifeq "$(BUILD_HOST_TYPE)" "UNKNOWN"

@@ -340,10 +340,12 @@ else
     dbg_out("1", "parameter ok");
 
     my $cwd = getcwd();
+    $input_elf_file_1 = abs_path($input_elf_file_1);
     my $index1 = index($input_elf_file_1,$cwd)+length($cwd)+1;
     my $index2 = length($input_elf_file_1);
     $input_elf_file_1 = substr($input_elf_file_1,$index1,$index2);
     # print "\n----$input_elf_file_1------\n";
+    $input_elf_file_2 = abs_path($input_elf_file_2);
     $index1 = index($input_elf_file_2,$cwd)+length($cwd)+1;
     $index2 = length($input_elf_file_2);
     $input_elf_file_2 = substr($input_elf_file_2,$index1,$index2);
