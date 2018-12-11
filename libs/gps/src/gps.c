@@ -726,6 +726,7 @@ static int Http_Get(const char* domain, int port,const char* path, char* retBuff
     int ret = connect(fd, (struct sockaddr*)&sockaddr, sizeof(struct sockaddr_in));
     if(ret < 0){
         GPS_DEBUG_I("socket connect fail");
+        close(fd);
         return -1;
     }
     GPS_DEBUG_I("socket connect success");
@@ -733,6 +734,7 @@ static int Http_Get(const char* domain, int port,const char* path, char* retBuff
     ret = send(fd, pData, strlen(pData), 0);
     if(ret < 0){
         GPS_DEBUG_I("socket send fail");
+        close(fd);
         return -1;
     }
     GPS_DEBUG_I("socket send success");
