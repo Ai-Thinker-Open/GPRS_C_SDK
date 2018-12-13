@@ -102,28 +102,33 @@ void GPS_Update(uint8_t* data,uint32_t length)
         GPS_DEBUG_I("buffer overflow");
     if(semCmdSending == NULL)
     {
-        index = Buffer_Query(&gpsNmeaBuffer,"VTG",strlen("VTG"),Buffer_StartPostion(&gpsNmeaBuffer));
-        if(index >= 0)
+        while(1)
         {
-            // GPS_DEBUG_I("find $GNVTG");
-            index = Buffer_Query(&gpsNmeaBuffer,"\r\n",strlen("\r\n"),index);
+            index = Buffer_Query(&gpsNmeaBuffer,"VTG",strlen("VTG"),Buffer_StartPostion(&gpsNmeaBuffer));
             if(index >= 0)
             {
-                // GPS_DEBUG_I("find complete GPS frame");
-                
-                memset(tmp,0,sizeof(tmp));
-                uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index)+1;
-                // GPS_DEBUG_I("frame len:%d",len);
-                if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
+                // GPS_DEBUG_I("find $GNVTG");
+                index = Buffer_Query(&gpsNmeaBuffer,"\r\n",strlen("\r\n"),index);
+                if(index >= 0)
                 {
-                    GPS_DEBUG_I("get data from buffer fail");
-                    return;
+                    // GPS_DEBUG_I("find complete GPS frame");
+                    
+                    memset(tmp,0,sizeof(tmp));
+                    uint32_t len = Buffer_Size2(&gpsNmeaBuffer,index)+1;
+                    // GPS_DEBUG_I("frame len:%d",len);
+                    if(!Buffer_Gets(&gpsNmeaBuffer,tmp,len>GPS_NMEA_FRAME_BUFFER_LENGTH?GPS_NMEA_FRAME_BUFFER_LENGTH:len))
+                    {
+                        GPS_DEBUG_I("get data from buffer fail");
+                        return;
+                    }
+                    GPS_DEBUG_I("parse nmea frame");
+                    if(isSaveLog)
+                        SaveToTFCard((char*)tmp);
+                    GPS_Parse(tmp);
                 }
-                GPS_DEBUG_I("parse nmea frame");
-                if(isSaveLog)
-                    SaveToTFCard((char*)tmp);
-                GPS_Parse(tmp);
             }
+            else
+                break;
         }
     }
     else//sending command

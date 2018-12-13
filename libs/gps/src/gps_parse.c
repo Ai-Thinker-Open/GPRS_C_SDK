@@ -143,16 +143,18 @@ bool GPS_Parse(uint8_t* nmeas)
         uint8_t* index1 = strstr(nmeas,"$");
         if(index1)
         {
-            retFlag = true;
             uint8_t* index2 = strstr(index1,"\r\n");
             if(index2)
             {
+                retFlag = true;
                 tmpStore = index2[2];
                 index2[2] = '\0';
                 nmeas += index2-index1+2;
                 retFlag = ParseOneNmea(index1,flag);
                 index2[2] = tmpStore;
             }
+            else //$GNGGA,084257.000
+                break;
         }
         else
             break;
