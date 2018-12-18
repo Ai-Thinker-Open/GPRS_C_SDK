@@ -143,6 +143,14 @@ typedef struct{
 /// \return bool
 #define GPIO_Get                                    CSDK_FUNC(GPIO_Get)
 
+
+/// \brief  bool GPIO_ChangeMode(GPIO_PIN pin, GPIO_MODE mode);
+/// \param  GPIO_PIN pin:  number of GPIO PIN
+/// \param  GPIO_MODE mode: only GPIO_MODE_OUPUT and GPIO_MODE_OUTPUT can be used 
+/// \return bool: return false if param error or return true
+#define GPIO_ChangeMode                             CSDK_FUNC(GPIO_ChangeMode)
+
+
 /// \brief  bool GPIO_Close(GPIO_PIN pin);
 /// \param  GPIO_PIN pin,  set the number of gpio
 /// \return bool

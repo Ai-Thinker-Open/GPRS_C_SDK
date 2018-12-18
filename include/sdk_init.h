@@ -93,6 +93,7 @@ typedef struct T_INTERFACE_VTBL_TAG
     bool                (*GPIO_Set)(GPIO_PIN pin, GPIO_LEVEL  level);
     bool                (*GPIO_GetLevel)(GPIO_config_t gpioConf, GPIO_LEVEL* level);
     bool                (*GPIO_Get)(GPIO_PIN pin, GPIO_LEVEL* level);
+    bool                (*GPIO_ChangeMode)(GPIO_PIN pin, GPIO_MODE mode);
     bool                (*GPIO_Close)(GPIO_PIN pin);
 
     /*api_hal_uart*/
