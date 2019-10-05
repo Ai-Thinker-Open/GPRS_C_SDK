@@ -12,3 +12,6 @@
 [submodule "libs/lvgl/src"]
 	path = libs/lvgl/src
 	url = https://github.com/littlevgl/lvgl.git
+[submodule "libs/Adafruit_INA219/src"]
+	path = libs/Adafruit_INA219/src
+	url = https://github.com/mikenz/A9_Adafruit_INA219.git
