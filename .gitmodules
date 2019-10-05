@@ -15,3 +15,6 @@
 [submodule "libs/Adafruit_INA219/src"]
 	path = libs/Adafruit_INA219/src
 	url = https://github.com/mikenz/A9_Adafruit_INA219.git
+[submodule "libs/Adafruit_MLX90614/src"]
+	path = libs/Adafruit_MLX90614/src
+	url = https://github.com/mikenz/A9_Adafruit_MLX90614.git
