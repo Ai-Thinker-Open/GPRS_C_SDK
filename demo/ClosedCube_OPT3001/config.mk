@@ -1,0 +1,2 @@
+
+export CFG_OPT3001_SUPPORT=y

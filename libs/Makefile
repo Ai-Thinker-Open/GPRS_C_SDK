@@ -32,6 +32,10 @@ ifeq "$(strip ${CFG_MLX90614_SUPPORT})" "y"
     LOCAL_MODULE_DEPENDS += libs/Adafruit_MLX90614
 endif
 
+ifeq "$(strip ${CFG_OPT3001_SUPPORT})" "y"
+    LOCAL_MODULE_DEPENDS += libs/ClosedCube_OPT3001
+endif
+
 # Add includes from other modules we do not wish to link to
 LOCAL_API_DEPENDS := \
 
