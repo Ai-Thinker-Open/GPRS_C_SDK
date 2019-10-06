@@ -1,0 +1,7 @@
+
+SOURCE_FILES := \
+Adafruit_MLX90614.cpp
+
+SOURCE_INCLUDE := \
+${LOCAL_NAME}/src
+

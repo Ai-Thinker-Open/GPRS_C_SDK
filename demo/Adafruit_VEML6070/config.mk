@@ -1,0 +1,2 @@
+
+export CFG_VEML6070_SUPPORT=y

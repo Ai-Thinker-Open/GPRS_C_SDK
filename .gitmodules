@@ -12,3 +12,21 @@
 [submodule "libs/lvgl/src"]
 	path = libs/lvgl/src
 	url = https://github.com/littlevgl/lvgl.git
+[submodule "libs/Adafruit_INA219/src"]
+	path = libs/Adafruit_INA219/src
+	url = https://github.com/mikenz/A9_Adafruit_INA219.git
+[submodule "libs/Adafruit_MLX90614/src"]
+	path = libs/Adafruit_MLX90614/src
+	url = https://github.com/mikenz/A9_Adafruit_MLX90614.git
+[submodule "libs/ClosedCube_OPT3001/src"]
+	path = libs/ClosedCube_OPT3001/src
+	url = https://github.com/mikenz/A9_ClosedCube_OPT3001.git
+[submodule "libs/Adafruit_VEML6070/src"]
+	path = libs/Adafruit_VEML6070/src
+	url = https://github.com/mikenz/A9_Adafruit_VEML6070.git
+[submodule "libs/Depau_APDS9930/src"]
+	path = libs/Depau_APDS9930/src
+	url = https://github.com/mikenz/A9_APDS9930.git
+[submodule "libs/Adafruit_SI1145/src"]
+	path = libs/Adafruit_SI1145/src
+	url = https://github.com/mikenz/A9_Adafruit_SI1145.git

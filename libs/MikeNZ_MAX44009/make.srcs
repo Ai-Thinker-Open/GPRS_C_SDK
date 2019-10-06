@@ -1,0 +1,7 @@
+
+SOURCE_FILES := \
+MikeNZ_MAX44009.cpp
+
+SOURCE_INCLUDE := \
+${LOCAL_NAME}/src
+

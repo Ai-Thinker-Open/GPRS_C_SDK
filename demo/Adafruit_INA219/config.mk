@@ -1,0 +1,2 @@
+
+export CFG_INA219_SUPPORT=y

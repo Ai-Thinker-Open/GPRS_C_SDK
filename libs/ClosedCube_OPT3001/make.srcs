@@ -1,0 +1,7 @@
+
+SOURCE_FILES := \
+ClosedCube_OPT3001.cpp
+
+SOURCE_INCLUDE := \
+${LOCAL_NAME}
+
