@@ -21,3 +21,6 @@
 [submodule "libs/ClosedCube_OPT3001/src"]
 	path = libs/ClosedCube_OPT3001/src
 	url = https://github.com/mikenz/A9_ClosedCube_OPT3001.git
+[submodule "libs/Adafruit_VEML6070/src"]
+	path = libs/Adafruit_VEML6070/src
+	url = https://github.com/mikenz/A9_Adafruit_VEML6070.git

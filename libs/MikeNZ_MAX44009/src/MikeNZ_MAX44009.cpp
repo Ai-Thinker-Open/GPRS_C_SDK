@@ -69,7 +69,7 @@ uint8_t MikeNZ_MAX44009::readRegister(uint8_t reg) {
     }
 
     uint8_t res = 0;
-    error = I2C_Receive(_i2c, _addr, &res, 2, I2C_DEFAULT_TIME_OUT);
+    error = I2C_Receive(_i2c, _addr, &res, 1, I2C_DEFAULT_TIME_OUT);
     if (error != I2C_ERROR_NONE)
     {
         Trace(1, "Adafruit_INA219::wireReadRegister recieve error: 0X%02x", error);

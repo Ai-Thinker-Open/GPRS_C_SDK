@@ -1,0 +1,7 @@
+
+SOURCE_FILES := \
+Adafruit_VEML6070.cpp
+
+SOURCE_INCLUDE := \
+${LOCAL_NAME}/src
+
