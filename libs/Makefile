@@ -48,6 +48,10 @@ ifeq "$(strip ${CFG_APDS9930_SUPPORT})" "y"
     LOCAL_MODULE_DEPENDS += libs/Depau_APDS9930
 endif
 
+ifeq "$(strip ${CFG_SI1145_SUPPORT})" "y"
+    LOCAL_MODULE_DEPENDS += libs/Adafruit_SI1145
+endif
+
 # Add includes from other modules we do not wish to link to
 LOCAL_API_DEPENDS := \
 

@@ -1,0 +1,7 @@
+
+SOURCE_FILES := \
+Adafruit_SI1145.cpp
+
+SOURCE_INCLUDE := \
+${LOCAL_NAME}/src
+

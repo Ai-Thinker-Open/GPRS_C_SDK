@@ -27,3 +27,6 @@
 [submodule "libs/Depau_APDS9930/src"]
 	path = libs/Depau_APDS9930/src
 	url = https://github.com/mikenz/A9_APDS9930.git
+[submodule "libs/Adafruit_SI1145/src"]
+	path = libs/Adafruit_SI1145/src
+	url = https://github.com/mikenz/A9_Adafruit_SI1145.git
