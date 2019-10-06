@@ -44,6 +44,9 @@ ifeq "$(strip ${CFG_VEML6070_SUPPORT})" "y"
     LOCAL_MODULE_DEPENDS += libs/Adafruit_VEML6070
 endif
 
+ifeq "$(strip ${CFG_APDS9930_SUPPORT})" "y"
+    LOCAL_MODULE_DEPENDS += libs/Depau_APDS9930
+endif
 
 # Add includes from other modules we do not wish to link to
 LOCAL_API_DEPENDS := \

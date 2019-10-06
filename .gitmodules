@@ -24,3 +24,6 @@
 [submodule "libs/Adafruit_VEML6070/src"]
 	path = libs/Adafruit_VEML6070/src
 	url = https://github.com/mikenz/A9_Adafruit_VEML6070.git
+[submodule "libs/Depau_APDS9930/src"]
+	path = libs/Depau_APDS9930/src
+	url = https://github.com/mikenz/A9_APDS9930.git

@@ -1,0 +1,2 @@
+
+export CFG_APDS9930_SUPPORT=y
