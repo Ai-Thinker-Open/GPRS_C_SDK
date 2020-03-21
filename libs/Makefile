@@ -10,6 +10,7 @@ LOCAL_NAME := libs
 # These should include the toplevel name, e.g. "libs/gps"
 LOCAL_MODULE_DEPENDS := libs/gps \
                         libs/utils \
+                        libs/u8g2 \
                         libs/cjson 
                         
 ifeq "$(strip ${CFG_ALIYUN_SUPPORT})" "y"
