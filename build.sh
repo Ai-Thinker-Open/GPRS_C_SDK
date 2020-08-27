@@ -241,4 +241,5 @@ echo RAM total: ${ram_total}\($((${ram_total}))\) Bytes, used: $ram_used Bytes \
 echo -ne "\033[1;32m" #green
 echo "============================================================="
 echo -ne "\033[0m" #normal
+
 exit

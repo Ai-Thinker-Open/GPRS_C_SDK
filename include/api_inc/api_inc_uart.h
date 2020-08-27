@@ -23,6 +23,7 @@ typedef enum{
     UART_BAUD_RATE_33600                    = 33600,
     UART_BAUD_RATE_38400                    = 38400,
     UART_BAUD_RATE_57600                    = 57600,
+    UART_BAUD_RATE_62000                    = 62000,//change by johhn
     UART_BAUD_RATE_115200                   = 115200,
     UART_BAUD_RATE_230400                   = 230400,
     UART_BAUD_RATE_460800                   = 460800,
