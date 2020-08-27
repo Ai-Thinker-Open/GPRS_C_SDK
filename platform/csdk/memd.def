@@ -1,0 +1,15 @@
+	RAM_PHY_SIZE:=                  0x00400000
+	RAM_SIZE?=                      0x00265000
+	XCPU_OVERLAY_BASE:=             0x00265000
+	FLASH_SIZE:=                    0x400000
+	CALIB_BASE:=                    0x3FA000
+	FACT_SETTINGS_BASE:=            0x3FE000
+	USER_DATA_BASE:=                0x00361000
+	USER_DATA_SIZE:=                0x00099000
+	USER_DATA_BLOCK_SIZE:=          0x00000200
+	AM_CONFIG_BASE:=                0x00360000
+	AM_CONFIG_SIZE:=                0x00001000
+	USER_RAM_BASE:=     0x00300000
+	USER_RAM_SIZE:=     0x00100000
+	USER_ROM_BASE:=     0x00240000
+	USER_ROM_SIZE:=     0x00100000

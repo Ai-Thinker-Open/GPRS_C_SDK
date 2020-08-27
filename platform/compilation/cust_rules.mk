@@ -213,6 +213,7 @@ BINARY_LIBRARY_FILES += ${foreach MODULE_PATH, ${BINARY_LIBS}, ${SOFT_WORKDIR}/$
 
 # Local libs path and files : in $SOFT_WORKDIR
 LOCAL_ADD_LIBRARY_PATH := ${foreach MODULE_PATH, ${LOCAL_LIBS}, -L${SOFT_WORKDIR}/${dir ${MODULE_PATH}}}
+LOCAL_ADD_LIBRARY_PATH :=${subst lib/,lib,${LOCAL_ADD_LIBRARY_PATH}}
 # LOCAL_LIBS is already a file list:
 #LOCAL_ADD_LIBRARY_FILES := ${foreach MODULE_PATH, ${LOCAL_LIBS}, ${SOFT_WORKDIR}/${MODULE_PATH}/${notdir ${MODULE_PATH}}}
 LOCAL_ADD_LIBRARY_FILES := ${foreach FILE_PATH, ${LOCAL_LIBS}, ${SOFT_WORKDIR}/${FILE_PATH}}
@@ -756,7 +757,7 @@ ${BIN}: dependencies ${FULL_SRC_OBJECTS} ${FULL_LIBRARY_FILES} | ${BIN_PATH} ${B
 	test -f ${LD_FILE} && chmod +w ${LD_FILE} || echo ""
 	${LDPP} ${LDPPFLAGS} ${LD_SRC} > ${LD_FILE}
 	#
-	@${ECHO} "[LD]                ${notdir ${BIN}}"
+	@${ECHO} "[LD] 1:${BIN} 2:${OFORMAT} 5:${LDFLAG_USED_ELF_FILES} 6: ${LD_FILE} 7:$(LDFLAGS) 8:${MAP}  end1             ${notdir ${BIN}}"
 	${LD} -nostdlib -o ${BIN} ${OFORMAT} ${FULL_SRC_OBJECTS} ${LD_OPTIONAL_OBJECTS} \
 		${LDFLAG_USED_ELF_FILES}	\
 		--script ${LD_FILE} \
