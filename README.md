@@ -126,8 +126,6 @@ A9/A9G开发板，方便开发和调试
 
 ##### 1. 下载代码
 
-需要**注意**的是：**请勿使用本页面右上角的绿色<kbd>Clone or download</kbd>按钮**下载的压缩包，否则编译会报文件缺失的错误
-
 ---
 
 * 方法一：从github[发布页面下载最新发布的压缩包](https://github.com/Ai-Thinker-Open/GPRS_C_SDK/releases)（**推荐**）。
@@ -135,10 +133,10 @@ A9/A9G开发板，方便开发和调试
 
 
 ---
-* 方法二：使用如下命令克隆工程到本地（需先安装`git`，**注意克隆时需要加`--recursive`参数**，不然获得的SDK文件不全）。
+* 方法二：使用如下命令克隆工程到本地（需先安装`git`）。
   > 这种方式可以得到最新的还未发布的代码
 ```
-git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git --recursive
+git clone https://github.com/Ai-Thinker-Open/GPRS_C_SDK.git
 ```
 ---
 ##### 2. 检查代码完整性
