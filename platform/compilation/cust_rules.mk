@@ -973,6 +973,9 @@ ASFLAGS += -march=xcpu -mtune=xcpu -EL
 CXX_SPECIFIC_CFLAGS += -Wno-write-strings \
                        -fno-rtti 
 
+#------------------- target flags ---------------------------------------
+TARGET_CFLAGS += -D__${CT_ASIC}__ -D__${FLSH_MODEL}__ -D${RAM_SIZE_FLAG}
+
 #------------------- pp file flags --------------------------------------
 ASCPPFLAGS += -DCT_ASM
 MYCPPFLAGS += -D__NEW_GCC__ \
@@ -987,7 +990,7 @@ LOCAL_EXPORT_FLAG += PRONAME_MAIN=$(PROJ_NAME)_Main
 ALL_EXPORT_FLAG := $(sort ${ALL_EXPORT_FLAG} ${LOCAL_EXPORT_FLAG})
 MYCPPFLAGS := ${MYCPPFLAGS} ${foreach tmpFlag, ${ALL_EXPORT_FLAG}, -D${tmpFlag}}
 
-CPPFLAGS	= ${INCLUDE_PATH} -DEL ${MYCPPFLAGS}
+CPPFLAGS	= ${INCLUDE_PATH} ${TARGET_CFLAGS} -DEL ${MYCPPFLAGS}
 
 ############################ Implicit rules ########################################
 # We generate one dependency file on the fly for each source file, 
